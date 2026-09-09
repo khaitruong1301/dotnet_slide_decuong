@@ -135,6 +135,7 @@ Hai nút tải PDF gọi `printAs(mode)`, hàm này gắn cờ `data-print` lên
 |---|---|
 | `data-print="full"` | Mở hết panel đang ẩn — in đủ lý thuyết và cả 3 cấp độ bài tập |
 | `data-print="tab"` | Giữ nguyên trạng thái tab, thêm ẩn khối `.print-full-only` |
+| `data-print="selected"` | Ẩn hết `[data-main]`, chỉ in `[data-print-deck]` — bộ slide các bài tập đã tick chọn |
 
 Khi thêm khối giao diện mới, gắn class cho đúng:
 
@@ -143,6 +144,19 @@ Khi thêm khối giao diện mới, gắn class cho đúng:
 - `print-page` — bắt đầu ở một trang mới khi in.
 
 Toàn bộ định dạng bản in nằm trong khối `@media print` ở cuối `src/index.css`.
+
+## Slide bài tập
+
+`src/components/ExerciseSlide.tsx` dựng một trang cho mỗi bài tập: tiêu đề · mô tả ·
+hình minh hoạ · Input/Output · gợi ý.
+
+Hình lấy từ trường `visual` của bài tập (kiểu `Visual`, dùng được cả 9 loại sơ đồ).
+Không khai báo `visual` mà có `io` thì slide **tự dựng sơ đồ IPO** — khi đó hai ô
+Input/Output bên dưới được bỏ đi cho khỏi lặp nội dung.
+
+Mỗi slide phải gọn trong đúng một trang A4 ngang. Sơ đồ dùng đơn vị `em` nên co giãn
+theo `font-size` của khối `.slide-figure`; nếu thêm bài có lưu đồ dài mà bị tràn trang,
+hạ `font-size` của `.slide-figure` trong `@media print` xuống là vừa.
 
 ## Sau khi sửa
 

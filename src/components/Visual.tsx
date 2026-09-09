@@ -11,9 +11,10 @@ const NODE_STYLE: Record<FlowStep['kind'], string> = {
   note: 'bg-ink/4 border-dashed border-ink/25 text-ink/60 rounded-lg',
 }
 
+/** h tính bằng px ở cỡ chữ gốc 16px, quy về em để cả sơ đồ co giãn khi đổi font-size. */
 function Arrow({ h = 30 }: { h?: number }) {
   return (
-    <div className="flex flex-col items-center shrink-0" style={{ height: h }} aria-hidden>
+    <div className="flex flex-col items-center shrink-0" style={{ height: `${h / 16}em` }} aria-hidden>
       <div className="w-px flex-1 bg-ink/25" />
       <div className="border-x-4 border-x-transparent border-t-[6px] border-t-ink/35" />
     </div>

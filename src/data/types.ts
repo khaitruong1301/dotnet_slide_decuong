@@ -50,6 +50,11 @@ export interface Exercise {
   requirement: string
   io?: { input: string; output: string }
   hint?: string
+  /**
+   * Hình minh hoạ cho slide bài tập. Bỏ trống thì slide tự dựng sơ đồ IPO
+   * từ trường io, nên chỉ cần khai báo khi muốn vẽ luồng xử lý cụ thể.
+   */
+  visual?: Visual
 }
 
 export interface Buoi {

@@ -4,6 +4,7 @@ import { BUOI_LIST, findBuoi } from '../data'
 import type { Block, Exercise } from '../data/types'
 import CodeBlock from '../components/CodeBlock'
 import Visual from '../components/Visual'
+import ExerciseSlide from '../components/ExerciseSlide'
 
 const CALLOUT = {
   info: { ring: 'border-accent-400/35 bg-accent-400/8', dot: 'text-accent-400', label: 'Ghi nhớ' },
@@ -95,11 +96,29 @@ function BlockView({ block }: { block: Block }) {
   }
 }
 
-function ExerciseCard({ ex, index }: { ex: Exercise; index: number }) {
+function ExerciseCard({
+  ex,
+  index,
+  picked,
+  onPick,
+}: {
+  ex: Exercise
+  index: number
+  picked: boolean
+  onPick: () => void
+}) {
   const [done, setDone] = useState(false)
   return (
-    <li className={`card p-4 transition ${done ? 'opacity-55' : ''}`}>
+    <li className={`card p-4 transition ${done ? 'opacity-55' : ''} ${picked ? 'ring-1 ring-brand-400/45' : ''}`}>
       <div className="mb-2.5 flex flex-wrap items-center gap-2.5">
+        <label className="no-print flex cursor-pointer items-center" title="Chọn bài này để xuất PDF">
+          <input
+            type="checkbox"
+            checked={picked}
+            onChange={onPick}
+            className="h-4 w-4 shrink-0 cursor-pointer accent-[var(--brand-500)]"
+          />
+        </label>
         <button
           onClick={() => setDone((d) => !d)}
           aria-pressed={done}
@@ -181,12 +200,14 @@ export default function BuoiPage() {
   const buoi = findBuoi(slug)
   const [tab, setTab] = useState<'ly-thuyet' | 'bai-tap'>('ly-thuyet')
   const [level, setLevel] = useState<string>('')
+  const [picked, setPicked] = useState<Set<string>>(new Set())
 
   const levelsCo = LEVELS.filter((lv) => buoi?.exercises.some((e) => e.level === lv))
 
   useEffect(() => {
     setTab('ly-thuyet')
     setLevel(levelsCo[0] ?? 'Tất cả')
+    setPicked(new Set())
     if (!window.location.hash) window.scrollTo(0, 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug])
@@ -213,6 +234,8 @@ export default function BuoiPage() {
   const prev = BUOI_LIST.find((b) => b.id === buoi.id - 1)
   const next = BUOI_LIST.find((b) => b.id === buoi.id + 1)
   const toc = buoi.sections.map((s) => ({ id: s.id, title: s.title }))
+  const shownExercises = buoi.exercises.filter((e) => level === 'Tất cả' || e.level === level)
+  const pickedExercises = buoi.exercises.filter((e) => picked.has(e.id))
 
   /** Mục lục bấm vào phần lý thuyết thì kéo tab về đúng chỗ trước khi cuộn. */
   function pickToc() {
@@ -223,7 +246,7 @@ export default function BuoiPage() {
    * Đặt cờ data-print trên <html> để CSS biết in đầy đủ hay chỉ in tab đang xem,
    * rồi gỡ cờ ra sau khi hộp thoại in đóng lại.
    */
-  function printAs(mode: 'full' | 'tab') {
+  function printAs(mode: 'full' | 'tab' | 'selected') {
     const root = document.documentElement
     root.dataset.print = mode
     const cleanup = () => {
@@ -233,6 +256,15 @@ export default function BuoiPage() {
     window.addEventListener('afterprint', cleanup)
     window.print()
     setTimeout(cleanup, 1000)
+  }
+
+  function togglePick(id: string) {
+    setPicked((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
   }
 
   function goTab(t: 'ly-thuyet' | 'bai-tap') {
@@ -248,6 +280,7 @@ export default function BuoiPage() {
   return (
     <div className="mx-auto flex max-w-7xl gap-8 px-5 py-7 sm:px-8">
       <article className="min-w-0 flex-1">
+       <div data-main>
         <header className="mb-6 border-b border-ink/8 pb-6">
           <div className="mb-3 flex flex-wrap items-center gap-2.5 text-[11px] uppercase tracking-[0.16em]">
             <span className="rounded-full bg-brand-500/15 px-3 py-1 font-bold text-brand-300">Buổi {buoi.id}</span>
@@ -359,6 +392,39 @@ export default function BuoiPage() {
               })}
             </div>
 
+            {/* Thanh chọn bài để xuất PDF riêng */}
+            <div className="no-print mb-5 flex flex-wrap items-center gap-2.5 rounded-xl border border-ink/10 bg-ink/4 px-3.5 py-2.5">
+              <span className="text-[13px] text-ink/55">
+                Đã chọn <span className="font-bold text-brand-300">{picked.size}</span> bài
+              </span>
+
+              <button
+                onClick={() => setPicked(new Set(shownExercises.map((e) => e.id)))}
+                className="rounded-lg border border-ink/12 px-2.5 py-1 text-[12.5px] text-ink/60 transition hover:bg-ink/8 hover:text-ink"
+              >
+                Chọn hết mục đang xem
+              </button>
+
+              <button
+                onClick={() => setPicked(new Set())}
+                disabled={picked.size === 0}
+                className="rounded-lg border border-ink/12 px-2.5 py-1 text-[12.5px] text-ink/60 transition hover:bg-ink/8 hover:text-ink disabled:opacity-35"
+              >
+                Bỏ chọn hết
+              </button>
+
+              <button
+                onClick={() => printAs('selected')}
+                disabled={picked.size === 0}
+                className="ml-auto inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-brand-600 to-brand-500 px-3.5 py-1.5 text-[12.5px] font-semibold text-white transition hover:brightness-110 disabled:opacity-35 disabled:hover:brightness-100"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M12 3v12M7 10l5 5 5-5M4 21h16" />
+                </svg>
+                Xuất slide {picked.size > 0 ? `${picked.size} bài` : 'đã chọn'}
+              </button>
+            </div>
+
             {levelsCo.map((lv) => {
               const list = buoi.exercises.filter((e) => e.level === lv)
               return (
@@ -370,7 +436,13 @@ export default function BuoiPage() {
                   </div>
                   <ul className="space-y-3">
                     {list.map((ex, i) => (
-                      <ExerciseCard key={ex.id} ex={ex} index={i} />
+                      <ExerciseCard
+                        key={ex.id}
+                        ex={ex}
+                        index={i}
+                        picked={picked.has(ex.id)}
+                        onPick={() => togglePick(ex.id)}
+                      />
                     ))}
                   </ul>
                 </div>
@@ -393,6 +465,19 @@ export default function BuoiPage() {
             </Link>
           )}
         </nav>
+       </div>
+
+        {/* Bộ slide bài tập đã chọn — ẩn trên màn hình, chỉ hiện khi in ở chế độ selected */}
+        <div data-print-deck>
+          {pickedExercises.map((ex) => (
+            <ExerciseSlide
+              key={ex.id}
+              buoi={buoi}
+              ex={ex}
+              index={buoi.exercises.filter((e) => e.level === ex.level).indexOf(ex) + 1}
+            />
+          ))}
+        </div>
       </article>
 
       <OnThisPage items={toc} onPick={pickToc} />

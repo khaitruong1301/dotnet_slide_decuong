@@ -44,10 +44,18 @@ Muốn bảo vệ thật thì phải kiểm tra ở phía máy chủ.
   - *Tải PDF đầy đủ* — toàn bộ lý thuyết và cả 3 cấp độ bài tập, bất kể đang xem tab nào.
   - *Tải PDF tab đang xem* — chỉ đúng phần đang mở (ví dụ chỉ 20 bài Nâng cao), có bìa
     tên buổi, không kèm menu hay khối mục tiêu. Dùng để làm slide đem upload.
+  - *Xuất slide N bài* — tick chọn từng bài tập rồi xuất, **mỗi bài một trang** theo bố
+    cục slide: tiêu đề · mô tả · hình minh hoạ · Input/Output · gợi ý.
 
   Cả hai mở hộp thoại in của trình duyệt (chọn "Save as PDF"). Bản in định dạng riêng:
   khổ A4 nằm ngang, mỗi phần lý thuyết một trang, luôn ra nền sáng kể cả khi màn hình
   đang ở theme tối. Nhấn Ctrl/Cmd + P trực tiếp thì in theo tab đang xem.
+
+## Hình minh hoạ cho bài tập
+
+20 bài Nâng cao của buổi 8 có lưu đồ thuật toán soạn riêng (trường `visual` trong
+`src/data/buoi08-baitap.ts`). Bài nào không khai báo `visual` thì slide **tự dựng sơ đồ
+IPO** từ trường `io`, nên slide nào cũng có hình chứ không chỉ toàn chữ.
 
 ## Chạy tại máy
 
