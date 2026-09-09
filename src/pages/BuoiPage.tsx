@@ -469,13 +469,8 @@ export default function BuoiPage() {
 
         {/* Bộ slide bài tập đã chọn — ẩn trên màn hình, chỉ hiện khi in ở chế độ selected */}
         <div data-print-deck>
-          {pickedExercises.map((ex) => (
-            <ExerciseSlide
-              key={ex.id}
-              buoi={buoi}
-              ex={ex}
-              index={buoi.exercises.filter((e) => e.level === ex.level).indexOf(ex) + 1}
-            />
+          {pickedExercises.map((ex, i) => (
+            <ExerciseSlide key={ex.id} buoi={buoi} ex={ex} index={i + 1} />
           ))}
         </div>
       </article>

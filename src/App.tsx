@@ -11,6 +11,7 @@ export default function App() {
 
   return (
     <TokenGate>
+      <>
       <div className="bg-grid min-h-screen">
         {/* Thanh trên — chỉ hiện ở màn hình nhỏ để mở menu */}
         <div className="no-print sticky top-0 z-30 flex items-center gap-3 border-b border-ink/8 bg-page/85 px-4 py-3 backdrop-blur lg:hidden">
@@ -50,6 +51,10 @@ export default function App() {
           </main>
         </div>
       </div>
+      <div className="print-footer" aria-hidden>
+        Được biên soạn bởi <strong>Trương Tấn Khải</strong> — cybersoft.edu.vn
+      </div>
+      </>
     </TokenGate>
   )
 }

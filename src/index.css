@@ -17,6 +17,7 @@
   --color-accent-400: var(--accent-400);
   --color-accent-500: var(--accent-500);
   --color-mint-400: var(--mint-400);
+  --color-cyber-500: var(--cyber-500);
   --color-amber-300: var(--amber-300);
   --color-amber-400: var(--amber-400);
   --color-rose-300: var(--rose-300);
@@ -39,6 +40,7 @@
   --accent-400: #38bdf8;
   --accent-500: #0ea5e9;
   --mint-400: #34d399;
+  --cyber-500: #f59e0b;
   --amber-300: #fcd34d;
   --amber-400: #fbbf24;
   --rose-300: #fda4af;
@@ -66,6 +68,7 @@
   --accent-400: #0369a1;
   --accent-500: #0284c7;
   --mint-400: #047857;
+  --cyber-500: #d97706;
   --amber-300: #a16207;
   --amber-400: #b45309;
   --rose-300: #be123c;
@@ -91,6 +94,50 @@ html { scroll-behavior: smooth; }
 
 /* Bộ slide bài tập chỉ dùng cho bản in, không chiếm chỗ trên màn hình */
 [data-print-deck] { display: none; }
+
+.slide-title {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--cyber-500);
+}
+
+.slide-badge {
+  border-radius: 0.5rem;
+  background: var(--cyber-500);
+  padding: 0.15rem 0.7rem;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #fff;
+}
+
+/*
+  Logo Cybersoft chìm sau nội dung slide.
+  Khung inset-0 + overflow hidden: ảnh có to hơn slide cũng không làm tài liệu
+  cao thêm — nếu để ảnh absolute trần thì phần tràn sẽ đẻ ra một trang in trắng.
+*/
+.slide-watermark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.slide-watermark img {
+  width: 70%;
+  max-width: 520px;
+  max-height: 88%;
+  object-fit: contain;
+  opacity: 0.03;
+}
+
+/* Chân trang tự ghi nguồn, lặp trên mọi trang in */
+.print-footer { display: none; }
 
 body {
   background: var(--page);
@@ -144,6 +191,7 @@ body {
     --accent-400: #0369a1;
     --accent-500: #0284c7;
     --mint-400: #047857;
+    --cyber-500: #ea7317;
     --amber-300: #a16207;
     --amber-400: #b45309;
     --rose-300: #be123c;
@@ -173,14 +221,33 @@ body {
   /* Chế độ "xuất slide bài đã chọn": bỏ hết trang, chỉ in bộ slide */
   html[data-print='selected'] [data-main] { display: none; }
   html[data-print='selected'] [data-print-deck] { display: block; }
-  .print-slide { break-after: page; }
-  .print-slide:last-child { break-after: auto; }
+  /* Bỏ padding của khung trang, nếu không phần thừa sẽ đẩy ra một trang trắng */
+  html[data-print='selected'] main > div { padding: 0; gap: 0; }
+  html[data-print='selected'] .print-slide:last-child { margin-bottom: 0; }
+
+  /* Dòng ghi nguồn của riêng mình, cố định nên lặp lại ở mọi trang */
+  .print-footer {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding-top: 2mm;
+    border-top: 1px solid rgb(20 20 43 / 0.12);
+    font-size: 9.5px;
+    letter-spacing: 0.02em;
+    color: rgb(20 20 43 / 0.45);
+  }
+  .print-footer strong { color: var(--cyber-500); font-weight: 700; }
+  /* Ngắt TRƯỚC mỗi slide, trừ slide đầu — dùng break-after sẽ thừa một trang trắng ở cuối */
+  .print-slide { break-before: page; }
+  .print-slide:first-child { break-before: auto; }
 
   /* Thu nhỏ sơ đồ để mỗi bài tập gọn trong đúng một trang A4 ngang */
   .print-slide .slide-figure { font-size: 11.5px; padding: 0.6rem 1rem; }
   /* Sơ đồ IPO tự dựng chỉ có ba khối nên phóng to cho dễ đọc */
   .print-slide .slide-figure[data-auto='true'] { font-size: 14px; padding: 1.4rem 1.2rem; }
-  .print-slide h2 { font-size: 22px; }
+  .print-slide .slide-title { font-size: 40px; }
 
   /* Bỏ chừa chỗ cho sidebar đã ẩn */
   main { margin-left: 0 !important; }

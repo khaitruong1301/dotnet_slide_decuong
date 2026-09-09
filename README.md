@@ -45,7 +45,15 @@ Muốn bảo vệ thật thì phải kiểm tra ở phía máy chủ.
   - *Tải PDF tab đang xem* — chỉ đúng phần đang mở (ví dụ chỉ 20 bài Nâng cao), có bìa
     tên buổi, không kèm menu hay khối mục tiêu. Dùng để làm slide đem upload.
   - *Xuất slide N bài* — tick chọn từng bài tập rồi xuất, **mỗi bài một trang** theo bố
-    cục slide: tiêu đề · mô tả · hình minh hoạ · Input/Output · gợi ý.
+    cục slide: huy hiệu *Bài N* · tiêu đề cỡ lớn màu cam · mô tả · hình minh hoạ ·
+    Input/Output · gợi ý, kèm logo Cybersoft chìm ở nền.
+
+  Mọi trang in đều có chân trang *"Được biên soạn bởi Trương Tấn Khải — cybersoft.edu.vn"*.
+
+  > Tiêu đề, ngày giờ và địa chỉ trang mà trình duyệt tự thêm vào bản in **không tắt
+  > được bằng CSS** — đó là tuỳ chọn của hộp thoại in. Trong hộp thoại in của Chrome,
+  > mở *Cài đặt khác* rồi bỏ chọn *Đầu trang và chân trang* (Headers and footers).
+  > Chrome ghi nhớ lựa chọn này cho các lần in sau.
 
   Cả hai mở hộp thoại in của trình duyệt (chọn "Save as PDF"). Bản in định dạng riêng:
   khổ A4 nằm ngang, mỗi phần lý thuyết một trang, luôn ra nền sáng kể cả khi màn hình

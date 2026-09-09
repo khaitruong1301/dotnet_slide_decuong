@@ -154,6 +154,19 @@ Hình lấy từ trường `visual` của bài tập (kiểu `Visual`, dùng đ�
 Không khai báo `visual` mà có `io` thì slide **tự dựng sơ đồ IPO** — khi đó hai ô
 Input/Output bên dưới được bỏ đi cho khỏi lặp nội dung.
 
+Bố cục slide: huy hiệu **Bài N** (đánh số 1→n theo thứ tự các bài đã chọn) · tiêu đề
+cỡ lớn màu cam `--cyber-500` · logo Cybersoft chìm ở nền, opacity 3%.
+
+Logo chìm phải nằm trong khung `.slide-watermark` có `inset: 0` và `overflow: hidden`.
+Để ảnh `position: absolute` trần thì phần tràn ra ngoài slide sẽ cộng vào chiều cao
+tài liệu và đẻ ra một trang in trắng ở cuối.
+
+Chân trang *"Được biên soạn bởi Trương Tấn Khải — cybersoft.edu.vn"* nằm ở `App.tsx`,
+dùng `position: fixed` nên tự lặp trên mọi trang in, ở cả ba chế độ in.
+
+Ngắt trang dùng `break-before` chứ không dùng `break-after` — `break-after` trên phần
+tử cuối cũng sinh thêm một trang trắng.
+
 Mỗi slide phải gọn trong đúng một trang A4 ngang. Sơ đồ dùng đơn vị `em` nên co giãn
 theo `font-size` của khối `.slide-figure`; nếu thêm bài có lưu đồ dài mà bị tràn trang,
 hạ `font-size` của `.slide-figure` trong `@media print` xuống là vừa.
