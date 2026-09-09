@@ -118,13 +118,31 @@ Màu chạy qua biến CSS trong `src/index.css`. Quy ước:
 - `src/components/CodeBlock.tsx` cố ý giữ nền tối ở cả hai theme, nên bên trong nó
   vẫn dùng `white/` bình thường. Đừng sed nhầm file này.
 
-## Xuất slide PDF
+## Tab và xuất PDF
 
-Nút *Xuất slide PDF* gọi `window.print()`; định dạng nằm trong khối `@media print`
-ở cuối `src/index.css`. Khi thêm khối giao diện mới:
+Trang buổi học chia tab *Lý thuyết* / *Bài tập*, trong Bài tập có tab con theo cấp độ.
+Panel bị ẩn **vẫn nằm trong DOM**, ẩn bằng `data-open="false"` chứ không dùng thuộc
+tính `hidden`.
 
-- Thêm class `no-print` cho những thứ không nên in (điều hướng, nút bấm, mục lục).
-- Thêm class `print-page` cho khối muốn bắt đầu ở một trang mới.
+Lý do: preflight của Tailwind đặt `[hidden] { display: none !important }` trong
+`@layer base`. Với khai báo `!important`, thứ tự cascade layer bị đảo — layer đứng
+trước thắng phần CSS không nằm trong layer — nên rule ghi đè lúc in sẽ không ăn.
+Dùng `data-open` thì không phải đánh nhau bằng `!important`.
+
+Hai nút tải PDF gọi `printAs(mode)`, hàm này gắn cờ `data-print` lên thẻ `<html>`:
+
+| Cờ | Kết quả |
+|---|---|
+| `data-print="full"` | Mở hết panel đang ẩn — in đủ lý thuyết và cả 3 cấp độ bài tập |
+| `data-print="tab"` | Giữ nguyên trạng thái tab, thêm ẩn khối `.print-full-only` |
+
+Khi thêm khối giao diện mới, gắn class cho đúng:
+
+- `no-print` — không bao giờ in (điều hướng, nút bấm, mục lục, dòng hướng dẫn thao tác).
+- `print-full-only` — chỉ có ở bản PDF đầy đủ, không có ở bản PDF một tab.
+- `print-page` — bắt đầu ở một trang mới khi in.
+
+Toàn bộ định dạng bản in nằm trong khối `@media print` ở cuối `src/index.css`.
 
 ## Sau khi sửa
 

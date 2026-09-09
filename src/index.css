@@ -82,6 +82,13 @@
 
 html { scroll-behavior: smooth; }
 
+/*
+  Tab: ẩn panel bằng thuộc tính riêng thay vì [hidden]. Preflight của Tailwind đặt
+  [hidden]{display:none!important} trong @layer base, mà với khai báo !important thì
+  layer đứng trước lại thắng phần không-layer — nên rule ghi đè khi in sẽ không ăn.
+*/
+[data-panel][data-open='false'] { display: none; }
+
 body {
   background: var(--page);
   color: var(--ink);
@@ -154,6 +161,11 @@ body {
   }
 
   .no-print { display: none !important; }
+
+  /* Nút "Tải PDF đầy đủ" bật cờ full -> mở hết mọi tab đang ẩn.
+     Nút "Tải PDF tab đang xem" giữ nguyên trạng thái ẩn/hiện của tab. */
+  html[data-print='full'] [data-panel][data-open='false'] { display: block; }
+  html[data-print='tab'] .print-full-only { display: none !important; }
 
   /* Bỏ chừa chỗ cho sidebar đã ẩn */
   main { margin-left: 0 !important; }

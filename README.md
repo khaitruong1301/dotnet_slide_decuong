@@ -37,10 +37,17 @@ Muốn bảo vệ thật thì phải kiểm tra ở phía máy chủ.
 
 - **Hai theme sáng / tối**, nút chuyển nằm ở chân menu trái. Lần đầu vào trang sẽ theo
   thiết lập của hệ điều hành, sau đó ghi nhớ lựa chọn trong `localStorage`.
-- **Tải PDF**: trang chủ có nút *Tải PDF đề cương*, mỗi trang buổi học có nút *Tải PDF
-  buổi này*. Cả hai mở hộp thoại in của trình duyệt (chọn "Save as PDF"). Bản in được
-  định dạng riêng: khổ A4 nằm ngang, mỗi phần lý thuyết một trang, luôn ra nền sáng kể
-  cả khi màn hình đang ở theme tối.
+- **Tab thay cho cuộn dài**: mỗi trang buổi học chia hai tab *Lý thuyết* và *Bài tập*;
+  trong tab Bài tập lại có tab con theo cấp độ (Cơ bản / Trung bình / Nâng cao / Tất cả).
+  Link có hash (`#bai-tap`, `#ten-muc`) tự mở đúng tab rồi mới cuộn tới.
+- **Tải PDF, hai kiểu**:
+  - *Tải PDF đầy đủ* — toàn bộ lý thuyết và cả 3 cấp độ bài tập, bất kể đang xem tab nào.
+  - *Tải PDF tab đang xem* — chỉ đúng phần đang mở (ví dụ chỉ 20 bài Nâng cao), có bìa
+    tên buổi, không kèm menu hay khối mục tiêu. Dùng để làm slide đem upload.
+
+  Cả hai mở hộp thoại in của trình duyệt (chọn "Save as PDF"). Bản in định dạng riêng:
+  khổ A4 nằm ngang, mỗi phần lý thuyết một trang, luôn ra nền sáng kể cả khi màn hình
+  đang ở theme tối. Nhấn Ctrl/Cmd + P trực tiếp thì in theo tab đang xem.
 
 ## Chạy tại máy
 
