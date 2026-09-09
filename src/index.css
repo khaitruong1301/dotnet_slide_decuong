@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink-950: #0a0a12;
+  --color-ink-900: #10101c;
+  --color-ink-850: #15152400;
+  --color-ink-800: #171728;
+  --color-ink-700: #23233a;
+  --color-ink-600: #33334f;
+  --color-brand-300: #c4b5fd;
+  --color-brand-400: #a78bfa;
+  --color-brand-500: #8b5cf6;
+  --color-brand-600: #7c3aed;
+  --color-accent-400: #38bdf8;
+  --color-accent-500: #0ea5e9;
+  --color-mint-400: #34d399;
+  --color-amber-ish: #fbbf24;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--color-ink-950);
+  color: #e7e7f0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Nền lưới + quầng sáng dùng chung cho dashboard và slide */
+.bg-grid {
+  background-image:
+    radial-gradient(900px 500px at 12% -10%, rgba(139, 92, 246, 0.22), transparent 60%),
+    radial-gradient(700px 450px at 95% 0%, rgba(14, 165, 233, 0.16), transparent 60%),
+    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px;
+}
+
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 1rem;
+}
+
+.prose-ct p { line-height: 1.75; color: #c8c8da; }
+
+/* Thanh cuộn mảnh */
+* { scrollbar-width: thin; scrollbar-color: #33334f transparent; }
+*::-webkit-scrollbar { width: 9px; height: 9px; }
+*::-webkit-scrollbar-thumb { background: #2c2c46; border-radius: 99px; }
+*::-webkit-scrollbar-track { background: transparent; }
+
+@media print {
+  body { background: #fff; color: #000; }
+}

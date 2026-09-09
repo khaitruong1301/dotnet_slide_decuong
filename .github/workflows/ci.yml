@@ -1,0 +1,24 @@
+name: CI
+
+# Chỉ kiểm tra build. Việc deploy do Vercel Git Integration lo,
+# nên workflow này không tải lên artifact nào -> không tốn dung lượng lưu trữ.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build

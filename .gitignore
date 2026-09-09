@@ -1,0 +1,10 @@
+node_modules
+dist
+.vercel
+.DS_Store
+*.local
+*.log
+
+# Slide gốc (PDF) không đưa lên git để repo nhẹ, deploy không tốn dung lượng
+*.pdf
+tsconfig.tsbuildinfo
