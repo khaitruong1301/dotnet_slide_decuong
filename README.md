@@ -20,7 +20,8 @@ chính, diễn đạt ngắn, và bổ sung lưu đồ / sơ đồ trực quan c
 | 7 | Hàm — tham số, `return`, `void`, `static`, lambda, `Func` / `Action`, callback |
 | 8 | Collection & kiểu dữ liệu động — `List`, `Dictionary`, `HashSet`, `Array` |
 
-76 bài tập, chia ba mức Cơ bản / Trung bình / Nâng cao.
+125 bài tập, chia ba mức Cơ bản / Trung bình / Nâng cao. Riêng buổi 8 (Collection) có
+bộ 60 bài — 20 bài mỗi mức — nằm trong `src/data/buoi08-baitap.ts`.
 
 ## Truy cập
 
@@ -36,9 +37,10 @@ Muốn bảo vệ thật thì phải kiểm tra ở phía máy chủ.
 
 - **Hai theme sáng / tối**, nút chuyển nằm ở chân menu trái. Lần đầu vào trang sẽ theo
   thiết lập của hệ điều hành, sau đó ghi nhớ lựa chọn trong `localStorage`.
-- **Xuất slide PDF**: mỗi trang buổi học có nút *Xuất slide PDF*, mở hộp thoại in của
-  trình duyệt. Bản in được định dạng riêng: khổ A4 nằm ngang, mỗi phần lý thuyết một
-  trang, luôn ra nền sáng kể cả khi màn hình đang ở theme tối.
+- **Tải PDF**: trang chủ có nút *Tải PDF đề cương*, mỗi trang buổi học có nút *Tải PDF
+  buổi này*. Cả hai mở hộp thoại in của trình duyệt (chọn "Save as PDF"). Bản in được
+  định dạng riêng: khổ A4 nằm ngang, mỗi phần lý thuyết một trang, luôn ra nền sáng kể
+  cả khi màn hình đang ở theme tối.
 
 ## Chạy tại máy
 

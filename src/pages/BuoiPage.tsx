@@ -11,6 +11,8 @@ const CALLOUT = {
   tip: { ring: 'border-mint-400/35 bg-mint-400/8', dot: 'text-mint-400', label: 'Mẹo' },
 }
 
+const LEVELS = ['Cơ bản', 'Trung bình', 'Nâng cao'] as const
+
 const LEVEL = {
   'Cơ bản': 'bg-mint-400/15 text-mint-400',
   'Trung bình': 'bg-amber-400/15 text-amber-300',
@@ -50,7 +52,7 @@ function BlockView({ block }: { block: Block }) {
 
     case 'visual':
       return (
-        <figure className="card px-5 py-8 text-[15px]">
+        <figure className="card px-4 py-6 text-[15px]">
           <Visual v={block.visual} />
         </figure>
       )
@@ -96,7 +98,7 @@ function BlockView({ block }: { block: Block }) {
 function ExerciseCard({ ex, index }: { ex: Exercise; index: number }) {
   const [done, setDone] = useState(false)
   return (
-    <li className={`card p-5 transition ${done ? 'opacity-55' : ''}`}>
+    <li className={`card p-4 transition ${done ? 'opacity-55' : ''}`}>
       <div className="mb-2.5 flex flex-wrap items-center gap-2.5">
         <button
           onClick={() => setDone((d) => !d)}
@@ -193,9 +195,9 @@ export default function BuoiPage() {
   const toc = [...buoi.sections.map((s) => ({ id: s.id, title: s.title })), { id: 'bai-tap', title: 'Bài tập về nhà' }]
 
   return (
-    <div className="mx-auto flex max-w-6xl gap-10 px-6 py-10 sm:px-10">
+    <div className="mx-auto flex max-w-7xl gap-8 px-5 py-7 sm:px-8">
       <article className="min-w-0 flex-1">
-        <header className="mb-10 border-b border-ink/8 pb-8">
+        <header className="mb-8 border-b border-ink/8 pb-6">
           <div className="mb-3 flex flex-wrap items-center gap-2.5 text-[11px] uppercase tracking-[0.16em]">
             <span className="rounded-full bg-brand-500/15 px-3 py-1 font-bold text-brand-300">Buổi {buoi.id}</span>
             <span className="text-ink/30">{buoi.duration}</span>
@@ -207,16 +209,16 @@ export default function BuoiPage() {
 
           <button
             onClick={() => window.print()}
-            className="no-print mt-6 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-500/20 transition hover:brightness-110"
+            className="no-print mt-5 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-500/20 transition hover:brightness-110"
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
               <path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
               <path d="M6 14h12v8H6z" />
             </svg>
-            Xuất slide PDF
+            Tải PDF buổi này
           </button>
 
-          <div className="mt-7 rounded-xl border border-ink/10 bg-ink/4 p-5">
+          <div className="mt-5 rounded-xl border border-ink/10 bg-ink/4 p-4">
             <div className="mb-2.5 text-[11px] font-bold uppercase tracking-widest text-ink/40">Sau buổi này bạn sẽ</div>
             <ul className="space-y-1.5">
               {buoi.goals.map((g, i) => (
@@ -236,14 +238,14 @@ export default function BuoiPage() {
         </header>
 
         {buoi.sections.map((s) => (
-          <section key={s.id} id={s.id} className="print-page mb-14 scroll-mt-6">
-            <h2 className="group mb-5 flex items-baseline gap-2 text-[22px] font-bold text-ink">
+          <section key={s.id} id={s.id} className="print-page mb-10 scroll-mt-6">
+            <h2 className="group mb-4 flex items-baseline gap-2 text-[22px] font-bold text-ink">
               {s.title}
               <a href={`#${s.id}`} className="no-print text-[15px] text-brand-400/0 transition group-hover:text-brand-400/70" aria-label="Liên kết tới mục này">
                 #
               </a>
             </h2>
-            <div className="space-y-5">
+            <div className="space-y-4">
               {s.blocks.map((b, i) => (
                 <BlockView key={i} block={b} />
               ))}
@@ -251,19 +253,33 @@ export default function BuoiPage() {
           </section>
         ))}
 
-        <section id="bai-tap" className="print-page scroll-mt-6 border-t border-ink/8 pt-9">
+        <section id="bai-tap" className="print-page scroll-mt-6 border-t border-ink/8 pt-7">
           <h2 className="mb-1.5 text-[22px] font-bold text-ink">Bài tập về nhà</h2>
-          <p className="mb-6 text-[14.5px] text-ink/45">
+          <p className="mb-5 text-[14.5px] text-ink/45">
             {buoi.exercises.length} bài — làm từ Cơ bản lên Nâng cao. Bấm vào số thứ tự để đánh dấu đã làm xong.
           </p>
-          <ul className="space-y-3.5">
-            {buoi.exercises.map((ex, i) => (
-              <ExerciseCard key={ex.id} ex={ex} index={i} />
-            ))}
-          </ul>
+
+          {LEVELS.map((lv) => {
+            const list = buoi.exercises.filter((e) => e.level === lv)
+            if (!list.length) return null
+            return (
+              <div key={lv} className="mb-7">
+                <div className="mb-3 flex items-center gap-2.5">
+                  <span className={`rounded-md px-2 py-0.5 text-[11px] font-bold ${LEVEL[lv]}`}>{lv}</span>
+                  <span className="text-[12px] text-ink/35">{list.length} bài</span>
+                  <span className="h-px flex-1 bg-ink/8" />
+                </div>
+                <ul className="space-y-3">
+                  {list.map((ex, i) => (
+                    <ExerciseCard key={ex.id} ex={ex} index={i} />
+                  ))}
+                </ul>
+              </div>
+            )
+          })}
         </section>
 
-        <nav className="no-print mt-12 flex gap-3 border-t border-ink/8 pt-7">
+        <nav className="no-print mt-10 flex gap-3 border-t border-ink/8 pt-6">
           {prev && (
             <Link to={`/buoi/${prev.slug}`} className="card flex-1 p-4 transition hover:border-brand-400/40">
               <div className="text-[11px] uppercase tracking-widest text-ink/30">← Buổi {prev.id}</div>

@@ -82,7 +82,14 @@ Các `kind` của node: `start` `end` `io` `process` `decision` `note`.
 ```
 
 `level` chỉ nhận đúng ba giá trị: `'Cơ bản'` | `'Trung bình'` | `'Nâng cao'`.
-Trong một buổi, xếp bài tập từ dễ đến khó. `id` theo quy ước `b<số buổi>-<số thứ tự>`.
+`id` theo quy ước `b<số buổi>-<số thứ tự>`.
+
+Trang bài học **tự nhóm bài tập theo cấp độ** và đánh số lại trong từng nhóm, nên
+không cần tự sắp xếp thứ tự dễ-khó trong mảng.
+
+Buổi 8 có 60 bài nên tách riêng ra `src/data/buoi08-baitap.ts` (ba mảng `coBan`,
+`trungBinh`, `nangCao` gộp lại thành `BAI_TAP_COLLECTION`). Buổi nào vượt khoảng
+20 bài thì nên tách file tương tự.
 
 ## Quy ước viết nội dung
 

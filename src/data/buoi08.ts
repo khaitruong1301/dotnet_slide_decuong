@@ -1,4 +1,5 @@
 import type { Buoi } from './types'
+import { BAI_TAP_COLLECTION } from './buoi08-baitap'
 
 const buoi08: Buoi = {
   id: 8,
@@ -335,19 +336,7 @@ Console.WriteLine(c + 5);           // "abc5" — không báo lỗi biên dịch
   ],
 
 
-  exercises: [
-    { id: 'b8-1', level: 'Cơ bản', title: 'Thống kê danh sách số', requirement: 'Với lstNumber = [20, 81, 97, 63, 72, 11, 20, 15, 33, 15, 41, 20]: tính tổng các số lớn hơn 50, đếm số phần tử lớn hơn 30, tìm số lớn nhất, tính trung bình cộng các số lẻ, in các số chẵn.', hint: 'Dùng foreach kết hợp if, hoặc Find/FindAll với lambda.' },
-    { id: 'b8-2', level: 'Cơ bản', title: 'Tìm và đếm trong danh sách', requirement: 'Cũng với lstNumber trên: tìm vị trí đầu tiên của số 20, đếm số lượng phần tử bằng 15, đếm các số chia hết cho 5, tạo danh sách mới chỉ chứa các số nhỏ hơn 50.', hint: 'IndexOf, FindAll, RemoveAll.' },
-    { id: 'b8-3', level: 'Cơ bản', title: 'Xử lý danh sách chuỗi', requirement: 'Với lstStrings = ["apple","banana","orange","kiwi","mango","pineapple","grape","melon"]: in các chuỗi dài hơn 5 ký tự, tìm chuỗi dài nhất, in các chuỗi chứa chữ a, tìm chuỗi bắt đầu bằng m.' },
-    { id: 'b8-4', level: 'Trung bình', title: 'Sắp xếp và biến đổi danh sách', requirement: 'Sắp xếp lstStrings theo bảng chữ cái, chuyển tất cả thành chữ in hoa, thay chuỗi "banana" bằng "pear", tìm chuỗi dài thứ hai.', hint: 'Sort, vòng lặp cập nhật theo chỉ số, IndexOf.' },
-    { id: 'b8-5', level: 'Trung bình', title: 'Loại trùng bằng HashSet', requirement: 'Nhập một danh sách số có phần tử trùng, dùng HashSet để loại trùng rồi in ra danh sách kết quả.', io: { input: '1 2 2 3 3 3', output: '1 2 3' } },
-    { id: 'b8-6', level: 'Trung bình', title: 'Danh bạ bằng Dictionary', requirement: 'Xây dựng danh bạ Dictionary<string, string> ánh xạ tên → số điện thoại. Cho phép thêm, tra cứu theo tên, xoá và liệt kê toàn bộ.', hint: 'Luôn dùng TryGetValue khi tra cứu.' },
-    { id: 'b8-7', level: 'Trung bình', title: 'Đếm tần suất từ', requirement: 'Nhập một đoạn văn, đếm số lần xuất hiện của mỗi từ và in ra theo thứ tự giảm dần.', io: { input: 'a b a c b a', output: 'a: 3, b: 2, c: 1' } },
-    { id: 'b8-8', level: 'Nâng cao', title: 'Two Sum', requirement: 'Cho mảng nums và giá trị target, tìm chỉ số của hai phần tử có tổng bằng target. Giải bằng Dictionary chỉ với một lượt duyệt.', io: { input: 'nums = [2,7,11,15], target = 9', output: '[0, 1]' } },
-    { id: 'b8-9', level: 'Nâng cao', title: 'Best Time to Buy and Sell Stock', requirement: 'Cho mảng prices là giá cổ phiếu theo ngày. Mua một lần, bán một lần, tìm khoản lãi lớn nhất có thể.', io: { input: 'prices = [7,1,5,3,6,4]', output: '5' } },
-    { id: 'b8-10', level: 'Nâng cao', title: 'Longest Consecutive Sequence', requirement: 'Cho mảng số nguyên, tìm độ dài chuỗi số liên tiếp dài nhất (các số không cần nằm cạnh nhau trong mảng).', io: { input: 'nums = [100,4,200,1,3,2]', output: '4' }, hint: 'HashSet + chỉ bắt đầu đếm từ phần tử không có số liền trước.' },
-    { id: 'b8-11', level: 'Nâng cao', title: 'Quản lý sản phẩm — bài tổng hợp', requirement: 'Dùng List kết hợp menu do…while: thêm, xem, tìm theo tên, xoá theo tên, thoát. Mỗi chức năng là một hàm riêng, có kiểm tra dữ liệu nhập.', hint: 'Bài này ôn lại toàn bộ 8 buổi.' },
-  ],
+  exercises: BAI_TAP_COLLECTION,
 }
 
 export default buoi08

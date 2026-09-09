@@ -7,7 +7,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <nav className="flex h-full flex-col overflow-y-auto border-r border-ink/8 bg-panel/70 backdrop-blur">
-      <div className="border-b border-ink/8 px-5 py-5">
+      <div className="border-b border-ink/8 px-4 py-4">
         <NavLink to="/" onClick={onNavigate} className="block">
           <div className="flex items-center gap-2.5">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-accent-500 text-sm font-black text-ink">
@@ -21,7 +21,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         </NavLink>
       </div>
 
-      <div className="px-5 pb-2 pt-5 text-[11px] font-bold uppercase tracking-[0.16em] text-ink/30">Đề cương</div>
+      <div className="px-4 pb-1.5 pt-4 text-[11px] font-bold uppercase tracking-[0.16em] text-ink/30">Đề cương</div>
 
       <ul className="flex-1 space-y-1 px-3 pb-4">
         {BUOI_LIST.map((b) => {
@@ -31,7 +31,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               <NavLink
                 to={`/buoi/${b.slug}`}
                 onClick={onNavigate}
-                className={`group flex gap-3 rounded-xl px-3 py-2.5 transition ${
+                className={`group flex gap-3 rounded-xl px-2.5 py-2 transition ${
                   active ? 'bg-brand-500/15 ring-1 ring-brand-400/30' : 'hover:bg-ink/5'
                 }`}
               >
@@ -73,7 +73,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         })}
       </ul>
 
-      <div className="flex items-center gap-2.5 border-t border-ink/8 px-5 py-4">
+      <div className="flex items-center gap-2.5 border-t border-ink/8 px-4 py-3">
         <img
           src="/avatar.png"
           alt={COURSE.author}
