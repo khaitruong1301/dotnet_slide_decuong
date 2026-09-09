@@ -1,10 +1,10 @@
-# Đề cương C# / ASP.NET Core — 8 buổi
+# Đề cương C# / ASP.NET Core — 15 buổi
 
 Trang tài liệu học tập: menu trái là đề cương 8 buổi, bấm vào một buổi để mở nội dung
 lý thuyết kèm sơ đồ minh hoạ và bài tập về nhà ngay trên web.
 
 Nội dung được biên soạn lại từ bộ slide gốc (`C# ASP.NET CORE LITE`, `C# ASP.NET CORE
-COLLECTION`, `bài tập collection`) theo hướng: bỏ phần giới thiệu, vào thẳng tiêu đề
+COLLECTION`, `C# OOP`, `bài tập collection`) theo hướng: bỏ phần giới thiệu, vào thẳng tiêu đề
 chính, diễn đạt ngắn, và bổ sung lưu đồ / sơ đồ trực quan cho mọi khái niệm trừu tượng.
 
 ## Lộ trình
@@ -19,8 +19,15 @@ chính, diễn đạt ngắn, và bổ sung lưu đồ / sơ đồ trực quan c
 | 6 | Vòng lặp lồng nhau & xử lý chuỗi |
 | 7 | Hàm — tham số, `return`, `void`, `static`, lambda, `Func` / `Action`, callback |
 | 8 | Collection & kiểu dữ liệu động — `List`, `Dictionary`, `HashSet`, `Array` |
+| 9 | Nhập môn OOP & Class — object, access modifier, class diagram |
+| 10 | Constructor & nạp chồng — `this`, object initializer |
+| 11 | Property, đóng gói & thành phần tĩnh — `get/set`, `static`, `readonly` |
+| 12 | Kế thừa & ghi đè — `base`, `protected`, `virtual/override`, `sealed` |
+| 13 | Đa hình & Interface — `is/as`, pattern matching theo kiểu |
+| 14 | Abstract class & Generic — ràng buộc `where`, `Activator` |
+| 15 | 4 tính chất OOP & SOLID — SRP, OCP, LSP, ISP, DIP và Dependency Injection |
 
-125 bài tập, chia ba mức Cơ bản / Trung bình / Nâng cao. Riêng buổi 8 (Collection) có
+193 bài tập, chia ba mức Cơ bản / Trung bình / Nâng cao. Riêng buổi 8 (Collection) có
 bộ 60 bài — 20 bài mỗi mức — nằm trong `src/data/buoi08-baitap.ts`.
 
 ## Truy cập

@@ -2,10 +2,10 @@ import { Link } from 'react-router-dom'
 import { BUOI_LIST, COURSE, TOTAL_EXERCISES, TOTAL_SECTIONS } from '../data'
 
 const STATS = [
-  { label: 'Buổi học', value: '8' },
+  { label: 'Buổi học', value: String(BUOI_LIST.length) },
   { label: 'Phần lý thuyết', value: String(TOTAL_SECTIONS) },
   { label: 'Bài tập', value: String(TOTAL_EXERCISES) },
-  { label: 'Thời lượng', value: '24 giờ' },
+  { label: 'Thời lượng', value: `${BUOI_LIST.length * 3} giờ` },
 ]
 
 export default function Home() {
@@ -52,7 +52,7 @@ export default function Home() {
       </header>
 
       <section>
-        <h2 className="mb-4 text-lg font-bold text-ink/80">Lộ trình 8 buổi</h2>
+        <h2 className="mb-4 text-lg font-bold text-ink/80">Lộ trình {BUOI_LIST.length} buổi</h2>
         <div className="grid gap-3 sm:grid-cols-2">
           {BUOI_LIST.map((b) => (
             <Link
@@ -85,7 +85,7 @@ export default function Home() {
       <section className="no-print mt-10">
         <h2 className="mb-4 text-lg font-bold text-ink/80">Cách dùng trang này</h2>
         <ul className="card space-y-2.5 p-4 text-[14px] leading-relaxed text-ink/60">
-          <li>· Menu bên trái là đề cương 8 buổi. Bấm vào một buổi để mở nội dung bài học đầy đủ.</li>
+          <li>· Menu bên trái là đề cương {BUOI_LIST.length} buổi. Bấm vào một buổi để mở nội dung bài học đầy đủ.</li>
           <li>· Mỗi buổi gồm phần lý thuyết có sơ đồ minh hoạ, ví dụ code chạy được, và bài tập về nhà ở cuối trang.</li>
           <li>· Cột <span className="font-semibold text-brand-300">Trên trang này</span> bên phải giúp nhảy nhanh tới từng mục.</li>
           <li>· Ở phần bài tập, bấm vào số thứ tự để đánh dấu bài đã làm xong.</li>

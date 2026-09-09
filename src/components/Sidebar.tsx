@@ -15,7 +15,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
             </span>
             <div className="min-w-0">
               <div className="truncate text-sm font-bold text-ink">{COURSE.title}</div>
-              <div className="truncate text-[11px] text-ink/40">8 buổi · {TOTAL_EXERCISES} bài tập</div>
+              <div className="truncate text-[11px] text-ink/40">{BUOI_LIST.length} buổi · {TOTAL_EXERCISES} bài tập</div>
             </div>
           </div>
         </NavLink>

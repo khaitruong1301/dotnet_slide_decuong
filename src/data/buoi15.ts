@@ -1,0 +1,470 @@
+import type { Buoi } from './types'
+
+const buoi15: Buoi = {
+  id: 15,
+  slug: 'bon-tinh-chat-oop-va-solid',
+  title: '4 tính chất OOP & nguyên tắc SOLID',
+  subtitle: 'Tổng kết nền tảng và năm nguyên tắc giữ cho dự án lớn không rối',
+  duration: '3 giờ',
+  keywords: ['encapsulation', 'inheritance', 'polymorphism', 'abstraction', 'SOLID', 'DI'],
+  goals: [
+    'Gọi tên và nhận ra 4 tính chất OOP trong code đã viết',
+    'Áp dụng SRP, OCP, LSP, ISP, DIP vào một bài toán thật',
+    'Hiểu Dependency Injection và vì sao nên tiêm phụ thuộc qua constructor',
+    'Dùng DI container có sẵn của .NET thay vì tự new thủ công',
+  ],
+
+  sections: [
+    {
+      id: 'bon-tinh-chat',
+      title: '1. Bốn tính chất của lập trình hướng đối tượng',
+      blocks: [
+        {
+          type: 'text',
+          text: 'Ba buổi vừa rồi ta đã dùng đủ cả bốn tính chất mà chưa gọi tên chúng. Đây là lúc hệ thống lại — đây cũng là bốn câu hỏi phỏng vấn hay gặp nhất về OOP.',
+        },
+        {
+          type: 'visual',
+          visual: {
+            kind: 'timeline',
+            caption: 'Bốn tính chất, và ta đã gặp chúng ở đâu',
+            items: [
+              { label: 'Đóng gói (Encapsulation)', text: 'Gói dữ liệu và hành vi vào một đối tượng, chỉ mở ra qua property và phương thức public — buổi 10, class TaiKhoan giấu soDu' },
+              { label: 'Kế thừa (Inheritance)', text: 'Lớp con nhận lại thuộc tính và phương thức của lớp cha để tái sử dụng — buổi 11, NhanVienSanXuat kế thừa NhanVien' },
+              { label: 'Đa hình (Polymorphism)', text: 'Cùng một lời gọi cho ra nhiều hành vi tuỳ đối tượng thật — buổi 11, một vòng lặp tính lương cho ba loại nhân viên' },
+              { label: 'Trừu tượng (Abstraction)', text: 'Chỉ phơi ra cái cần dùng, giấu chi tiết bên trong — interface IHinhHoc, abstract class DongVat' },
+            ],
+          },
+        },
+        {
+          type: 'table',
+          head: ['Tính chất', 'Giải quyết vấn đề gì', 'Công cụ trong C#'],
+          rows: [
+            ['Đóng gói', 'Dữ liệu bị sửa bừa từ bên ngoài', 'private, property get/set'],
+            ['Kế thừa', 'Code trùng lặp giữa các lớp giống nhau', ': LopCha, base'],
+            ['Đa hình', 'Phải viết if/else cho từng loại đối tượng', 'virtual, override, interface'],
+            ['Trừu tượng', 'Người dùng phải biết quá nhiều chi tiết', 'interface, abstract class'],
+          ],
+        },
+        {
+          type: 'callout',
+          tone: 'tip',
+          title: 'Phân biệt Trừu tượng và Đóng gói',
+          text: 'Đóng gói là GIẤU DỮ LIỆU — không cho sửa trực tiếp field. Trừu tượng là GIẤU CÁCH LÀM — người dùng biết gọi TinhLuong() là ra tiền, không cần biết công thức bên trong.',
+        },
+      ],
+    },
+
+    {
+      id: 'solid-tong-quan',
+      title: '2. SOLID — năm nguyên tắc thiết kế',
+      blocks: [
+        {
+          type: 'text',
+          text: 'SOLID là năm nguyên tắc giúp code dễ bảo trì và mở rộng. Chúng không phải luật bắt buộc mà là kinh nghiệm đúc kết: cứ vi phạm là dự án lớn dần sẽ đau.',
+        },
+        {
+          type: 'visual',
+          visual: {
+            kind: 'timeline',
+            caption: 'Năm chữ cái của SOLID',
+            items: [
+              { label: 'S — Single Responsibility', text: 'Một class chỉ có một lý do để thay đổi' },
+              { label: 'O — Open/Closed', text: 'Mở cho mở rộng, đóng với sửa đổi' },
+              { label: 'L — Liskov Substitution', text: 'Lớp con phải thay được lớp cha mà chương trình vẫn đúng' },
+              { label: 'I — Interface Segregation', text: 'Nhiều interface nhỏ tốt hơn một interface to' },
+              { label: 'D — Dependency Inversion', text: 'Phụ thuộc vào abstraction, đừng phụ thuộc vào class cụ thể' },
+            ],
+          },
+        },
+      ],
+    },
+
+    {
+      id: 'srp',
+      title: '3. S — Single Responsibility Principle',
+      blocks: [
+        {
+          type: 'text',
+          text: 'Một class chỉ nên có một lý do để thay đổi. Nếu một class vừa giữ dữ liệu, vừa tính toán, vừa ghi file, vừa gửi mail thì bốn nhóm lý do khác nhau đều buộc phải mở nó ra sửa.',
+        },
+        {
+          type: 'visual',
+          visual: {
+            kind: 'compare',
+            caption: 'Class NhanVien ôm đồm mọi việc so với tách trách nhiệm',
+            columns: [
+              {
+                title: 'Vi phạm SRP',
+                tone: 'bad',
+                items: [
+                  'NhanVien giữ dữ liệu',
+                  'NhanVien tính lương',
+                  'NhanVien lưu database',
+                  'NhanVien gửi email',
+                  '→ Đổi cách gửi mail phải sửa class NhanVien',
+                ],
+              },
+              {
+                title: 'Tuân thủ SRP',
+                tone: 'good',
+                items: [
+                  'NhanVien — chỉ giữ dữ liệu',
+                  'LuongService — chỉ tính lương',
+                  'NhanVienRepository — chỉ lưu và đọc',
+                  'EmailService — chỉ gửi mail',
+                  '→ Mỗi thay đổi chỉ chạm đúng một class',
+                ],
+              },
+            ],
+          },
+        },
+        {
+          type: 'code',
+          sample: {
+            title: 'Tách theo trách nhiệm',
+            code: `// Chỉ giữ dữ liệu
+class NhanVien
+{
+    public string Ma { get; set; }
+    public string Ten { get; set; }
+    public decimal Luong1h { get; set; }
+    public int SoGioLam { get; set; }
+}
+
+// Chỉ lo tính toán
+class LuongService
+{
+    public decimal Tinh(NhanVien nv) => nv.Luong1h * nv.SoGioLam;
+}
+
+// Chỉ lo lưu trữ
+class NhanVienRepository
+{
+    public void Luu(List<NhanVien> ds) { /* ghi file JSON */ }
+    public List<NhanVien> Doc() { /* đọc file JSON */ return new(); }
+}`,
+          },
+        },
+        {
+          type: 'callout',
+          tone: 'warn',
+          title: 'Tách nhiều quá thì project phình to',
+          text: 'Áp dụng SRP triệt để sẽ sinh ra rất nhiều service nhỏ, gọi chúng lằng nhằng. Lúc đó dùng Facade Pattern: tạo một lớp bao bọc gom các service liên quan lại, bên ngoài chỉ cần gọi một cửa.',
+        },
+        {
+          type: 'code',
+          sample: {
+            title: 'Facade gom các service lại một cửa',
+            code: `class NhanVienFacade
+{
+    private readonly LuongService luong = new();
+    private readonly EmailService email = new();
+    private readonly NhanVienRepository repo = new();
+
+    public void ChotLuongThang(List<NhanVien> ds)
+    {
+        foreach (var nv in ds)
+            email.Gui(nv.Ten, $"Lương tháng: {luong.Tinh(nv):N0} đ");
+        repo.Luu(ds);
+    }
+}
+
+// Bên ngoài chỉ cần biết một dòng này
+new NhanVienFacade().ChotLuongThang(danhSach);`,
+          },
+        },
+      ],
+    },
+
+    {
+      id: 'ocp',
+      title: '4. O — Open/Closed Principle',
+      blocks: [
+        {
+          type: 'text',
+          text: 'Mở cho việc mở rộng, đóng với việc sửa đổi. Thêm tính năng mới thì nên viết thêm code mới, không nên mở class cũ đang chạy ổn định ra sửa — vì mỗi lần sửa là một lần có nguy cơ làm hỏng thứ đang đúng.',
+        },
+        {
+          type: 'code',
+          sample: {
+            title: 'Vi phạm OCP — cứ thêm loại là phải sửa',
+            code: `class LuongService
+{
+    public decimal Tinh(NhanVien nv)
+    {
+        if (nv.Loai == "VanPhong")   return nv.LuongThang;
+        if (nv.Loai == "SanXuat")    return nv.SoSanPham * 15000;
+        if (nv.Loai == "KinhDoanh")  return 5000000 + nv.DoanhSo * 0.05m;
+        // Thêm loại thứ tư -> lại mở đúng file này ra sửa
+        return 0;
+    }
+}`,
+            note: 'Chuỗi if/else theo loại đối tượng là dấu hiệu kinh điển của việc vi phạm OCP.',
+          },
+        },
+        {
+          type: 'code',
+          sample: {
+            title: 'Tuân thủ OCP — dùng đa hình',
+            code: `interface ITinhLuong
+{
+    decimal Tinh(NhanVien nv);
+}
+
+class LuongVanPhong : ITinhLuong
+{
+    public decimal Tinh(NhanVien nv) => nv.LuongThang;
+}
+
+class LuongSanXuat : ITinhLuong
+{
+    public decimal Tinh(NhanVien nv) => nv.SoSanPham * 15000m;
+}
+
+// Thêm loại mới: viết thêm một class, KHÔNG sửa class nào đang có
+class LuongThoiVu : ITinhLuong
+{
+    public decimal Tinh(NhanVien nv) => nv.SoGioLam * 30000m;
+}`,
+            note: 'Đây là lý do đa hình quan trọng: nó biến việc "sửa code cũ" thành việc "thêm code mới".',
+          },
+        },
+        {
+          type: 'visual',
+          visual: {
+            kind: 'uml',
+            caption: 'Thêm cách tính lương mới chỉ là thêm một hộp bên dưới',
+            relation: 'implement',
+            parent: { name: 'ITinhLuong', stereotype: 'interface', methods: ['+ Tinh(nv) : decimal'] },
+            children: [
+              { name: 'LuongVanPhong' },
+              { name: 'LuongSanXuat' },
+              { name: 'LuongThoiVu', stereotype: 'mới thêm' },
+            ],
+          },
+        },
+      ],
+    },
+
+    {
+      id: 'lsp-isp',
+      title: '5. L và I — Liskov Substitution & Interface Segregation',
+      blocks: [
+        {
+          type: 'callout',
+          tone: 'info',
+          title: 'LSP — Nguyên tắc thay thế Liskov',
+          text: 'Lớp con phải thay thế được lớp cha ở mọi nơi mà chương trình vẫn chạy đúng. Nếu B kế thừa A thì bất cứ chỗ nào dùng A đều phải dùng B được, không sinh lỗi lạ.',
+        },
+        {
+          type: 'code',
+          sample: {
+            title: 'Vi phạm LSP — lớp con phá vỡ cam kết của lớp cha',
+            code: `class Chim
+{
+    public virtual void Bay() => Console.WriteLine("Đang bay");
+}
+
+class ChimCanh : Chim { }
+
+class ChimCanhCut : Chim
+{
+    // Vi phạm: lớp cha hứa Bay() chạy được, lớp con lại ném lỗi
+    public override void Bay() => throw new NotSupportedException("Cánh cụt không bay");
+}
+
+void ChoBayHet(List<Chim> ds)
+{
+    foreach (var c in ds) c.Bay();   // gặp cánh cụt là văng lỗi
+}`,
+            note: 'Cách sửa: tách IBayDuoc thành interface riêng, chỉ loài nào bay được mới cài đặt. Đây cũng chính là tinh thần của ISP.',
+          },
+        },
+        {
+          type: 'callout',
+          tone: 'info',
+          title: 'ISP — Nguyên tắc phân tách giao diện',
+          text: 'Đừng bắt một class phải cài đặt những phương thức mà nó không dùng đến. Interface to nên tách thành nhiều interface nhỏ và cụ thể hơn.',
+        },
+        {
+          type: 'code',
+          sample: {
+            title: 'Tách interface to thành các interface nhỏ',
+            code: `// Vi phạm ISP: máy in thường buộc phải cài cả Scan và Fax
+interface IMayVanPhong
+{
+    void In(string s);
+    void Scan(string s);
+    void Fax(string s);
+}
+
+// Tuân thủ ISP: tách theo từng khả năng
+interface IMayIn   { void In(string s); }
+interface IMayScan { void Scan(string s); }
+
+class MayInThuong : IMayIn
+{
+    public void In(string s) => Console.WriteLine($"In: {s}");
+}
+
+class MayDaNang : IMayIn, IMayScan
+{
+    public void In(string s) => Console.WriteLine($"In: {s}");
+    public void Scan(string s) => Console.WriteLine($"Scan: {s}");
+}`,
+          },
+        },
+        {
+          type: 'callout',
+          tone: 'warn',
+          title: 'Đừng tách quá tay',
+          text: 'Không phải interface nào cũng cần băm nhỏ. Cách kiểm tra: đếm xem có bao nhiêu phương thức thực sự không được các lớp cài đặt dùng tới. Chỉ vài phương thức thì chưa cần áp dụng ISP.',
+        },
+      ],
+    },
+
+    {
+      id: 'dip',
+      title: '6. D — Dependency Inversion & Dependency Injection',
+      blocks: [
+        {
+          type: 'text',
+          text: 'Nguyên tắc cuối: đừng để class cấp cao phụ thuộc trực tiếp vào class cấp thấp, cả hai nên phụ thuộc vào abstraction. Trong thực hành, nó dẫn tới kỹ thuật Dependency Injection — tiêm phụ thuộc từ bên ngoài vào thay vì tự new bên trong.',
+        },
+        {
+          type: 'visual',
+          visual: {
+            kind: 'compare',
+            caption: 'Cùng một lớp xử lý đơn hàng',
+            columns: [
+              {
+                title: 'Tự new bên trong',
+                tone: 'bad',
+                items: [
+                  'new ThanhToanTienMat() ngay trong OrderService',
+                  'Đổi sang thẻ tín dụng phải sửa OrderService',
+                  'Không viết test được vì luôn gọi thật',
+                  'Class dính chặt vào class cụ thể',
+                ],
+              },
+              {
+                title: 'Tiêm qua constructor',
+                tone: 'good',
+                items: [
+                  'OrderService nhận IPaymentService từ ngoài',
+                  'Đổi phương thức thanh toán không sửa OrderService',
+                  'Test được bằng cách tiêm bản giả',
+                  'Chỉ phụ thuộc vào interface',
+                ],
+              },
+            ],
+          },
+        },
+        {
+          type: 'code',
+          sample: {
+            title: 'Dependency Injection qua constructor',
+            code: `interface IPaymentService
+{
+    void ThanhToan(decimal soTien);
+}
+
+class ThanhToanTienMat : IPaymentService
+{
+    public void ThanhToan(decimal soTien)
+        => Console.WriteLine($"Nhận tiền mặt: {soTien:N0} đ");
+}
+
+class ThanhToanTheTinDung : IPaymentService
+{
+    public void ThanhToan(decimal soTien)
+        => Console.WriteLine($"Quẹt thẻ: {soTien:N0} đ");
+}
+
+class OrderService
+{
+    private readonly IPaymentService payment;
+
+    // Phụ thuộc được TIÊM vào, không tự new bên trong
+    public OrderService(IPaymentService payment) => this.payment = payment;
+
+    public void Checkout(decimal tongTien) => payment.ThanhToan(tongTien);
+}
+
+// Nơi lắp ráp quyết định dùng bản nào
+var order = new OrderService(new ThanhToanTheTinDung());
+order.Checkout(250_000m);`,
+            note: 'readonly nghĩa là gán một lần trong constructor rồi khoá lại — không ai đổi được phụ thuộc giữa chừng.',
+          },
+        },
+        {
+          type: 'visual',
+          visual: {
+            kind: 'flow',
+            caption: 'Luồng lắp ráp phụ thuộc khi chương trình khởi động',
+            steps: [
+              { kind: 'start', text: 'Program khởi động' },
+              { kind: 'process', text: 'Đăng ký: IPaymentService → ThanhToanTheTinDung' },
+              { kind: 'process', text: 'Yêu cầu container tạo OrderService' },
+              { kind: 'process', text: 'Container thấy constructor cần IPaymentService' },
+              { kind: 'process', text: 'Container tạo ThanhToanTheTinDung rồi tiêm vào' },
+              { kind: 'end', text: 'Trả về OrderService đã sẵn sàng dùng' },
+            ],
+          },
+        },
+        {
+          type: 'code',
+          sample: {
+            title: 'Dùng DI container có sẵn của .NET',
+            lang: 'bash',
+            code: `dotnet add package Microsoft.Extensions.DependencyInjection`,
+          },
+        },
+        {
+          type: 'code',
+          sample: {
+            title: 'Program.cs',
+            code: `using Microsoft.Extensions.DependencyInjection;
+
+var services = new ServiceCollection();
+
+// Đăng ký: gặp IPaymentService thì cấp ThanhToanTheTinDung
+services.AddSingleton<IPaymentService, ThanhToanTheTinDung>();
+services.AddTransient<OrderService>();
+
+var provider = services.BuildServiceProvider();
+
+// Không cần new thủ công, container tự lắp ráp
+var order = provider.GetRequiredService<OrderService>();
+order.Checkout(250_000m);`,
+            note: 'AddSingleton dùng chung một đối tượng suốt vòng đời ứng dụng; AddTransient tạo mới mỗi lần yêu cầu; AddScoped tạo mới mỗi request (dùng nhiều trong ASP.NET Core).',
+          },
+        },
+        {
+          type: 'callout',
+          tone: 'tip',
+          title: 'Vì sao học DI ngay từ bây giờ',
+          text: 'Toàn bộ ASP.NET Core được xây trên DI. Controller nhận service qua constructor, service nhận DbContext qua constructor. Nắm chắc phần này thì sang phần web sẽ nhẹ hẳn.',
+        },
+      ],
+    },
+  ],
+
+  exercises: [
+    { id: 'b15-1', level: 'Cơ bản', title: 'Nhận diện 4 tính chất', requirement: 'Lấy bài quản lý nhân viên đã viết ở buổi 11, chỉ ra chính xác dòng code nào thể hiện đóng gói, kế thừa, đa hình và trừu tượng.', hint: 'Viết thành comment ngay trên dòng code tương ứng.' },
+    { id: 'b15-2', level: 'Cơ bản', title: 'Đóng gói đúng cách', requirement: 'Cho một class có toàn bộ field là public. Sửa lại thành private kèm property có kiểm tra, không làm hỏng nơi đang dùng.', hint: 'Giữ nguyên tên property viết hoa chữ đầu.' },
+    { id: 'b15-3', level: 'Cơ bản', title: 'Phân biệt trừu tượng và đóng gói', requirement: 'Viết một ví dụ ngắn thể hiện rõ: đóng gói là giấu dữ liệu, trừu tượng là giấu cách làm.' },
+    { id: 'b15-4', level: 'Trung bình', title: 'Áp dụng SRP', requirement: 'Cho class QuanLySinhVien đang vừa lưu danh sách, vừa tính điểm trung bình, vừa ghi file. Tách thành ba class theo đúng SRP.', hint: 'SinhVienRepository, DiemService, và lớp dữ liệu SinhVien.' },
+    { id: 'b15-5', level: 'Trung bình', title: 'Facade Pattern', requirement: 'Sau khi tách theo SRP ở bài trên, viết một lớp Facade gom các service lại để bên ngoài chỉ cần gọi một cửa.' },
+    { id: 'b15-6', level: 'Trung bình', title: 'Khử chuỗi if/else bằng OCP', requirement: 'Cho hàm tính phí ship dùng if/else theo loại vận chuyển (thường, nhanh, hoả tốc). Chuyển sang interface IPhiShip để thêm loại mới không phải sửa code cũ.', io: { input: 'Thêm loại "quốc tế"', output: 'Chỉ viết thêm một class, không sửa file nào' } },
+    { id: 'b15-7', level: 'Trung bình', title: 'Tìm lỗi vi phạm LSP', requirement: 'Cho class HinhChuNhat và HinhVuong kế thừa nó (đặt chiều dài thì chiều rộng đổi theo). Chỉ ra chỗ vi phạm LSP và đề xuất cách sửa.', hint: 'Hàm nào giả định đặt dài rồi rộng vẫn giữ nguyên sẽ sai với hình vuông.' },
+    { id: 'b15-8', level: 'Trung bình', title: 'Tách interface theo ISP', requirement: 'Interface IMayVanPhong gồm In, Scan, Fax. Tách nhỏ để máy in thường không phải cài đặt Scan và Fax.', hint: 'IMayIn, IMayScan, IMayFax.' },
+    { id: 'b15-9', level: 'Nâng cao', title: 'Dependency Injection thủ công', requirement: 'Viết OrderService nhận IPaymentService qua constructor. Cài ba bản: tiền mặt, thẻ tín dụng, ví điện tử. Cho người dùng chọn phương thức lúc chạy.', io: { input: 'Chọn: 2 (thẻ tín dụng)', output: 'Quẹt thẻ: 250.000 đ' } },
+    { id: 'b15-10', level: 'Nâng cao', title: 'Tự xây DI container mini', requirement: 'Viết class DIContainer có Register<TInterface, TImplement>() lưu vào Dictionary và Resolve<T>() dùng Activator.CreateInstance để tạo đối tượng, xử lý được cả trường hợp constructor cần tiêm tiếp phụ thuộc khác.', hint: 'Activator.CreateInstance(type, args) và Type.GetConstructors() để đọc danh sách tham số.' },
+    { id: 'b15-11', level: 'Nâng cao', title: 'Dùng DI container của .NET', requirement: 'Cài Microsoft.Extensions.DependencyInjection, đăng ký các service rồi lấy đối tượng qua GetRequiredService. So sánh AddSingleton, AddTransient và AddScoped bằng cách in ra HashCode của đối tượng.', io: { input: 'Lấy service 2 lần', output: 'Singleton: cùng HashCode. Transient: khác HashCode' } },
+    { id: 'b15-12', level: 'Nâng cao', title: 'Bài tổng hợp — hệ thống thanh toán đơn hàng', requirement: 'Xây hệ thống quản lý thanh toán đơn hàng áp dụng đủ 5 nguyên tắc SOLID: thêm sản phẩm vào đơn, tính tổng giá trị, chọn phương thức thanh toán (tiền mặt / thẻ / ví điện tử) và thực hiện thanh toán. Thêm phương thức thanh toán mới không được sửa mã nguồn cũ.', io: { input: '3 sản phẩm, chọn ví điện tử', output: 'Tổng đơn: 850.000 đ\nThanh toán qua ví điện tử: 850.000 đ' }, hint: 'Order chỉ quản lý sản phẩm (SRP), IPaymentMethod cho phép mở rộng (OCP), PaymentProcessor nhận interface qua constructor (DIP).' },
+  ],
+}
+
+export default buoi15

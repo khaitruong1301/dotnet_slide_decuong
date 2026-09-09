@@ -1,4 +1,4 @@
-import type { FlowStep, Visual as V } from '../data/types'
+import type { FlowStep, UmlClass, Visual as V } from '../data/types'
 
 /* ---------------------------------------------------------------- Flow chart */
 
@@ -101,6 +101,40 @@ function Chevron() {
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M5 12h13M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------- Sơ đồ lớp UML */
+
+function UmlBox({ c }: { c: UmlClass }) {
+  const isAbstract = c.stereotype === 'interface' || c.stereotype === 'abstract'
+  return (
+    <div
+      className={`min-w-[10rem] max-w-[15rem] overflow-hidden rounded-lg border text-left ${
+        isAbstract ? 'border-dashed border-accent-400/55 bg-accent-400/8' : 'border-brand-400/45 bg-brand-500/10'
+      }`}
+    >
+      <div className="border-b border-inherit px-3 py-1.5 text-center">
+        {c.stereotype && <div className="text-[0.62em] italic text-ink/45">«{c.stereotype}»</div>}
+        <div className={`text-[0.86em] font-bold ${isAbstract ? 'text-accent-400' : 'text-brand-300'}`}>{c.name}</div>
+      </div>
+
+      {c.attrs && c.attrs.length > 0 && (
+        <ul className="space-y-0.5 border-b border-ink/10 px-3 py-1.5">
+          {c.attrs.map((a, i) => (
+            <li key={i} className="font-mono text-[0.68em] leading-snug text-ink/60">{a}</li>
+          ))}
+        </ul>
+      )}
+
+      {c.methods && c.methods.length > 0 && (
+        <ul className="space-y-0.5 px-3 py-1.5">
+          {c.methods.map((m, i) => (
+            <li key={i} className="font-mono text-[0.68em] leading-snug text-mint-400/85">{m}</li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }
@@ -276,6 +310,55 @@ export default function Visual({ v }: { v: V }) {
           <Caption text={v.caption} />
         </div>
       )
+
+    case 'uml': {
+      const n = v.children?.length ?? 0
+      return (
+        <div className="w-full">
+          <div className="flex flex-col items-center">
+            {v.parent && (
+              <>
+                <UmlBox c={v.parent} />
+                {n > 0 && (
+                  <>
+                    {/* Mũi tên rỗng hướng lên lớp cha — ký hiệu kế thừa trong UML */}
+                    <div className="flex flex-col items-center" aria-hidden>
+                      <div className="border-x-[7px] border-x-transparent border-b-[9px] border-b-ink/35" />
+                      <div
+                        className={`w-px flex-1 bg-ink/25 ${v.relation === 'implement' ? 'border-l border-dashed border-ink/35 bg-transparent' : ''}`}
+                        style={{ height: 20 }}
+                      />
+                    </div>
+                    <div className="relative w-full pt-5">
+                      <div
+                        className="absolute top-0 h-px bg-ink/25"
+                        style={{ left: `${50 / n}%`, right: `${50 / n}%` }}
+                        aria-hidden
+                      />
+                      <div className="flex items-start justify-center gap-4">
+                        {v.children!.map((c, i) => (
+                          <div key={i} className="flex flex-1 flex-col items-center">
+                            <div className="w-px bg-ink/25" style={{ height: 18 }} aria-hidden />
+                            <UmlBox c={c} />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+
+            {!v.parent && (
+              <div className="flex flex-wrap items-start justify-center gap-4">
+                {v.children?.map((c, i) => <UmlBox key={i} c={c} />)}
+              </div>
+            )}
+          </div>
+          <Caption text={v.caption} />
+        </div>
+      )
+    }
 
     case 'compare': {
       const tone = (t?: string) =>

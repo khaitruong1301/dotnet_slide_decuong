@@ -61,6 +61,7 @@ const buoi0X: Buoi = {
 | `func` | Tham số → hộp hàm → giá trị trả về | Hàm |
 | `timeline` | Các bước đánh số theo chiều dọc | Quy trình, thứ tự chạy |
 | `compare` | 2–4 cột đối chiếu, tô màu `good` / `bad` / `plain` | So sánh hai cách làm |
+| `uml` | Sơ đồ lớp: hộp ba ngăn (tên · thuộc tính · phương thức), có mũi tên kế thừa | OOP — kế thừa, interface, abstract |
 
 `flow` hỗ trợ nhánh lồng nhau — dùng cho chuỗi `else if`:
 
@@ -72,6 +73,11 @@ const buoi0X: Buoi = {
 ```
 
 Các `kind` của node: `start` `end` `io` `process` `decision` `note`.
+
+`uml` nhận `parent` (lớp cha hoặc interface) và `children` (các lớp con xếp thành hàng),
+`relation` là `'inherit'` hay `'implement'`. Đặt `stereotype: 'interface'` hoặc
+`'abstract'` để hộp đổi sang viền đứt màu xanh. Bỏ `parent` thì chỉ vẽ một hàng hộp
+rời — dùng khi mô tả class độc lập.
 
 ## Bài tập
 
@@ -183,6 +189,6 @@ sẽ lộ ra ngay ở bước này chứ không phải lúc chạy.
 
 ## Thêm một buổi mới
 
-1. Tạo `src/data/buoi09.ts` theo đúng khuôn của các file có sẵn.
+1. Tạo `src/data/buoi16.ts` theo đúng khuôn của các file có sẵn.
 2. Import và thêm vào mảng `BUOI_LIST` trong `src/data/index.ts`.
 3. Không cần đụng vào sidebar hay router — cả hai tự sinh từ `BUOI_LIST`.

@@ -9,6 +9,15 @@ export interface FlowStep {
   branches?: { label: string; steps: FlowStep[] }[]
 }
 
+/** Một lớp trong sơ đồ lớp UML. */
+export interface UmlClass {
+  name: string
+  /** Nhãn phía trên tên lớp: «interface», «abstract», … */
+  stereotype?: string
+  attrs?: string[]
+  methods?: string[]
+}
+
 /** Các sơ đồ trực quan dựng sẵn, mô tả bằng dữ liệu để tái sử dụng trong slide lẫn bài học. */
 export type Visual =
   | { kind: 'flow'; caption?: string; steps: FlowStep[] }
@@ -20,6 +29,14 @@ export type Visual =
   | { kind: 'func'; caption?: string; name: string; params: string[]; body: string; returns: string }
   | { kind: 'timeline'; caption?: string; items: { label: string; text: string }[] }
   | { kind: 'compare'; caption?: string; columns: { title: string; tone?: 'good' | 'bad' | 'plain'; items: string[] }[] }
+  | {
+      kind: 'uml'
+      caption?: string
+      /** Lớp cha hoặc interface đặt phía trên, các lớp con xếp thành hàng bên dưới. */
+      parent?: UmlClass
+      children?: UmlClass[]
+      relation?: 'inherit' | 'implement'
+    }
 
 export interface CodeSample {
   lang?: string
