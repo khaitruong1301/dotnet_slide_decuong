@@ -22,6 +22,24 @@ chính, diễn đạt ngắn, và bổ sung lưu đồ / sơ đồ trực quan c
 
 76 bài tập, chia ba mức Cơ bản / Trung bình / Nâng cao.
 
+## Truy cập
+
+Trang có cổng nhập token ở đầu. Token hiện tại: `Cybersoft@123`.
+
+Đây là lớp chặn phía trình duyệt để hạn chế người ngoài vào nhầm, **không phải bảo mật
+thật** — token nằm trong mã nguồn tải về máy người xem nên ai mở DevTools cũng đọc được.
+Muốn bảo vệ thật thì phải kiểm tra ở phía máy chủ.
+
+Đổi token: sửa hằng `TOKEN` trong `src/components/TokenGate.tsx`.
+
+## Giao diện
+
+- **Hai theme sáng / tối**, nút chuyển nằm ở chân menu trái. Lần đầu vào trang sẽ theo
+  thiết lập của hệ điều hành, sau đó ghi nhớ lựa chọn trong `localStorage`.
+- **Xuất slide PDF**: mỗi trang buổi học có nút *Xuất slide PDF*, mở hộp thoại in của
+  trình duyệt. Bản in được định dạng riêng: khổ A4 nằm ngang, mỗi phần lý thuyết một
+  trang, luôn ra nền sáng kể cả khi màn hình đang ở theme tối.
+
 ## Chạy tại máy
 
 ```bash

@@ -20,13 +20,13 @@ const LEVEL = {
 function BlockView({ block }: { block: Block }) {
   switch (block.type) {
     case 'text':
-      return <p className="text-[15px] leading-[1.8] text-white/65">{block.text}</p>
+      return <p className="text-[15px] leading-[1.8] text-ink/65">{block.text}</p>
 
     case 'list':
       return block.ordered ? (
         <ol className="space-y-2.5">
           {block.items.map((t, i) => (
-            <li key={i} className="flex gap-3 text-[15px] text-white/65">
+            <li key={i} className="flex gap-3 text-[15px] text-ink/65">
               <span className="mt-px flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-brand-500/15 font-mono text-[11px] text-brand-300">
                 {i + 1}
               </span>
@@ -37,7 +37,7 @@ function BlockView({ block }: { block: Block }) {
       ) : (
         <ul className="space-y-2.5">
           {block.items.map((t, i) => (
-            <li key={i} className="flex gap-3 text-[15px] text-white/65">
+            <li key={i} className="flex gap-3 text-[15px] text-ink/65">
               <span className="mt-[0.65em] h-1.5 w-1.5 shrink-0 rounded-full bg-brand-400" />
               <span className="leading-[1.75]">{t}</span>
             </li>
@@ -60,27 +60,27 @@ function BlockView({ block }: { block: Block }) {
       return (
         <aside className={`rounded-xl border px-4 py-3.5 ${c.ring}`}>
           <div className={`mb-1 text-[11px] font-bold uppercase tracking-widest ${c.dot}`}>{block.title ?? c.label}</div>
-          <p className="text-[14.5px] leading-[1.75] text-white/70">{block.text}</p>
+          <p className="text-[14.5px] leading-[1.75] text-ink/70">{block.text}</p>
         </aside>
       )
     }
 
     case 'table':
       return (
-        <div className="overflow-x-auto rounded-xl border border-white/10">
+        <div className="overflow-x-auto rounded-xl border border-ink/10">
           <table className="w-full text-left text-[13.5px]">
-            <thead className="bg-white/6 text-white/55">
+            <thead className="bg-ink/6 text-ink/55">
               <tr>
                 {block.head.map((h, i) => (
                   <th key={i} className="whitespace-nowrap px-4 py-2.5 font-semibold">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/8">
+            <tbody className="divide-y divide-ink/8">
               {block.rows.map((r, i) => (
                 <tr key={i} className="align-top">
                   {r.map((c, j) => (
-                    <td key={j} className={`px-4 py-2.5 ${j === 0 ? 'whitespace-nowrap font-mono text-accent-400' : 'text-white/70'}`}>
+                    <td key={j} className={`px-4 py-2.5 ${j === 0 ? 'whitespace-nowrap font-mono text-accent-400' : 'text-ink/70'}`}>
                       {c}
                     </td>
                   ))}
@@ -102,27 +102,27 @@ function ExerciseCard({ ex, index }: { ex: Exercise; index: number }) {
           onClick={() => setDone((d) => !d)}
           aria-pressed={done}
           className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-[11px] font-bold transition ${
-            done ? 'bg-mint-400/25 text-mint-400' : 'bg-white/8 text-white/50 hover:bg-white/15'
+            done ? 'bg-mint-400/25 text-mint-400' : 'bg-ink/8 text-ink/50 hover:bg-ink/15'
           }`}
           title={done ? 'Bỏ đánh dấu' : 'Đánh dấu đã làm'}
         >
           {done ? '✓' : index + 1}
         </button>
-        <h4 className={`text-[15px] font-bold text-white ${done ? 'line-through' : ''}`}>{ex.title}</h4>
+        <h4 className={`text-[15px] font-bold text-ink ${done ? 'line-through' : ''}`}>{ex.title}</h4>
         <span className={`rounded-md px-2 py-0.5 text-[10.5px] font-semibold ${LEVEL[ex.level]}`}>{ex.level}</span>
       </div>
 
-      <p className="text-[14.5px] leading-[1.75] text-white/60">{ex.requirement}</p>
+      <p className="text-[14.5px] leading-[1.75] text-ink/60">{ex.requirement}</p>
 
       {ex.io && (
         <div className="mt-3.5 grid gap-2.5 sm:grid-cols-2">
           <div className="rounded-lg border border-accent-400/25 bg-accent-400/6 px-3 py-2">
             <div className="mb-1 text-[10px] font-bold uppercase tracking-widest text-accent-400">Input</div>
-            <pre className="whitespace-pre-wrap font-mono text-[12.5px] text-white/75">{ex.io.input}</pre>
+            <pre className="whitespace-pre-wrap font-mono text-[12.5px] text-ink/75">{ex.io.input}</pre>
           </div>
           <div className="rounded-lg border border-mint-400/25 bg-mint-400/6 px-3 py-2">
             <div className="mb-1 text-[10px] font-bold uppercase tracking-widest text-mint-400">Output</div>
-            <pre className="whitespace-pre-wrap font-mono text-[12.5px] text-white/75">{ex.io.output}</pre>
+            <pre className="whitespace-pre-wrap font-mono text-[12.5px] text-ink/75">{ex.io.output}</pre>
           </div>
         </div>
       )}
@@ -152,15 +152,15 @@ function OnThisPage({ items }: { items: { id: string; title: string }[] }) {
   }, [items])
 
   return (
-    <nav className="sticky top-8 hidden w-56 shrink-0 self-start xl:block">
-      <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-white/30">Trên trang này</div>
-      <ul className="space-y-1 border-l border-white/10">
+    <nav className="no-print sticky top-8 hidden w-56 shrink-0 self-start xl:block">
+      <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-ink/30">Trên trang này</div>
+      <ul className="space-y-1 border-l border-ink/10">
         {items.map((i) => (
           <li key={i.id}>
             <a
               href={`#${i.id}`}
               className={`-ml-px block border-l-2 py-1 pl-3.5 text-[12.5px] leading-snug transition ${
-                active === i.id ? 'border-brand-400 text-brand-300' : 'border-transparent text-white/40 hover:text-white/70'
+                active === i.id ? 'border-brand-400 text-brand-300' : 'border-transparent text-ink/40 hover:text-ink/70'
               }`}
             >
               {i.title}
@@ -182,7 +182,7 @@ export default function BuoiPage() {
 
   if (!buoi) {
     return (
-      <div className="px-8 py-20 text-center text-white/50">
+      <div className="px-8 py-20 text-center text-ink/50">
         Không tìm thấy buổi học này. <Link to="/" className="text-brand-300 underline">Về trang chủ</Link>
       </div>
     )
@@ -195,21 +195,32 @@ export default function BuoiPage() {
   return (
     <div className="mx-auto flex max-w-6xl gap-10 px-6 py-10 sm:px-10">
       <article className="min-w-0 flex-1">
-        <header className="mb-10 border-b border-white/8 pb-8">
+        <header className="mb-10 border-b border-ink/8 pb-8">
           <div className="mb-3 flex flex-wrap items-center gap-2.5 text-[11px] uppercase tracking-[0.16em]">
             <span className="rounded-full bg-brand-500/15 px-3 py-1 font-bold text-brand-300">Buổi {buoi.id}</span>
-            <span className="text-white/30">{buoi.duration}</span>
-            <span className="text-white/30">· {buoi.exercises.length} bài tập</span>
+            <span className="text-ink/30">{buoi.duration}</span>
+            <span className="text-ink/30">· {buoi.exercises.length} bài tập</span>
           </div>
 
-          <h1 className="text-3xl font-extrabold leading-tight text-white sm:text-[2.6rem]">{buoi.title}</h1>
-          <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-white/55">{buoi.subtitle}</p>
+          <h1 className="text-3xl font-extrabold leading-tight text-ink sm:text-[2.6rem]">{buoi.title}</h1>
+          <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-ink/55">{buoi.subtitle}</p>
 
-          <div className="mt-7 rounded-xl border border-white/10 bg-white/4 p-5">
-            <div className="mb-2.5 text-[11px] font-bold uppercase tracking-widest text-white/40">Sau buổi này bạn sẽ</div>
+          <button
+            onClick={() => window.print()}
+            className="no-print mt-6 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-500/20 transition hover:brightness-110"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+              <path d="M6 14h12v8H6z" />
+            </svg>
+            Xuất slide PDF
+          </button>
+
+          <div className="mt-7 rounded-xl border border-ink/10 bg-ink/4 p-5">
+            <div className="mb-2.5 text-[11px] font-bold uppercase tracking-widest text-ink/40">Sau buổi này bạn sẽ</div>
             <ul className="space-y-1.5">
               {buoi.goals.map((g, i) => (
-                <li key={i} className="flex gap-2.5 text-[14.5px] leading-relaxed text-white/70">
+                <li key={i} className="flex gap-2.5 text-[14.5px] leading-relaxed text-ink/70">
                   <span className="mt-0.5 text-mint-400">✓</span>
                   <span>{g}</span>
                 </li>
@@ -219,16 +230,16 @@ export default function BuoiPage() {
 
           <div className="mt-4 flex flex-wrap gap-1.5">
             {buoi.keywords.map((k) => (
-              <span key={k} className="rounded-md bg-white/6 px-2 py-1 font-mono text-[11px] text-white/45">{k}</span>
+              <span key={k} className="rounded-md bg-ink/6 px-2 py-1 font-mono text-[11px] text-ink/45">{k}</span>
             ))}
           </div>
         </header>
 
         {buoi.sections.map((s) => (
-          <section key={s.id} id={s.id} className="mb-14 scroll-mt-6">
-            <h2 className="group mb-5 flex items-baseline gap-2 text-[22px] font-bold text-white">
+          <section key={s.id} id={s.id} className="print-page mb-14 scroll-mt-6">
+            <h2 className="group mb-5 flex items-baseline gap-2 text-[22px] font-bold text-ink">
               {s.title}
-              <a href={`#${s.id}`} className="text-[15px] text-brand-400/0 transition group-hover:text-brand-400/70" aria-label="Liên kết tới mục này">
+              <a href={`#${s.id}`} className="no-print text-[15px] text-brand-400/0 transition group-hover:text-brand-400/70" aria-label="Liên kết tới mục này">
                 #
               </a>
             </h2>
@@ -240,9 +251,9 @@ export default function BuoiPage() {
           </section>
         ))}
 
-        <section id="bai-tap" className="scroll-mt-6 border-t border-white/8 pt-9">
-          <h2 className="mb-1.5 text-[22px] font-bold text-white">Bài tập về nhà</h2>
-          <p className="mb-6 text-[14.5px] text-white/45">
+        <section id="bai-tap" className="print-page scroll-mt-6 border-t border-ink/8 pt-9">
+          <h2 className="mb-1.5 text-[22px] font-bold text-ink">Bài tập về nhà</h2>
+          <p className="mb-6 text-[14.5px] text-ink/45">
             {buoi.exercises.length} bài — làm từ Cơ bản lên Nâng cao. Bấm vào số thứ tự để đánh dấu đã làm xong.
           </p>
           <ul className="space-y-3.5">
@@ -252,17 +263,17 @@ export default function BuoiPage() {
           </ul>
         </section>
 
-        <nav className="mt-12 flex gap-3 border-t border-white/8 pt-7">
+        <nav className="no-print mt-12 flex gap-3 border-t border-ink/8 pt-7">
           {prev && (
             <Link to={`/buoi/${prev.slug}`} className="card flex-1 p-4 transition hover:border-brand-400/40">
-              <div className="text-[11px] uppercase tracking-widest text-white/30">← Buổi {prev.id}</div>
-              <div className="mt-1 text-[14px] font-semibold text-white/80">{prev.title}</div>
+              <div className="text-[11px] uppercase tracking-widest text-ink/30">← Buổi {prev.id}</div>
+              <div className="mt-1 text-[14px] font-semibold text-ink/80">{prev.title}</div>
             </Link>
           )}
           {next && (
             <Link to={`/buoi/${next.slug}`} className="card flex-1 p-4 text-right transition hover:border-brand-400/40">
-              <div className="text-[11px] uppercase tracking-widest text-white/30">Buổi {next.id} →</div>
-              <div className="mt-1 text-[14px] font-semibold text-white/80">{next.title}</div>
+              <div className="text-[11px] uppercase tracking-widest text-ink/30">Buổi {next.id} →</div>
+              <div className="mt-1 text-[14px] font-semibold text-ink/80">{next.title}</div>
             </Link>
           )}
         </nav>

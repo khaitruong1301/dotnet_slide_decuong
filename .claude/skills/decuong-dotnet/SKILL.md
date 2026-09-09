@@ -98,6 +98,27 @@ Nội dung hiện tại được viết lại từ slide gốc theo mấy nguyê
 - **Chỉ ra cái bẫy.** Chia số nguyên `9/5`, `=` với `==`, chuỗi bất biến, đọc khoá
   không tồn tại trong Dictionary — dùng `callout` tone `warn`.
 
+## Theme sáng / tối
+
+Màu chạy qua biến CSS trong `src/index.css`. Quy ước:
+
+- `text-ink/65`, `bg-ink/5`, `border-ink/10` — `--ink` tự lật giữa trắng và gần-đen
+  theo theme, nên **không bao giờ viết `text-white/65` hay `bg-white/5` nữa**.
+- `bg-page` (nền trang), `bg-panel` (nền menu, thẻ nổi).
+- `brand` / `accent` / `mint` / `amber` / `rose` đều đã có biến riêng cho từng theme.
+- Ngoại lệ giữ nguyên `text-white`: chữ nằm trên nền brand đặc (logo, badge số buổi,
+  nút gradient) — nền đó không đổi theo theme.
+- `src/components/CodeBlock.tsx` cố ý giữ nền tối ở cả hai theme, nên bên trong nó
+  vẫn dùng `white/` bình thường. Đừng sed nhầm file này.
+
+## Xuất slide PDF
+
+Nút *Xuất slide PDF* gọi `window.print()`; định dạng nằm trong khối `@media print`
+ở cuối `src/index.css`. Khi thêm khối giao diện mới:
+
+- Thêm class `no-print` cho những thứ không nên in (điều hướng, nút bấm, mục lục).
+- Thêm class `print-page` cho khối muốn bắt đầu ở một trang mới.
+
 ## Sau khi sửa
 
 ```bash
