@@ -48,6 +48,18 @@ export interface TraceStep {
   output?: string[]
   /** Một câu giải thích chuyện gì vừa xảy ra ở bước này. */
   note?: string
+  /**
+   * Chỉ số đang được chạm tới trong các biến dạng mảng, để tô sáng đúng ô đó.
+   * Ví dụ { nums: [0, 1] } làm nổi hai ô đầu của mảng nums.
+   */
+  focus?: Record<string, number[]>
+  /**
+   * Các ô nhớ trên heap: địa chỉ giả lập → nội dung.
+   * Dùng để thấy rõ hai biến cùng trỏ một vùng nhớ (tham chiếu) hay mỗi biến một bản (tham trị).
+   */
+  heap?: Record<string, string>
+  /** Biến nào đang trỏ tới địa chỉ nào — vẽ mũi tên từ biến sang ô nhớ tương ứng. */
+  refs?: Record<string, string>
 }
 
 export interface CodeSample {

@@ -145,7 +145,24 @@ mario.Mau = 100;
 mario.SatThuong = 20;
 mario.GioiThieu();          // Mario — máu 100, sát thương 20`,
             note: 'Tên class viết PascalCase. Mỗi đối tượng tạo bằng new có vùng nhớ riêng, sửa mario không ảnh hưởng luigi.',
-          },
+          
+            trace: [
+
+              { line: 16, vars: { mario: '→ 0x200' }, refs: { mario: '0x200' },
+                heap: { '0x200': 'NhanVat { Ten: null, Mau: 0, SatThuong: 0 }' },
+                note: 'new cấp phát một vùng nhớ trên heap. Mọi thuộc tính nhận giá trị mặc định: string là null, int là 0.' },
+              { line: 17, vars: { mario: '→ 0x200' }, refs: { mario: '0x200' },
+                heap: { '0x200': 'NhanVat { Ten: "Mario", Mau: 0, SatThuong: 0 }' },
+                note: 'Biến mario trên stack không đổi — nó vẫn giữ đúng địa chỉ 0x200. Thứ thay đổi là nội dung trên heap.' },
+              { line: 18, vars: { mario: '→ 0x200' }, refs: { mario: '0x200' },
+                heap: { '0x200': 'NhanVat { Ten: "Mario", Mau: 100, SatThuong: 0 }' } },
+              { line: 19, vars: { mario: '→ 0x200' }, refs: { mario: '0x200' },
+                heap: { '0x200': 'NhanVat { Ten: "Mario", Mau: 100, SatThuong: 20 }' } },
+              { line: 11, vars: { mario: '→ 0x200' }, refs: { mario: '0x200' },
+                heap: { '0x200': 'NhanVat { Ten: "Mario", Mau: 100, SatThuong: 20 }' },
+                output: ['Mario — máu 100, sát thương 20'],
+                note: 'Bên trong phương thức, viết Ten là đang đọc thuộc tính của chính đối tượng đang gọi.' },
+            ],},
         },
         {
           type: 'callout',
@@ -166,7 +183,26 @@ NhanVat a = new NhanVat { Ten = "Mario" };
 NhanVat b = a;    // sao chép THAM CHIẾU, cùng trỏ một đối tượng
 b.Ten = "Luigi";
 Console.WriteLine(a.Ten);    // Luigi — a đổi theo!`,
-          },
+          
+            trace: [
+
+              { line: 1, vars: { x: '5' }, note: 'int là kiểu GIÁ TRỊ — nằm thẳng trên stack, không có địa chỉ heap nào.' },
+              { line: 2, vars: { x: '5', y: '5' }, note: 'Gán y = x tạo ra một BẢN SAO. Hai ô nhớ hoàn toàn riêng biệt.' },
+              { line: 3, vars: { x: '5', y: '99' }, note: 'Sửa y không đụng gì tới x.' },
+              { line: 4, vars: { x: '5', y: '99' }, output: ['5'], note: 'x vẫn là 5 — đúng như trực giác.' },
+              { line: 6, vars: { x: '5', y: '99', a: '→ 0x300' }, refs: { a: '0x300' },
+                heap: { '0x300': 'NhanVat { Ten: "Mario" }' },
+                output: ['5'], note: 'Class là kiểu THAM CHIẾU — biến a chỉ giữ địa chỉ, dữ liệu nằm trên heap.' },
+              { line: 7, vars: { x: '5', y: '99', a: '→ 0x300', b: '→ 0x300' }, refs: { a: '0x300', b: '0x300' },
+                heap: { '0x300': 'NhanVat { Ten: "Mario" }' },
+                output: ['5'], note: 'Gán b = a chỉ sao chép ĐỊA CHỈ chứ không sao chép đối tượng. Giờ hai biến cùng trỏ về một chỗ — để ý nhãn đỏ trên ô nhớ.' },
+              { line: 8, vars: { x: '5', y: '99', a: '→ 0x300', b: '→ 0x300' }, refs: { a: '0x300', b: '0x300' },
+                heap: { '0x300': 'NhanVat { Ten: "Luigi" }' },
+                output: ['5'], note: 'Sửa qua b là sửa thẳng vào ô nhớ 0x300 — cũng chính là ô mà a đang trỏ tới.' },
+              { line: 9, vars: { x: '5', y: '99', a: '→ 0x300', b: '→ 0x300' }, refs: { a: '0x300', b: '0x300' },
+                heap: { '0x300': 'NhanVat { Ten: "Luigi" }' },
+                output: ['5', 'Luigi'], note: 'a.Ten cũng thành Luigi dù ta không hề chạm vào a. Đây là khác biệt cốt lõi giữa tham trị và tham chiếu.' },
+            ],},
         },
       ],
     },
@@ -221,7 +257,28 @@ tk.NapTien(500000);
 // tk.soDu = 1000000;   // LỖI biên dịch — private, không sửa trực tiếp được
 Console.WriteLine(tk.XemSoDu());`,
             note: 'Nhờ private, mọi thay đổi số dư buộc phải đi qua NapTien — nơi ta đặt được luật kiểm tra.',
-          },
+          
+            trace: [
+
+              { line: 16, vars: { tk: '→ 0x400' }, refs: { tk: '0x400' },
+                heap: { '0x400': 'TaiKhoan { TenChuThe: null, soDu: 0, maPin: null }' },
+                note: 'Đối tượng vừa tạo, số dư bằng 0.' },
+              { line: 17, vars: { tk: '→ 0x400' }, refs: { tk: '0x400' },
+                heap: { '0x400': 'TaiKhoan { TenChuThe: null, soDu: 0, maPin: null }' },
+                note: 'Gọi NapTien(500000) — bên ngoài buộc phải đi qua cửa này.' },
+              { line: 9, vars: { soTien: '500000' },
+                heap: { '0x400': 'TaiKhoan { soDu: 0 }' },
+                note: '500000 > 0 nên vượt qua chốt kiểm tra. Nếu truyền số âm thì hàm return luôn, số dư không đổi.' },
+              { line: 10, vars: { soTien: '500000' },
+                heap: { '0x400': 'TaiKhoan { soDu: 500000 }' },
+                note: 'Số dư chỉ đổi ở đúng một chỗ duy nhất trong toàn bộ chương trình.' },
+              { line: 18, vars: { tk: '→ 0x400' }, refs: { tk: '0x400' },
+                heap: { '0x400': 'TaiKhoan { soDu: 500000 }' },
+                note: 'Dòng tk.soDu = 1000000 nếu viết ra sẽ lỗi biên dịch — private chặn từ lúc build chứ không đợi tới lúc chạy.' },
+              { line: 19, vars: { tk: '→ 0x400' }, refs: { tk: '0x400' },
+                heap: { '0x400': 'TaiKhoan { soDu: 500000 }' },
+                output: ['500000'], note: 'Muốn đọc thì phải qua phương thức công khai XemSoDu().' },
+            ],},
         },
       ],
     },

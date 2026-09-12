@@ -56,7 +56,19 @@ const buoi14: Buoi = {
     dv.GioiThieu();
     Console.WriteLine(dv.KeuNhuThe());  // Gâu gâu`,
                 note: 'Phương thức abstract không cần virtual — nó đã ngầm hiểu là phải override.',
-              },
+              
+            trace: [
+
+              { line: 25, vars: {}, note: 'Dòng này nếu bỏ comment sẽ LỖI BIÊN DỊCH: abstract class chỉ là khuôn mẫu chưa hoàn thiện, không tạo đối tượng trực tiếp được.' },
+              { line: 26, vars: {}, note: 'Nhưng khai báo biến kiểu DongVat rồi gán đối tượng lớp con thì hoàn toàn hợp lệ.' },
+              { line: 15, vars: { ten: '"Mực"' }, heap: { '0xE00': 'Cho { ten: null }' }, note: 'Constructor của Cho gọi base(ten) lên lớp cha.' },
+              { line: 4, vars: { ten: '"Mực"' }, heap: { '0xE00': 'Cho { ten: "Mực" }' }, note: 'Abstract class vẫn CÓ constructor, dù không tạo đối tượng trực tiếp từ nó được.' },
+              { line: 27, vars: { 'dv (kiểu thật)': 'Cho' }, refs: { dv: '0xE00' }, heap: { '0xE00': 'Cho { ten: "Mực" }' }, note: 'Gọi GioiThieu().' },
+              { line: 7, vars: { 'dv (kiểu thật)': 'Cho' }, heap: { '0xE00': 'Cho { ten: "Mực" }' }, output: ['Tôi là Mực'], note: 'Phương thức này lớp cha đã cài đặt sẵn — lớp Cho không viết lại dòng nào mà vẫn dùng được.' },
+              { line: 28, vars: { 'dv (kiểu thật)': 'Cho' }, output: ['Tôi là Mực'], note: 'Gọi KeuNhuThe() — thứ mà lớp cha chỉ khai báo chứ không cài đặt.' },
+              { line: 16, vars: { 'dv (kiểu thật)': 'Cho', 'trả về': '"Gâu gâu"' }, output: ['Tôi là Mực'], note: 'Chạy bản override của Cho. Lớp con nào quên override thì lỗi biên dịch ngay — abstract class vừa CHO sẵn vừa BẮT BUỘC, khác interface ở chỗ đó.' },
+              { line: 28, vars: {}, output: ['Tôi là Mực', 'Gâu gâu'] },
+            ],},
             },
             {
               type: 'table',
@@ -143,7 +155,15 @@ const buoi14: Buoi = {
     Console.WriteLine(LayLonNhat(3, 7));         // 7
     Console.WriteLine(LayLonNhat("an", "binh")); // binh`,
                 note: 'where T : ... là ràng buộc. where T : class buộc T là kiểu tham chiếu; where T : new() buộc T phải có constructor rỗng.',
-              },
+              
+            trace: [
+
+              { line: 2, vars: {}, note: 'T là chỗ trống, người dùng điền kiểu vào lúc gọi.' },
+              { line: 4, vars: { 'T': 'string' }, refs: { khoSach: '0xF00' }, heap: { '0xF00': 'Kho<string> { danhSach: [] }' }, note: 'Tạo Kho<string> — mọi chữ T trong class giờ được thay bằng string.' },
+              { line: 6, vars: { 'T': 'string', item: '"Clean Code"' }, heap: { '0xF00': 'Kho<string> { danhSach: [Clean Code] }' }, note: 'Them nhận đúng kiểu string. Truyền số vào đây là lỗi biên dịch chứ không phải lỗi lúc chạy.' },
+              { line: 4, vars: { 'T': 'int' }, refs: { khoSach: '0xF00', khoSo: '0xF10' }, heap: { '0xF00': 'Kho<string> { danhSach: [Clean Code] }', '0xF10': 'Kho<int> { danhSach: [] }' }, note: 'Cùng một class, lần này T là int. Hai kho hoàn toàn độc lập, mỗi cái khoá chặt một kiểu.' },
+              { line: 6, vars: { 'T': 'int', item: '42' }, heap: { '0xF00': 'Kho<string> { danhSach: [Clean Code] }', '0xF10': 'Kho<int> { danhSach: [42] }' }, note: 'Viết một lần, dùng cho mọi kiểu, mà vẫn giữ nguyên an toàn kiểu — đây là lý do List<T> thay thế ArrayList.' },
+            ],},
             },
             {
               type: 'callout',
@@ -177,7 +197,14 @@ var b = Activator.CreateInstance(t, 5) as HinhTron;
 // Dạng generic, gọn hơn nhưng cần constructor không tham số
 var c = Activator.CreateInstance<HinhChuNhat>();`,
             note: 'CreateInstance(type, args) truyền tham số vào constructor. Sai số lượng hoặc sai kiểu tham số sẽ lỗi lúc chạy chứ không lỗi lúc biên dịch.',
-          },
+          
+            trace: [
+
+              { line: 4, vars: { a: '→ 0x1000' }, refs: { a: '0x1000' }, heap: { '0x1000': 'HinhTron { banKinh: 5 }' }, note: 'Cách thường: gõ thẳng tên class, kiểu được chốt ngay lúc biên dịch.' },
+              { line: 7, vars: { a: '→ 0x1000', t: 'typeof(HinhTron)' }, refs: { a: '0x1000' }, heap: { '0x1000': 'HinhTron { banKinh: 5 }' }, note: 'Type là mô tả về một kiểu, bản thân nó chưa phải đối tượng. Trong thực tế t thường lấy từ chuỗi đọc trong file cấu hình.' },
+              { line: 8, vars: { a: '→ 0x1000', t: 'typeof(HinhTron)', b: '→ 0x1010' }, refs: { a: '0x1000', b: '0x1010' }, heap: { '0x1000': 'HinhTron { banKinh: 5 }', '0x1010': 'HinhTron { banKinh: 5 }' }, note: 'Activator dựng đối tượng từ Type và truyền 5 vào constructor. Sai số lượng hoặc sai kiểu tham số thì lỗi LÚC CHẠY chứ không phải lúc biên dịch — đó là cái giá phải trả cho sự linh hoạt.' },
+              { line: 11, vars: { b: '→ 0x1010', c: '→ 0x1020' }, refs: { b: '0x1010', c: '0x1020' }, heap: { '0x1010': 'HinhTron { banKinh: 5 }', '0x1020': 'HinhChuNhat { dai: 0, rong: 0 }' }, note: 'Dạng generic gọn hơn nhưng không truyền được tham số nên class bắt buộc phải có constructor rỗng. Đây chính là cơ chế phía sau một DI container.' },
+            ],},
         },
         {
           type: 'callout',

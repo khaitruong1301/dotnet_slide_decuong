@@ -33,7 +33,14 @@ int soLuong = 10;
 double donGia = 25000.5;
 string tenSanPham = "Bàn phím cơ";
 bool conHang = true;`,
-          },
+          
+            trace: [
+
+              { line: 3, vars: { soLuong: '10' }, note: 'Mỗi dòng khai báo cấp một ô nhớ mới, đặt tên cho nó và gán giá trị ban đầu.' },
+              { line: 4, vars: { soLuong: '10', donGia: '25000.5' }, note: 'double chứa được phần thập phân, int thì không.' },
+              { line: 5, vars: { soLuong: '10', donGia: '25000.5', tenSanPham: '"Bàn phím cơ"' } },
+              { line: 6, vars: { soLuong: '10', donGia: '25000.5', tenSanPham: '"Bàn phím cơ"', conHang: 'true' }, note: 'Bốn biến, bốn kiểu khác nhau, mỗi biến giữ đúng một giá trị tại một thời điểm.' },
+            ],},
         },
         {
           type: 'visual',
@@ -96,7 +103,14 @@ Console.WriteLine(diemThi.HasValue);      // False
 diemThi = 8;
 Console.WriteLine(diemThi.Value);         // 8`,
             note: 'null nghĩa là chưa có giá trị — khác hoàn toàn với số 0.',
-          },
+          
+            trace: [
+
+              { line: 1, vars: { diemThi: 'null' }, note: 'Bình thường int không nhận null được. Dấu ? mở khoá điều đó.' },
+              { line: 2, vars: { diemThi: 'null' }, output: ['False'], note: 'HasValue cho biết bên trong có gì chưa. Gọi thẳng diemThi.Value lúc này sẽ văng InvalidOperationException.' },
+              { line: 4, vars: { diemThi: '8' }, output: ['False'], note: 'Giờ mới có giá trị thật.' },
+              { line: 5, vars: { diemThi: '8' }, output: ['False', '8'], note: 'null khác hoàn toàn với số 0: 0 là "đã chấm, được 0 điểm", null là "chưa chấm".' },
+            ],},
         },
       ],
     },
@@ -219,7 +233,15 @@ if (giaTri is string s)          // is: kiểm tra kiểu, gán luôn vào s
 
 string t = giaTri as string;     // as: ép kiểu an toàn, thất bại trả null
 Console.WriteLine(t ?? "không phải chuỗi");`,
-          },
+          
+            trace: [
+
+              { line: 1, vars: { giaTri: '"Cybersoft" (kiểu object)' }, note: 'Biến khai báo kiểu object nên C# tạm quên nó vốn là chuỗi.' },
+              { line: 3, vars: { giaTri: '"Cybersoft" (object)', s: '"Cybersoft" (string)' }, note: 'is vừa kiểm tra "có phải chuỗi không" vừa gán vào biến s nếu đúng — gộp hai việc làm một.' },
+              { line: 4, vars: { giaTri: '"Cybersoft" (object)', s: '"Cybersoft"' }, output: ['9'], note: 'Nhờ có s kiểu string mới gọi được .Length. Gọi giaTri.Length sẽ lỗi vì object không có thuộc tính đó.' },
+              { line: 6, vars: { giaTri: '"Cybersoft" (object)', t: '"Cybersoft"' }, output: ['9'], note: 'as ép kiểu an toàn: đúng kiểu thì trả giá trị, sai kiểu thì trả null chứ không ném lỗi.' },
+              { line: 7, vars: { t: '"Cybersoft"' }, output: ['9', 'Cybersoft'], note: 't khác null nên ?? lấy luôn vế trái. Nếu giaTri vốn là số thì t sẽ là null và dòng này in "không phải chuỗi".' },
+            ],},
         },
       ],
     },

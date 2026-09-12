@@ -97,7 +97,17 @@ do
     chon = Convert.ToInt32(Console.ReadLine());
 } while (chon != 0);`,
             note: 'do…while luôn chạy ít nhất một lần — đúng chuẩn cho menu, vì phải hiện menu rồi mới hỏi được người dùng.',
-          },
+          
+            trace: [
+
+              { line: 1, vars: { chon: '0 (chưa gán)' }, note: 'Khác while ở chỗ: chưa kiểm tra gì đã nhảy thẳng vào thân.' },
+              { line: 4, vars: { chon: '0 (chưa gán)' }, output: ['1. Thêm  2. Sửa  0. Thoát'] },
+              { line: 6, vars: { chon: '2' }, output: ['1. Thêm  2. Sửa  0. Thoát', 'Chọn: 2'] },
+              { line: 7, vars: { chon: '2' }, output: ['1. Thêm  2. Sửa  0. Thoát', 'Chọn: 2'], note: 'Bây giờ mới kiểm tra: 2 != 0 đúng nên quay lại đầu thân.' },
+              { line: 4, vars: { chon: '2' }, output: ['1. Thêm  2. Sửa  0. Thoát', 'Chọn: 2', '1. Thêm  2. Sửa  0. Thoát'] },
+              { line: 6, vars: { chon: '0' }, output: ['1. Thêm  2. Sửa  0. Thoát', 'Chọn: 2', '1. Thêm  2. Sửa  0. Thoát', 'Chọn: 0'] },
+              { line: 7, vars: { chon: '0' }, output: ['1. Thêm  2. Sửa  0. Thoát', 'Chọn: 2', '1. Thêm  2. Sửa  0. Thoát', 'Chọn: 0'], note: '0 != 0 sai — thoát. Menu đã kịp hiện ra trước khi hỏi, đó là lý do menu phải dùng do…while chứ không dùng while.' },
+            ],},
         },
         {
           type: 'visual',
@@ -152,7 +162,18 @@ while (j < 5)
     j++;
 }`,
             note: 'for gom khởi tạo, điều kiện và bước nhảy lên cùng một dòng — nhìn là biết vòng lặp chạy bao nhiêu lượt.',
-          },
+          
+            trace: [
+
+              { line: 1, vars: { i: '0' }, note: 'Phần khởi tạo trong for chỉ chạy một lần.' },
+              { line: 3, vars: { i: '0' }, output: ['0'] },
+              { line: 1, vars: { i: '1' }, output: ['0'], note: 'Hết thân thì quay lại dòng 1 chạy i++ rồi kiểm tra lại — cả ba việc gói gọn trên một dòng.' },
+              { line: 3, vars: { i: '1' }, output: ['0', '1'] },
+              { line: 3, vars: { i: '4' }, output: ['0', '1', '2', '3', '4'], note: 'Bỏ qua các lượt giữa cho gọn.' },
+              { line: 1, vars: { i: '5' }, output: ['0', '1', '2', '3', '4'], note: '5 < 5 sai, thoát for.' },
+              { line: 7, vars: { i: '(đã hết phạm vi)', j: '0' }, output: ['0', '1', '2', '3', '4'], note: 'Biến i khai báo trong for nên ra khỏi vòng lặp là không dùng được nữa. Biến j thì khai báo bên ngoài.' },
+              { line: 11, vars: { j: '5' }, output: ['0', '1', '2', '3', '4', '0', '1', '2', '3', '4'], note: 'Vòng while cho ra kết quả y hệt — for chỉ là cách viết gọn của while.' },
+            ],},
         },
         {
           type: 'code',
@@ -166,7 +187,20 @@ for (int i = 1; i <= n; i++) giaiThua *= i;
 long gt = 1;
 for (int i = n; i >= 1; i--) gt *= i;`,
             note: 'Cùng kết quả. Chọn hướng duyệt theo cách bài toán mô tả để code dễ đọc hơn.',
-          },
+          
+            trace: [
+
+              { line: 2, vars: { n: '5', giaiThua: '1' } },
+              { line: 3, vars: { n: '5', giaiThua: '1', i: '1' }, note: 'Duyệt xuôi: 1 × 1 = 1.' },
+              { line: 3, vars: { n: '5', giaiThua: '2', i: '2' } },
+              { line: 3, vars: { n: '5', giaiThua: '6', i: '3' } },
+              { line: 3, vars: { n: '5', giaiThua: '24', i: '4' } },
+              { line: 3, vars: { n: '5', giaiThua: '120', i: '5' }, note: 'Xong 5! = 120.' },
+              { line: 6, vars: { n: '5', giaiThua: '120', gt: '1' }, note: 'Bây giờ thử duyệt ngược từ 5 về 1.' },
+              { line: 7, vars: { n: '5', giaiThua: '120', gt: '5', i: '5' }, note: 'Lần này nhân từ số lớn xuống.' },
+              { line: 7, vars: { n: '5', giaiThua: '120', gt: '20', i: '4' } },
+              { line: 7, vars: { n: '5', giaiThua: '120', gt: '120', i: '1' }, note: 'Cùng ra 120. Phép nhân có tính giao hoán nên hai hướng duyệt cho cùng kết quả — chọn hướng nào đọc dễ hơn thì dùng.' },
+            ],},
         },
         {
           type: 'table',

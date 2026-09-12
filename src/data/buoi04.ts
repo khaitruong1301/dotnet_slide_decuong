@@ -62,7 +62,17 @@ switch (thu)
     default: Console.WriteLine("Không hợp lệ"); break;
 }`,
             note: 'Thiếu break là lỗi biên dịch trong C#. default chạy khi không case nào khớp.',
-          },
+          
+            trace: [
+
+              { line: 1, vars: {}, output: ['Nhập số từ 1 đến 7: '] },
+              { line: 2, vars: { thu: '3' }, output: ['Nhập số từ 1 đến 7: 3'] },
+              { line: 4, vars: { thu: '3' }, note: 'switch so giá trị của thu lần lượt với từng case.' },
+              { line: 6, vars: { thu: '3' }, note: 'case 1 — 3 khác 1, không khớp.' },
+              { line: 7, vars: { thu: '3' }, note: 'case 2 — vẫn không khớp.' },
+              { line: 8, vars: { thu: '3' }, output: ['Nhập số từ 1 đến 7: 3', 'Tuesday'], note: 'case 3 khớp! Chạy lệnh in rồi gặp break.' },
+              { line: 14, vars: { thu: '3' }, output: ['Nhập số từ 1 đến 7: 3', 'Tuesday'], note: 'break đưa luồng nhảy thẳng ra khỏi switch, các case 4..7 và default không được xét.' },
+            ],},
         },
         {
           type: 'visual',
@@ -97,7 +107,14 @@ switch (thu)
     default:
         Console.WriteLine("Mùa khác"); break;
 }`,
-          },
+          
+            trace: [
+
+              { line: 1, vars: { thang: '12' }, note: 'Xét tháng 12.' },
+              { line: 3, vars: { thang: '12' }, note: 'Ba case 12, 1, 2 viết liền nhau nên dùng chung một khối lệnh.' },
+              { line: 4, vars: { thang: '12' }, output: ['Mùa Đông'], note: 'Không cần chép ba lần cùng một dòng in.' },
+              { line: 9, vars: { thang: '12' }, output: ['Mùa Đông'], note: 'break thoát switch.' },
+            ],},
         },
       ],
     },
@@ -126,7 +143,15 @@ switch (thu)
     _ => "Không hợp lệ"      // _ đóng vai trò default
 };
 Console.WriteLine(tenThu);`,
-          },
+          
+            trace: [
+
+              { line: 1, vars: { thu: '3' }, note: 'switch dạng biểu thức: kết quả sẽ được GÁN vào tenThu chứ không phải chạy lệnh.' },
+              { line: 3, vars: { thu: '3' }, note: 'Mẫu 1 — không khớp.' },
+              { line: 4, vars: { thu: '3' }, note: 'Mẫu 2 — không khớp.' },
+              { line: 5, vars: { thu: '3', tenThu: '"Tuesday"' }, note: 'Mẫu 3 khớp, biểu thức trả ngay giá trị "Tuesday". Không cần break.' },
+              { line: 12, vars: { thu: '3', tenThu: '"Tuesday"' }, output: ['Tuesday'], note: 'So với switch case ở trên: cùng kết quả nhưng ngắn hơn một nửa.' },
+            ],},
         },
         {
           type: 'code',
@@ -141,7 +166,14 @@ Console.WriteLine(tenThu);`,
     _                => 'F'
 };`,
             note: 'Các mẫu được xét từ trên xuống, nên viết mốc cao trước. and / or / not dùng để ghép mẫu.',
-          },
+          
+            trace: [
+
+              { line: 1, vars: { diem: '85' }, note: 'Xét điểm 85.' },
+              { line: 3, vars: { diem: '85' }, note: 'Mẫu >= 90 and <= 100 — 85 không thoả.' },
+              { line: 4, vars: { diem: '85', xepLoai: "'B'" }, note: 'Mẫu >= 80 thoả — trả về B và dừng ngay.' },
+              { line: 8, vars: { diem: '85', xepLoai: "'B'" }, note: 'Các mẫu >= 70, >= 60 phía dưới không được xét nữa. Vì thế PHẢI viết mốc cao trước, viết ngược lại là mọi điểm đều rơi vào mẫu đầu tiên.' },
+            ],},
         },
         {
           type: 'table',
@@ -173,7 +205,14 @@ string ketQua2;
 if (so % 2 == 0) ketQua2 = "Chẵn";
 else             ketQua2 = "Lẻ";`,
             note: 'Chỉ dùng khi cả hai nhánh đều ngắn. Lồng ba ngôi nhiều tầng là code khó đọc.',
-          },
+          
+            trace: [
+
+              { line: 2, vars: { so: '7', ketQua: '"Lẻ"' }, note: '7 % 2 = 1 nên điều kiện sai, lấy vế sau dấu hai chấm.' },
+              { line: 5, vars: { so: '7', ketQua: '"Lẻ"', ketQua2: 'null' }, note: 'Khai báo biến nhưng chưa gán.' },
+              { line: 6, vars: { so: '7', ketQua: '"Lẻ"', ketQua2: 'null' }, note: 'Điều kiện sai, bỏ qua nhánh này.' },
+              { line: 7, vars: { so: '7', ketQua: '"Lẻ"', ketQua2: '"Lẻ"' }, note: 'Ba dòng if/else cho ra đúng kết quả như một dòng ba ngôi phía trên.' },
+            ],},
         },
         {
           type: 'code',
@@ -186,7 +225,15 @@ ten ??= "Khách";                    // chỉ gán khi ten đang null
 
 int? diem = null;
 Console.WriteLine(diem?.ToString() ?? "chưa có điểm");`,
-          },
+          
+            trace: [
+
+              { line: 1, vars: { ten: 'null' }, note: 'ten chưa có giá trị.' },
+              { line: 3, vars: { ten: 'null', hienThi: '"Khách"' }, note: 'Toán tử ?? thấy vế trái là null nên lấy vế phải.' },
+              { line: 4, vars: { ten: '"Khách"', hienThi: '"Khách"' }, note: '??= chỉ gán khi biến đang null — lần chạy thứ hai sẽ không ghi đè nữa.' },
+              { line: 6, vars: { ten: '"Khách"', hienThi: '"Khách"', diem: 'null' } },
+              { line: 7, vars: { ten: '"Khách"', hienThi: '"Khách"', diem: 'null' }, output: ['chưa có điểm'], note: 'diem?.ToString() thấy diem null nên không gọi ToString mà trả về null luôn, rồi ?? đổi thành "chưa có điểm". Không có dấu ? thì dòng này văng NullReferenceException.' },
+            ],},
         },
         {
           type: 'callout',

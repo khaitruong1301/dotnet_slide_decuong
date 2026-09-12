@@ -87,7 +87,11 @@ dotnet publish -c Release -r osx-x64 --self-contained   # macOS`,
             code: `// Mỗi câu lệnh kết thúc bằng dấu chấm phẩy
 Console.WriteLine("Xin chào Cybersoft!");`,
             note: 'Từ .NET 6, Program.cs dùng top-level statements: không cần khai báo class Program hay hàm Main.',
-          },
+          
+            trace: [
+
+              { line: 2, vars: {}, output: ['Xin chào Cybersoft!'], note: 'Chương trình chỉ có một câu lệnh. Từ .NET 6 không cần khai báo class Program hay hàm Main nữa — gõ thẳng lệnh là chạy.' },
+            ],},
         },
         {
           type: 'table',

@@ -42,7 +42,18 @@ const buoi13: Buoi = {
     }
     Console.WriteLine($"Tổng quỹ lương: {tongQuyLuong:N0} đ");`,
                 note: 'Thêm loại nhân viên thứ tư sau này? Chỉ cần viết class mới, vòng lặp trên không phải sửa một chữ nào.',
-              },
+              
+            trace: [
+
+              { line: 6, vars: { danhSach: '[VanPhong(An), SanXuat(Bình), KinhDoanh(Cường)]' }, note: 'List khai báo kiểu NhanVien nhưng chứa được cả ba loại con — nhờ kế thừa.' },
+              { line: 9, vars: { tongQuyLuong: '0', 'nv (kiểu thật)': 'NhanVienVanPhong' }, focus: { danhSach: [0] } },
+              { line: 11, vars: { tongQuyLuong: '0', 'nv (kiểu thật)': 'NhanVienVanPhong' }, output: ['An: 12.000.000 đ'], focus: { danhSach: [0] }, note: 'C# tra kiểu THẬT của đối tượng rồi chạy đúng bản override của nó.' },
+              { line: 12, vars: { tongQuyLuong: '12000000', 'nv (kiểu thật)': 'NhanVienVanPhong' }, output: ['An: 12.000.000 đ'], focus: { danhSach: [0] } },
+              { line: 11, vars: { tongQuyLuong: '12000000', 'nv (kiểu thật)': 'NhanVienSanXuat' }, output: ['An: 12.000.000 đ', 'Bình: 4.500.000 đ'], focus: { danhSach: [1] }, note: 'Vẫn là dòng code đó, nhưng lần này chạy bản của NhanVienSanXuat: 300 × 15.000.' },
+              { line: 12, vars: { tongQuyLuong: '16500000', 'nv (kiểu thật)': 'NhanVienSanXuat' }, output: ['An: 12.000.000 đ', 'Bình: 4.500.000 đ'], focus: { danhSach: [1] } },
+              { line: 12, vars: { tongQuyLuong: '25500000', 'nv (kiểu thật)': 'NhanVienKinhDoanh' }, output: ['An: 12.000.000 đ', 'Bình: 4.500.000 đ', 'Cường: 9.000.000 đ'], focus: { danhSach: [2] }, note: 'Bản kinh doanh: 5.000.000 + 5% của 80 triệu.' },
+              { line: 14, vars: { tongQuyLuong: '25500000' }, output: ['An: 12.000.000 đ', 'Bình: 4.500.000 đ', 'Cường: 9.000.000 đ', 'Tổng quỹ lương: 25.500.000 đ'], note: 'Thêm loại nhân viên thứ tư sau này? Vòng lặp này không phải sửa một chữ — đó chính là giá trị của đa hình.' },
+            ],},
             },
             {
               type: 'visual',
@@ -121,7 +132,16 @@ const buoi13: Buoi = {
         public string MoTa() => $"Hình chữ nhật {dai} x {rong}";
     }`,
                 note: 'Tên interface theo quy ước bắt đầu bằng chữ I hoa. Thiếu một phương thức là lỗi biên dịch ngay.',
-              },
+              
+            trace: [
+
+              { line: 3, vars: {}, note: 'Interface chỉ KHAI BÁO chữ ký, không có thân hàm — nó là bản hợp đồng chứ không phải code chạy được.' },
+              { line: 8, vars: {}, note: 'HinhTron ký vào hợp đồng bằng dấu :. Từ đây nó buộc phải cài đặt đủ cả ba thành phần, thiếu một cái là lỗi biên dịch.' },
+              { line: 11, vars: { banKinh: '5' }, refs: { t: '0xD00' }, heap: { '0xD00': 'HinhTron { banKinh: 5 }' }, note: 'Tạo hình tròn bán kính 5.' },
+              { line: 14, vars: { banKinh: '5', 'trả về': '31.42' }, heap: { '0xD00': 'HinhTron { banKinh: 5 }' }, note: 'Chu vi = 2πr. Hình tròn tính bằng bán kính.' },
+              { line: 22, vars: { dai: '4', rong: '6' }, refs: { t: '0xD00', cn: '0xD10' }, heap: { '0xD00': 'HinhTron { banKinh: 5 }', '0xD10': 'HinhChuNhat { dai: 4, rong: 6 }' }, note: 'HinhChuNhat cũng ký cùng hợp đồng nhưng dữ liệu bên trong khác hẳn — hai cạnh thay vì một bán kính.' },
+              { line: 24, vars: { dai: '4', rong: '6', 'trả về': '20' }, heap: { '0xD10': 'HinhChuNhat { dai: 4, rong: 6 }' }, note: 'Cùng tên phương thức TinhChuVi nhưng công thức hoàn toàn khác. Đây là lý do dùng interface thay vì kế thừa: hai lớp không chia sẻ dữ liệu chung nào.' },
+            ],},
             },
             {
               type: 'code',
@@ -142,7 +162,17 @@ const buoi13: Buoi = {
             Console.WriteLine("   Đây là hình tròn, không có cạnh");
     }`,
                 note: 'Một class cài đặt được nhiều interface cùng lúc: class A : IHinhHoc, ISoSanh, IVeDuoc — đây là cách C# bù cho việc không có đa kế thừa class.',
-              },
+              
+            trace: [
+
+              { line: 5, vars: { danhSachHinh: '[HinhTron, HinhChuNhat]' }, note: 'List khai báo kiểu interface nên chứa được mọi lớp đã ký hợp đồng đó.' },
+              { line: 7, vars: { 'h (kiểu khai báo)': 'IHinhHoc', 'h (kiểu thật)': 'HinhTron' }, focus: { danhSachHinh: [0] } },
+              { line: 9, vars: { 'h (kiểu thật)': 'HinhTron' }, output: ['Hình tròn bán kính 5: chu vi 31.42, diện tích 78.54'], focus: { danhSachHinh: [0] }, note: 'Gọi qua biến kiểu interface nhưng chạy đúng bản cài đặt của HinhTron.' },
+              { line: 12, vars: { 'h (kiểu thật)': 'HinhTron', ht: '→ cùng đối tượng' }, output: ['Hình tròn bán kính 5: chu vi 31.42, diện tích 78.54'], focus: { danhSachHinh: [0] }, note: 'is vừa kiểm tra kiểu vừa gán vào biến ht nếu đúng — an toàn hơn ép kiểu thẳng.' },
+              { line: 13, vars: { 'h (kiểu thật)': 'HinhTron' }, output: ['Hình tròn bán kính 5: chu vi 31.42, diện tích 78.54', '   Đây là hình tròn, không có cạnh'], focus: { danhSachHinh: [0] } },
+              { line: 9, vars: { 'h (kiểu thật)': 'HinhChuNhat' }, output: ['…', 'Hình chữ nhật 4 x 6: chu vi 20, diện tích 24'], focus: { danhSachHinh: [1] }, note: 'Vòng lặp thứ hai, vẫn dòng code đó nhưng chạy bản của HinhChuNhat.' },
+              { line: 12, vars: { 'h (kiểu thật)': 'HinhChuNhat' }, output: ['…', 'Hình chữ nhật 4 x 6: chu vi 20, diện tích 24'], focus: { danhSachHinh: [1] }, note: 'Lần này is trả về false nên bỏ qua dòng in thêm.' },
+            ],},
             },
           ],
         },
@@ -179,7 +209,16 @@ if (t2 != null) Console.WriteLine("Là hình tròn");
 // 3. is kèm biến — vừa kiểm tra vừa gán, gọn và an toàn nhất
 if (h is HinhChuNhat cn)
     Console.WriteLine($"Chữ nhật {cn.TinhDienTich()}");`,
-          },
+          
+            trace: [
+
+              { line: 1, vars: { 'h (kiểu khai báo)': 'IHinhHoc', 'h (kiểu thật)': 'HinhChuNhat' }, note: 'Đối tượng thật là hình chữ nhật.' },
+              { line: 4, vars: { 'h (kiểu thật)': 'HinhChuNhat' }, note: 'Nếu bỏ comment dòng này: ép thẳng sang HinhTron sẽ văng InvalidCastException LÚC CHẠY — biên dịch vẫn qua nên rất khó phát hiện sớm.' },
+              { line: 7, vars: { 'h (kiểu thật)': 'HinhChuNhat', t2: 'null' }, note: 'as thất bại thì trả về null thay vì ném lỗi — chương trình sống sót nhưng ta phải nhớ kiểm tra null.' },
+              { line: 8, vars: { 'h (kiểu thật)': 'HinhChuNhat', t2: 'null' }, note: 't2 là null nên bỏ qua. Quên dòng kiểm tra này là dính NullReferenceException ở đâu đó xa hơn.' },
+              { line: 11, vars: { 'h (kiểu thật)': 'HinhChuNhat', cn: '→ cùng đối tượng' }, note: 'is kèm biến gộp cả hai việc: kiểm tra kiểu và gán. Không có biến null nào lang thang.' },
+              { line: 12, vars: { 'h (kiểu thật)': 'HinhChuNhat', cn: '→ cùng đối tượng' }, output: ['Chữ nhật 24'], note: 'Đây là cách nên dùng: ngắn nhất và an toàn nhất trong ba cách.' },
+            ],},
         },
         {
           type: 'code',
@@ -194,7 +233,16 @@ if (h is HinhChuNhat cn)
     _               => "Hình chưa hỗ trợ"
 };`,
             note: 'Đây là switch expression của buổi 4 dùng với mẫu kiểu — cùng một cú pháp, giờ khớp theo class thay vì theo giá trị.',
-          },
+          
+            trace: [
+
+              { line: 1, vars: { 'h (kiểu thật)': 'HinhChuNhat' }, note: 'switch expression khớp theo KIỂU chứ không theo giá trị.' },
+              { line: 3, vars: { 'h (kiểu thật)': 'HinhChuNhat' }, note: 'Mẫu HinhTron — không khớp.' },
+              { line: 4, vars: { 'h (kiểu thật)': 'HinhChuNhat', cn: '→ cùng đối tượng' }, note: 'Mẫu HinhChuNhat khớp, đồng thời gán vào biến cn để dùng ngay trong vế phải.' },
+              { line: 4, vars: { 'trả về': '"Hình chữ nhật, diện tích 24.00"' }, note: 'Trả kết quả và dừng — các mẫu phía dưới không xét nữa.' },
+              { line: 6, vars: { 'h': 'null' }, note: 'Gọi lại với h = null. Mẫu null bắt riêng trường hợp này, nếu thiếu nó thì null rơi xuống _ và ta mất thông tin.' },
+              { line: 6, vars: { 'trả về': '"Chưa có hình"' }, note: 'Gọn hơn hẳn chuỗi if (h is A) else if (h is B) lồng nhau.' },
+            ],},
         },
         {
           type: 'visual',

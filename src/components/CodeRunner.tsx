@@ -12,18 +12,74 @@ function tachMang(value: string): string[] | null {
   return noiDung.split(',').map((x) => x.trim())
 }
 
-function OMang({ items }: { items: string[] }) {
+/** Giá trị trông như Dictionary, ví dụ {a: 1, b: 2} — tách thành các cặp khoá-giá trị. */
+function tachTuDien(value: string): [string, string][] | null {
+  const s = value.trim()
+  if (!s.startsWith('{') || !s.endsWith('}')) return null
+  const noiDung = s.slice(1, -1).trim()
+  if (!noiDung) return []
+  if (noiDung.includes('{')) return null
+  const cap: [string, string][] = []
+  for (const phan of noiDung.split(',')) {
+    const i = phan.indexOf(':')
+    if (i === -1) return null
+    cap.push([phan.slice(0, i).trim(), phan.slice(i + 1).trim()])
+  }
+  return cap
+}
+
+/** Dãy ô có chỉ số. Ô mới xuất hiện, ô đổi giá trị và ô đang được chạm tới đều có hiệu ứng riêng. */
+function OMang({ items, truoc, focus }: { items: string[]; truoc?: string[] | null; focus?: number[] }) {
   if (items.length === 0) return <span className="font-mono text-[12px] text-ink/35">(rỗng)</span>
   return (
     <div className="flex flex-wrap gap-1">
-      {items.map((v, i) => (
-        <span key={i} className="text-center">
-          <span className="block rounded border border-brand-400/35 bg-brand-500/12 px-2 py-0.5 font-mono text-[12px] text-ink/85">
-            {v}
+      {items.map((v, i) => {
+        const dangCham = focus?.includes(i)
+        const laMoi = truoc ? i >= truoc.length : false
+        const doiGiaTri = truoc ? i < truoc.length && truoc[i] !== v : false
+        const kieu = dangCham
+          ? 'border-amber-400 bg-amber-400/25 text-ink scale-110 -translate-y-0.5 shadow-md'
+          : laMoi
+            ? 'border-mint-400/70 bg-mint-400/25 text-ink'
+            : doiGiaTri
+              ? 'border-brand-400/70 bg-brand-500/25 text-ink'
+              : 'border-ink/15 bg-ink/6 text-ink/80'
+        return (
+          <span key={i} className="text-center">
+            <span
+              className={`block rounded border px-2 py-0.5 font-mono text-[12px] transition-all duration-300 ${kieu}`}
+            >
+              {v}
+            </span>
+            <span className={`block font-mono text-[9.5px] ${dangCham ? 'text-amber-300' : 'text-ink/30'}`}>{i}</span>
           </span>
-          <span className="block font-mono text-[9.5px] text-ink/30">{i}</span>
-        </span>
-      ))}
+        )
+      })}
+    </div>
+  )
+}
+
+/** Các cặp khoá → giá trị của Dictionary, cặp mới thêm được tô nổi lên. */
+function OTuDien({ cap, truoc }: { cap: [string, string][]; truoc?: [string, string][] | null }) {
+  if (cap.length === 0) return <span className="font-mono text-[12px] text-ink/35">(rỗng)</span>
+  const khoaCu = new Set((truoc ?? []).map(([k]) => k))
+  return (
+    <div className="flex flex-wrap gap-1">
+      {cap.map(([k, v], i) => {
+        const moi = truoc ? !khoaCu.has(k) : false
+        return (
+          <span
+            key={i}
+            className={`inline-flex items-center gap-1 rounded border px-2 py-0.5 font-mono text-[11.5px] transition-all duration-300 ${
+              moi ? 'border-mint-400/70 bg-mint-400/25 text-ink' : 'border-ink/15 bg-ink/6 text-ink/80'
+            }`}
+          >
+            <span className="text-accent-400">{k}</span>
+            <span className="text-ink/30">→</span>
+            <span>{v}</span>
+          </span>
+        )
+      })}
     </div>
   )
 }
@@ -103,7 +159,7 @@ export default function CodeRunner({ sample }: { sample: CodeSample }) {
         {/* Cột phải — biến và màn hình console */}
         <div data-runner-state className="space-y-3 border-t border-ink/10 bg-ink/3 p-3.5 lg:border-l lg:border-t-0">
           <div>
-            <div className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-ink/35">Biến trong bộ nhớ</div>
+            <div className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-ink/35">Biến (stack)</div>
             {Object.keys(vars).length === 0 ? (
               <p className="text-[12.5px] text-ink/30">Chưa có biến nào</p>
             ) : (
@@ -111,6 +167,9 @@ export default function CodeRunner({ sample }: { sample: CodeSample }) {
                 {Object.entries(vars).map(([ten, giaTri]) => {
                   const doi = truoc[ten] !== giaTri
                   const mang = tachMang(giaTri)
+                  const mangTruoc = truoc[ten] ? tachMang(truoc[ten]) : null
+                  const tuDien = mang ? null : tachTuDien(giaTri)
+                  const tuDienTruoc = truoc[ten] ? tachTuDien(truoc[ten]) : null
                   return (
                     <li
                       key={ten}
@@ -120,13 +179,70 @@ export default function CodeRunner({ sample }: { sample: CodeSample }) {
                     >
                       <span className="shrink-0 font-mono text-[12px] text-brand-300">{ten}</span>
                       <span className="shrink-0 text-ink/25">=</span>
-                      {mang ? <OMang items={mang} /> : <span className="font-mono text-[12.5px] text-ink/85">{giaTri}</span>}
+                      {hienTai.refs?.[ten] ? (
+                        <span className="inline-flex items-center gap-1 font-mono text-[12px]">
+                          <span className="text-ink/35">→</span>
+                          <span className="rounded bg-amber-400/15 px-1.5 py-px text-amber-300">{hienTai.refs[ten]}</span>
+                        </span>
+                      ) : mang ? (
+                        <OMang items={mang} truoc={mangTruoc} focus={hienTai.focus?.[ten]} />
+                      ) : tuDien ? (
+                        <OTuDien cap={tuDien} truoc={tuDienTruoc} />
+                      ) : (
+                        <span className="font-mono text-[12.5px] text-ink/85">{giaTri}</span>
+                      )}
                     </li>
                   )
                 })}
               </ul>
             )}
           </div>
+
+          {hienTai.heap && Object.keys(hienTai.heap).length > 0 && (
+            <div>
+              <div className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-ink/35">Vùng nhớ heap</div>
+              <ul className="space-y-1.5">
+                {Object.entries(hienTai.heap).map(([diaChi, noiDung]) => {
+                  const troToi = Object.entries(hienTai.refs ?? {})
+                    .filter(([, d]) => d === diaChi)
+                    .map(([ten]) => ten)
+                  const mang = tachMang(noiDung)
+                  const heapTruoc = buoc > 0 ? trace[buoc - 1].heap?.[diaChi] : undefined
+                  const mangTruoc = heapTruoc ? tachMang(heapTruoc) : null
+                  const moi = heapTruoc === undefined
+                  return (
+                    <li
+                      key={diaChi}
+                      className={`rounded-lg border px-2.5 py-1.5 transition-colors duration-300 ${
+                        moi ? 'border-mint-400/50 bg-mint-400/10' : 'border-ink/12 bg-ink/4'
+                      }`}
+                    >
+                      <div className="mb-1 flex items-center gap-2">
+                        <span className="font-mono text-[11px] text-amber-300">{diaChi}</span>
+                        {troToi.length > 0 && (
+                          <span
+                            className={`rounded px-1.5 py-px font-mono text-[10px] ${
+                              troToi.length > 1
+                                ? 'bg-rose-400/20 text-rose-400'
+                                : 'bg-ink/8 text-ink/45'
+                            }`}
+                          >
+                            ↩ {troToi.join(', ')}
+                            {troToi.length > 1 && ' — cùng trỏ một chỗ!'}
+                          </span>
+                        )}
+                      </div>
+                      {mang ? (
+                        <OMang items={mang} truoc={mangTruoc} focus={hienTai.focus?.[diaChi]} />
+                      ) : (
+                        <span className="font-mono text-[12px] text-ink/85">{noiDung}</span>
+                      )}
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          )}
 
           <div>
             <div className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-ink/35">Màn hình console</div>

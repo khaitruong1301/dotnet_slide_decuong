@@ -174,6 +174,20 @@ Quy tắc khi soạn `trace`:
 - Với vòng lặp dài, gộp các lượt giữa lại — chỉ giữ lượt đầu, một lượt giữa và lượt
   cuối, vì bấm Tiến hai chục lần không ai đọc nổi.
 
+Với đối tượng và collection, thêm `heap` và `refs` để vẽ vùng nhớ:
+
+```ts
+{ line: 7,
+  vars: { a: '→ 0x300', b: '→ 0x300' },
+  refs: { a: '0x300', b: '0x300' },        // hai biến cùng trỏ một chỗ -> nhãn đỏ
+  heap: { '0x300': 'NhanVat { Ten: "Mario" }' },
+  focus: { '0x300': [1] },                 // tô cam ô số 1 nếu nội dung là mảng
+  note: 'Gán b = a chỉ sao chép ĐỊA CHỈ chứ không sao chép đối tượng.' }
+```
+
+Địa chỉ là số giả lập, chỉ cần nhất quán trong cùng một trace. Quy ước đang dùng:
+`0x100` trở đi cho collection, `0x200`+ cho đối tượng, mỗi đoạn code một dải riêng.
+
 Bản in chỉ giữ cột code, bảng biến và nút bấm bị ẩn — vì bảng biến chỉ phản ánh đúng
 một bước người đọc dừng lại, in ra sẽ gây hiểu nhầm.
 

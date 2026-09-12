@@ -71,7 +71,15 @@ const buoi12: Buoi = {
         }
     }`,
                 note: 'Lớp con phải gọi được một constructor của lớp cha. Lớp cha không có constructor rỗng thì bắt buộc phải dùng : base(...).',
-              },
+              
+            trace: [
+
+              { line: 20, vars: { ma: '"NV01"', ten: '"An"', luongThang: '12000000' }, note: 'Gọi new NhanVienVanPhong(...). Constructor lớp con nhận đủ ba tham số.' },
+              { line: 21, vars: { ma: '"NV01"', ten: '"An"' }, heap: { '0xB00': 'NhanVienVanPhong { ma: null, ten: null, luongThang: 0 }' }, note: ': base(ma, ten) chạy TRƯỚC thân của lớp con — lớp cha luôn được dựng xong trước.' },
+              { line: 8, vars: { ma: '"NV01"', ten: '"An"' }, heap: { '0xB00': 'NhanVienVanPhong { ma: "NV01", ten: null, luongThang: 0 }' }, note: 'Đang ở trong constructor của lớp cha.' },
+              { line: 9, vars: { ma: '"NV01"', ten: '"An"' }, heap: { '0xB00': 'NhanVienVanPhong { ma: "NV01", ten: "An", luongThang: 0 }' }, note: 'Chỉ có MỘT đối tượng duy nhất trên heap, không phải hai. Lớp cha và lớp con cùng viết vào nó.' },
+              { line: 23, vars: { luongThang: '12000000' }, heap: { '0xB00': 'NhanVienVanPhong { ma: "NV01", ten: "An", luongThang: 12000000 }' }, note: 'Xong lớp cha mới tới thân lớp con. Lớp con chỉ lo đúng phần riêng của mình.' },
+            ],},
             },
             {
               type: 'table',
@@ -101,7 +109,13 @@ const buoi12: Buoi = {
 
     // class Ke : MaHoaBaoMat { }   // LỖI — không kế thừa được lớp sealed`,
                 note: 'Dùng khi muốn khoá hành vi lại, không cho ai đó ghi đè làm sai lệch — hay gặp ở lớp bảo mật, lớp tiện ích.',
-              },
+              
+            trace: [
+              { line: 1, vars: {}, note: 'Từ khoá sealed đóng cửa lớp này lại: không ai kế thừa từ nó được nữa.' },
+              { line: 3, vars: { s: '"mat khau"' }, output: ['bWF0IGtoYXU='], note: 'Phương thức mã hoá chạy bình thường, dùng được như mọi lớp khác.' },
+              { line: 6, vars: {}, note: 'Dòng này nếu bỏ comment sẽ LỖI BIÊN DỊCH CS0509. Chặn ngay từ lúc build chứ không đợi tới lúc chạy.' },
+              { line: 6, vars: {}, note: 'Vì sao cần: nếu cho kế thừa, ai đó có thể override MaHoa thành hàm trả về nguyên văn mật khẩu mà phần còn lại của hệ thống không hề hay biết. sealed khoá lỗ hổng đó lại.' },
+            ],},
             },
           ],
         },
@@ -245,7 +259,21 @@ class QuanLy : NhanVien
     }
 }`,
             note: 'Mỗi tầng chỉ cần lo phần của mình rồi gọi base — không tầng nào phải chép lại code của tầng trên.',
-          },
+          
+            trace: [
+
+              { line: 22, vars: { ten: '"An"', ma: '"NV01"', so: '5' }, note: 'Tạo QuanLy — constructor tầng dưới cùng.' },
+              { line: 11, vars: { ten: '"An"', ma: '"NV01"' }, heap: { '0xC00': 'QuanLy { }' }, note: 'base(ten, ma) leo lên NhanVien.' },
+              { line: 4, vars: { ten: '"An"' }, heap: { '0xC00': 'QuanLy { ten: "An" }' }, note: 'NhanVien lại base(ten) leo tiếp lên Nguoi — tầng trên cùng chạy trước.' },
+              { line: 11, vars: { ma: '"NV01"' }, heap: { '0xC00': 'QuanLy { ten: "An", ma: "NV01" }' }, note: 'Xong Nguoi mới quay xuống thân NhanVien.' },
+              { line: 23, vars: { so: '5' }, heap: { '0xC00': 'QuanLy { ten: "An", ma: "NV01", soNhanVienQuanLy: 5 }' }, note: 'Cuối cùng mới tới thân QuanLy. Thứ tự luôn là từ tầng trên cùng xuống dưới.' },
+              { line: 24, vars: {}, note: 'Gọi HienThi() trên đối tượng QuanLy.' },
+              { line: 26, vars: {}, note: 'base.HienThi() leo lên bản của NhanVien.' },
+              { line: 14, vars: {}, note: 'Bản của NhanVien lại base.HienThi() leo lên Nguoi.' },
+              { line: 5, vars: {}, output: ['Người: An'], note: 'Tầng trên cùng in trước.' },
+              { line: 15, vars: {}, output: ['Người: An', '  Mã NV: NV01'], note: 'Rồi quay xuống in phần của NhanVien.' },
+              { line: 27, vars: {}, output: ['Người: An', '  Mã NV: NV01', '  Quản lý 5 người'], note: 'Cuối cùng là phần riêng của QuanLy. Mỗi tầng chỉ viết đúng phần của mình, không tầng nào phải chép lại code tầng trên.' },
+            ],},
         },
         {
           type: 'visual',

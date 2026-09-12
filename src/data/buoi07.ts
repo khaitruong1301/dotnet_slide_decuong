@@ -59,7 +59,15 @@ static double TinhDienTich(double dai, double rong)
 // Gọi hàm
 double dt = TinhDienTich(5, 3);
 Console.WriteLine(dt);        // 15`,
-          },
+          
+            trace: [
+
+              { line: 8, vars: {}, note: 'Main gọi hàm, truyền vào 5 và 3.' },
+              { line: 2, vars: { dai: '5', rong: '3' }, note: 'Luồng nhảy vào thân hàm. Tham số dai và rong nhận giá trị từ lời gọi — tên tham số đặt gì cũng được, quan trọng là thứ tự.' },
+              { line: 4, vars: { dai: '5', rong: '3', 'giá trị trả về': '15' }, note: 'return vừa trả kết quả vừa kết thúc hàm ngay tại đây.' },
+              { line: 8, vars: { dt: '15' }, note: 'Luồng quay về chỗ gọi, kết quả được gán vào dt.' },
+              { line: 9, vars: { dt: '15' }, output: ['15'] },
+            ],},
         },
         {
           type: 'table',
@@ -83,7 +91,14 @@ static void InSanPham(string ten, decimal gia)
 
 InSanPham("Bàn phím cơ", 1250000);`,
             note: 'Hàm void dùng khi mục đích là "gây tác động" — in ra màn hình, ghi file, gửi mail.',
-          },
+          
+            trace: [
+
+              { line: 7, vars: {}, note: 'Gọi hàm với hai đối số.' },
+              { line: 2, vars: { ten: '"Bàn phím cơ"', gia: '1250000' } },
+              { line: 4, vars: { ten: '"Bàn phím cơ"', gia: '1250000' }, output: ['Bàn phím cơ            1.250.000 đ'], note: 'Định dạng {ten,-20} căn trái trong 20 ô, {gia,10:N0} căn phải và thêm dấu phân cách nghìn.' },
+              { line: 5, vars: {}, note: 'Hết thân hàm là tự quay về, không có return vì hàm void không trả gì. Tác dụng của nó nằm ở chỗ đã in ra màn hình.' },
+            ],},
         },
         {
           type: 'callout',
@@ -110,7 +125,17 @@ public class MathHelper
 // File: Program.cs
 Console.WriteLine(MathHelper.LaSoNguyenTo(7));   // True`,
             note: 'Dùng cú pháp TênLớp.TênHàm() để gọi hàm static nằm ở file khác.',
-          },
+          
+            trace: [
+
+              { line: 14, vars: {}, note: 'Program.cs gọi hàm nằm ở file khác qua cú pháp TênLớp.TênHàm().' },
+              { line: 4, vars: { n: '7' }, note: 'Nhảy sang MathHelper.cs. Gọi được mà không cần new MathHelper() là nhờ từ khoá static.' },
+              { line: 6, vars: { n: '7' }, note: '7 < 2 sai, đi tiếp.' },
+              { line: 7, vars: { n: '7', i: '2' }, note: 'Căn bậc hai của 7 khoảng 2.65 nên chỉ cần thử i = 2.' },
+              { line: 8, vars: { n: '7', i: '2' }, note: '7 % 2 = 1, không chia hết.' },
+              { line: 9, vars: { n: '7', 'trả về': 'true' }, note: 'Duyệt hết mà không tìm được ước nào — kết luận là số nguyên tố.' },
+              { line: 14, vars: {}, output: ['True'], note: 'Luồng quay lại Program.cs với kết quả true.' },
+            ],},
         },
       ],
     },
@@ -171,7 +196,20 @@ double hoa  = NhapDiem("Hoá");
 double dtb  = (toan + ly + hoa) / 3;
 Console.WriteLine($"ĐTB {dtb:F2} — {XepLoai(dtb)}");`,
             note: 'Hàm một dòng có thể viết bằng => (expression-bodied member) cho gọn.',
-          },
+          
+            trace: [
+
+              { line: 20, vars: {}, note: 'Main bắt đầu. Đọc ba dòng 20-24 là hiểu ngay chương trình làm gì.' },
+              { line: 6, vars: { monHoc: '"Toán"' }, output: ['Nhập điểm Toán (0-10): '], note: 'Nhảy vào NhapDiem lần thứ nhất.' },
+              { line: 7, vars: { monHoc: '"Toán"', diem: '8' }, output: ['Nhập điểm Toán (0-10): 8'], note: 'TryParse thành công và 8 nằm trong khoảng nên điều kiện lặp sai — thoát do…while.' },
+              { line: 20, vars: { toan: '8' }, output: ['Nhập điểm Toán (0-10): 8'] },
+              { line: 21, vars: { toan: '8', ly: '7.5' }, output: ['…', 'Nhập điểm Lý (0-10): 7.5'], note: 'Cùng một hàm, gọi lại với tham số khác — đây chính là giá trị của việc tách hàm.' },
+              { line: 22, vars: { toan: '8', ly: '7.5', hoa: '9' }, output: ['…', 'Nhập điểm Hoá (0-10): 9'] },
+              { line: 23, vars: { toan: '8', ly: '7.5', hoa: '9', dtb: '8.1666…' } },
+              { line: 11, vars: { dtb: '8.1666…' }, note: 'Gọi XepLoai — hàm một dòng viết bằng cú pháp =>.' },
+              { line: 13, vars: { dtb: '8.1666…', 'trả về': '"Giỏi"' }, note: 'Mẫu >= 8.0 khớp ngay.' },
+              { line: 24, vars: { toan: '8', ly: '7.5', hoa: '9', dtb: '8.1666…' }, output: ['…', 'ĐTB 8.17 — Giỏi'], note: 'F2 làm tròn hiển thị 2 chữ số, nhưng giá trị bên trong dtb vẫn nguyên.' },
+            ],},
         },
       ],
     },
@@ -196,7 +234,14 @@ Console.WriteLine(cong(3, 5));           // 8
 Action<string> chao = ten => Console.WriteLine($"Xin chào {ten}");
 chao("Cybersoft");`,
             note: 'Cú pháp (tham số) => biểu thức gọi là lambda expression — cách viết hàm ẩn danh ngắn gọn.',
-          },
+          
+            trace: [
+
+              { line: 2, vars: { cong: '(a, b) => a + b' }, note: 'Hàm được lưu vào một BIẾN. Func<int, int, int> nghĩa là hai tham số int, trả về int.' },
+              { line: 3, vars: { cong: '(a, b) => a + b', a: '3', b: '5' }, output: ['8'], note: 'Gọi biến cong y như gọi một hàm bình thường.' },
+              { line: 6, vars: { cong: '(a, b) => a + b', chao: 'ten => Console.WriteLine(...)' }, output: ['8'], note: 'Action không có kiểu trả về — ứng với hàm void.' },
+              { line: 7, vars: { chao: 'ten => …', ten: '"Cybersoft"' }, output: ['8', 'Xin chào Cybersoft'], note: 'Hàm trở thành giá trị truyền đi được — nền tảng của callback và của lambda trong List.Find ở buổi 8.' },
+            ],},
         },
         {
           type: 'code',

@@ -144,7 +144,14 @@ class NhanVienRepository
     public void Luu(List<NhanVien> ds) { /* ghi file JSON */ }
     public List<NhanVien> Doc() { /* đọc file JSON */ return new(); }
 }`,
-          },
+          
+            trace: [
+
+              { line: 8, vars: { nv: 'NhanVien { Ma: "NV01", Luong1h: 50000, SoGioLam: 160 }' }, note: 'NhanVien giờ chỉ CHỞ dữ liệu, không biết tính toán cũng không biết lưu trữ.' },
+              { line: 13, vars: { nv: 'NhanVien { Luong1h: 50000, SoGioLam: 160 }', 'trả về': '8000000' }, note: 'Muốn đổi công thức lương? Chỉ mở đúng LuongService. NhanVien và Repository không hề bị đụng tới.' },
+              { line: 19, vars: { ds: '[NhanVien × 1]' }, note: 'Muốn đổi từ file JSON sang database? Chỉ mở đúng Repository.' },
+              { line: 20, vars: { ds: '[NhanVien × 1]' }, note: 'Ba class, ba lý do thay đổi khác nhau. Gộp cả ba vào một class thì mỗi lần sửa bất cứ thứ gì cũng phải mở đúng file đó ra — rủi ro làm hỏng hai phần còn lại.' },
+            ],},
         },
         {
           type: 'callout',
@@ -172,7 +179,15 @@ class NhanVienRepository
 
 // Bên ngoài chỉ cần biết một dòng này
 new NhanVienFacade().ChotLuongThang(danhSach);`,
-          },
+          
+            trace: [
+
+              { line: 16, vars: { danhSach: '[An, Bình]' }, note: 'Bên ngoài chỉ gọi một dòng, không cần biết bên trong có bao nhiêu service.' },
+              { line: 9, vars: { ds: '[An, Bình]', nv: 'An' }, note: 'Facade điều phối: lần lượt gọi từng service nhỏ.' },
+              { line: 10, vars: { nv: 'An', 'luong.Tinh(nv)': '8000000' }, output: ['Gửi mail tới An: Lương tháng: 8.000.000 đ'], note: 'Gọi LuongService để tính, rồi chuyển kết quả sang EmailService.' },
+              { line: 10, vars: { nv: 'Bình', 'luong.Tinh(nv)': '9600000' }, output: ['Gửi mail tới An: Lương tháng: 8.000.000 đ', 'Gửi mail tới Bình: Lương tháng: 9.600.000 đ'] },
+              { line: 11, vars: { ds: '[An, Bình]' }, output: ['…', 'Đã lưu danh sách ra file'], note: 'Cuối cùng gọi Repository. Facade giải quyết đúng cái giá phải trả của SRP: tách nhỏ thì nhiều service, nhưng chỉ cần một cửa để gọi.' },
+            ],},
         },
       ],
     },
@@ -201,7 +216,14 @@ new NhanVienFacade().ChotLuongThang(danhSach);`,
     }
 }`,
             note: 'Chuỗi if/else theo loại đối tượng là dấu hiệu kinh điển của việc vi phạm OCP.',
-          },
+          
+            trace: [
+
+              { line: 5, vars: { 'nv.Loai': '"SanXuat"' }, note: 'Kiểm tra loại thứ nhất — không khớp.' },
+              { line: 6, vars: { 'nv.Loai': '"SanXuat"', 'trả về': '4500000' }, note: 'Khớp loại thứ hai, trả kết quả.' },
+              { line: 8, vars: { 'nv.Loai': '"ThoiVu"' }, note: 'Giờ công ty thêm nhân viên thời vụ. Chuỗi if này không có nhánh nào khớp.' },
+              { line: 9, vars: { 'nv.Loai': '"ThoiVu"', 'trả về': '0' }, note: 'Trả về 0 — SAI. Muốn đúng thì phải MỞ FILE NÀY RA SỬA, thêm một dòng if nữa. Mỗi lần sửa là một lần có nguy cơ làm hỏng ba nhánh đang chạy tốt. Đó là vi phạm nguyên tắc Đóng — Mở.' },
+            ],},
         },
         {
           type: 'code',
@@ -228,7 +250,15 @@ class LuongThoiVu : ITinhLuong
     public decimal Tinh(NhanVien nv) => nv.SoGioLam * 30000m;
 }`,
             note: 'Đây là lý do đa hình quan trọng: nó biến việc "sửa code cũ" thành việc "thêm code mới".',
-          },
+          
+            trace: [
+
+              { line: 3, vars: {}, note: 'Interface đóng vai trò bản hợp đồng: mọi cách tính lương đều có một phương thức Tinh.' },
+              { line: 8, vars: { 'nv.LuongThang': '12000000', 'trả về': '12000000' }, note: 'Mỗi cách tính nằm gọn trong class riêng của nó.' },
+              { line: 13, vars: { 'nv.SoSanPham': '300', 'trả về': '4500000' }, note: 'Sửa công thức sản xuất thì chỉ đụng đúng class này, hai class kia không hề hấn gì.' },
+              { line: 17, vars: {}, note: 'Công ty thêm nhân viên thời vụ. Lần này ta THÊM MỘT FILE MỚI.' },
+              { line: 19, vars: { 'nv.SoGioLam': '100', 'trả về': '3000000' }, note: 'Không dòng code cũ nào bị chạm vào — không có cơ hội làm hỏng thứ đang chạy tốt. Đó chính là "mở cho mở rộng, đóng với sửa đổi".' },
+            ],},
         },
         {
           type: 'visual',
@@ -279,7 +309,16 @@ void ChoBayHet(List<Chim> ds)
     foreach (var c in ds) c.Bay();   // gặp cánh cụt là văng lỗi
 }`,
             note: 'Cách sửa: tách IBayDuoc thành interface riêng, chỉ loài nào bay được mới cài đặt. Đây cũng chính là tinh thần của ISP.',
-          },
+          
+            trace: [
+
+              { line: 3, vars: {}, note: 'Lớp cha HỨA: mọi con Chim đều gọi Bay() được.' },
+              { line: 14, vars: { ds: '[ChimCanh, ChimCanhCut]' }, note: 'Hàm này chỉ biết kiểu Chim, nó tin vào lời hứa ở trên.' },
+              { line: 16, vars: { ds: '[ChimCanh, ChimCanhCut]', 'c (kiểu thật)': 'ChimCanh' }, output: ['Đang bay'], focus: { ds: [0] }, note: 'Con đầu chạy ngon.' },
+              { line: 16, vars: { ds: '[ChimCanh, ChimCanhCut]', 'c (kiểu thật)': 'ChimCanhCut' }, output: ['Đang bay'], focus: { ds: [1] }, note: 'Tới cánh cụt…' },
+              { line: 11, vars: { 'c (kiểu thật)': 'ChimCanhCut' }, output: ['Đang bay', '💥 NotSupportedException: Cánh cụt không bay'], note: 'Nổ. Lớp con đã PHÁ VỠ cam kết của lớp cha — đó là vi phạm LSP. Hàm ChoBayHet viết hoàn toàn đúng mà vẫn chết.' },
+              { line: 14, vars: {}, output: ['Đang bay', '💥 NotSupportedException'], note: 'Cách sửa: tách IBayDuoc thành interface riêng, loài nào bay được mới cài đặt. Lúc đó List<IBayDuoc> không bao giờ lọt cánh cụt vào.' },
+            ],},
         },
         {
           type: 'callout',
@@ -313,7 +352,18 @@ class MayDaNang : IMayIn, IMayScan
     public void In(string s) => Console.WriteLine($"In: {s}");
     public void Scan(string s) => Console.WriteLine($"Scan: {s}");
 }`,
-          },
+          
+            trace: [
+
+              { line: 2, vars: {}, note: 'Interface gộp ba khả năng vào một.' },
+              { line: 5, vars: {}, note: 'Máy in thường không scan được, nhưng vẫn BỊ BUỘC phải cài đặt Scan.' },
+              { line: 6, vars: {}, note: 'Và cả Fax nữa. Thường thì lập trình viên sẽ để thân hàm rỗng hoặc ném NotImplementedException — cả hai đều là mùi code xấu.' },
+              { line: 10, vars: {}, note: 'Tách nhỏ: mỗi interface đúng một khả năng.' },
+              { line: 13, vars: {}, note: 'Máy in thường chỉ ký hợp đồng IMayIn.' },
+              { line: 15, vars: { s: '"bao cao.pdf"' }, output: ['In: bao cao.pdf'], note: 'Chỉ cài một phương thức, không còn hàm rỗng nào.' },
+              { line: 18, vars: {}, note: 'Máy đa năng ký hai hợp đồng cùng lúc — C# cho cài bao nhiêu interface cũng được.' },
+              { line: 21, vars: { s: '"anh.jpg"' }, output: ['In: bao cao.pdf', 'Scan: anh.jpg'], note: 'Mỗi class chỉ cài đúng thứ nó làm được. Lưu ý: đừng tách quá tay — chỉ tách khi thật sự có class phải cài hàm rỗng.' },
+            ],},
         },
         {
           type: 'callout',
@@ -396,7 +446,17 @@ class OrderService
 var order = new OrderService(new ThanhToanTheTinDung());
 order.Checkout(250_000m);`,
             note: 'readonly nghĩa là gán một lần trong constructor rồi khoá lại — không ai đổi được phụ thuộc giữa chừng.',
-          },
+          
+            trace: [
+
+              { line: 29, vars: {}, note: 'Nơi lắp ráp: tạo bản thanh toán thẻ TRƯỚC rồi mới đưa vào OrderService.' },
+              { line: 23, vars: { payment: '→ ThanhToanTheTinDung' }, refs: { order: '0x1100' }, heap: { '0x1100': 'OrderService { payment: ThanhToanTheTinDung }' }, note: 'Phụ thuộc được TIÊM qua constructor. OrderService không hề có dòng new nào cho phương thức thanh toán.' },
+              { line: 30, vars: { order: '→ 0x1100', tongTien: '250000' }, refs: { order: '0x1100' }, heap: { '0x1100': 'OrderService { payment: ThanhToanTheTinDung }' } },
+              { line: 25, vars: { tongTien: '250000' }, note: 'OrderService chỉ biết gọi payment.ThanhToan — nó không biết và không cần biết đó là tiền mặt hay thẻ.' },
+              { line: 14, vars: { soTien: '250000' }, output: ['Quẹt thẻ: 250.000 đ'], note: 'Bản cài đặt thật mới chạy.' },
+              { line: 29, vars: { payment: '→ ThanhToanTienMat' }, refs: { order: '0x1110' }, heap: { '0x1110': 'OrderService { payment: ThanhToanTienMat }' }, output: ['Quẹt thẻ: 250.000 đ'], note: 'Đổi sang tiền mặt: chỉ sửa đúng dòng lắp ráp này.' },
+              { line: 9, vars: { soTien: '250000' }, output: ['Quẹt thẻ: 250.000 đ', 'Nhận tiền mặt: 250.000 đ'], note: 'OrderService không sửa một chữ. Đây cũng là lý do DI làm code dễ kiểm thử: lúc test thì tiêm một bản giả vào.' },
+            ],},
         },
         {
           type: 'visual',
@@ -439,7 +499,17 @@ var provider = services.BuildServiceProvider();
 var order = provider.GetRequiredService<OrderService>();
 order.Checkout(250_000m);`,
             note: 'AddSingleton dùng chung một đối tượng suốt vòng đời ứng dụng; AddTransient tạo mới mỗi lần yêu cầu; AddScoped tạo mới mỗi request (dùng nhiều trong ASP.NET Core).',
-          },
+          
+            trace: [
+
+              { line: 3, vars: { services: '{}' }, note: 'ServiceCollection là cuốn sổ đăng ký, chưa tạo đối tượng nào.' },
+              { line: 6, vars: { services: '{IPaymentService: ThanhToanTheTinDung}' }, note: 'Ghi vào sổ: ai hỏi IPaymentService thì cấp ThanhToanTheTinDung. Singleton nghĩa là dùng chung một đối tượng suốt vòng đời ứng dụng.' },
+              { line: 7, vars: { services: '{IPaymentService: ThanhToanTheTinDung, OrderService: OrderService}' }, note: 'Transient thì mỗi lần hỏi lại tạo một đối tượng mới.' },
+              { line: 9, vars: { provider: '→ 0x1200' }, refs: { provider: '0x1200' }, heap: { '0x1200': 'ServiceProvider { đã khoá sổ đăng ký }' }, note: 'Chốt sổ, từ đây container sẵn sàng cấp phát.' },
+              { line: 12, vars: { provider: '→ 0x1200' }, refs: { provider: '0x1200' }, heap: { '0x1200': 'ServiceProvider' }, note: 'Xin một OrderService. Container soi constructor của nó, thấy cần một IPaymentService.' },
+              { line: 12, vars: { provider: '→ 0x1200', order: '→ 0x1210' }, refs: { provider: '0x1200', order: '0x1210' }, heap: { '0x1200': 'ServiceProvider', '0x1220': 'ThanhToanTheTinDung { }', '0x1210': 'OrderService { payment: → 0x1220 }' }, note: 'Container tự tra sổ, tự tạo ThanhToanTheTinDung rồi tự tiêm vào — ta không gõ dòng new nào cả. Phụ thuộc lồng nhiều tầng nó cũng tự giải đệ quy.' },
+              { line: 13, vars: { order: '→ 0x1210' }, refs: { order: '0x1210' }, heap: { '0x1220': 'ThanhToanTheTinDung { }', '0x1210': 'OrderService { payment: → 0x1220 }' }, output: ['Quẹt thẻ: 250.000 đ'], note: 'Toàn bộ ASP.NET Core hoạt động theo đúng cơ chế này: controller nhận service qua constructor, service nhận DbContext qua constructor.' },
+            ],},
         },
         {
           type: 'callout',

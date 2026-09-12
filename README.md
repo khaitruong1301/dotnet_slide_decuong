@@ -51,9 +51,14 @@ với dòng đang chạy được tô sáng, phải là bảng biến trong bộ
 Bên dưới có nút Đầu / Lùi / Tiến / Tự chạy để xem chương trình chạy từng bước như một
 debugger — giá trị biến đổi tới đâu thấy tới đó, mảng được vẽ thành ô kèm chỉ số.
 
-Hiện có 13 đoạn mô phỏng, tập trung vào chỗ người học hay vấp: bẫy chia số nguyên,
-`TryParse`, tiền điện bậc thang, vòng lặp `while`, `break`/`continue`, vòng lặp lồng
-nhau, hai con trỏ, callback, Two Sum, và cơ chế chọn bản `override` theo kiểu thật.
+**Toàn bộ 77 đoạn code C# trong phần lý thuyết đều chạy thử được** — chỉ hai đoạn lệnh
+terminal và một đoạn Mermaid là không, vì chúng không phải code thực thi.
+
+Ngoài bảng biến trên stack, các đoạn liên quan tới đối tượng và collection còn có thêm
+**vùng nhớ heap**: thấy rõ biến nào trỏ tới địa chỉ nào, hai biến cùng trỏ một chỗ được
+đánh dấu đỏ — nhờ vậy phân biệt được tham trị với tham chiếu. Mảng và List vẽ thành các
+ô có chỉ số, ô mới thêm tô xanh, ô đổi giá trị tô tím, ô đang được chạm tới tô cam và
+nhô lên; nhờ đó thấy được `Insert` đẩy chỉ số của mọi phần tử phía sau như thế nào.
 
 ## Giao diện
 

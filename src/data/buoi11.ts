@@ -52,7 +52,18 @@ const buoi11: Buoi = {
         public string XepLoai => Diem >= 8 ? "Giỏi" : Diem >= 5 ? "Đạt" : "Chưa đạt";
     }`,
                 note: 'value là từ khoá đại diện cho giá trị đang được gán vào. Property chỉ có get gọi là read-only.',
-              },
+              
+            trace: [
+
+              { line: 4, vars: { 'sv.Ten': '"An"' }, note: 'Auto-property: viết như thuộc tính nhưng thực chất C# sinh ngầm một field ẩn phía sau.' },
+              { line: 7, vars: { 'sv.Ten': '"An"', 'sv.Ma': '"SV01"' }, note: 'set là private nên chỉ constructor và code trong class gán được. Bên ngoài chỉ đọc.' },
+              { line: 14, vars: { 'sv.Diem': '0', value: '8.5' }, note: 'Gán sv.Diem = 8.5 — luồng nhảy vào khối set, từ khoá value giữ giá trị đang được gán.' },
+              { line: 16, vars: { value: '8.5' }, note: '8.5 nằm trong 0..10 nên qua được chốt kiểm tra.' },
+              { line: 18, vars: { 'sv.Diem': '8.5', value: '8.5' }, note: 'Lúc này mới ghi vào field diem thật.' },
+              { line: 14, vars: { 'sv.Diem': '8.5', value: '11' }, note: 'Thử gán sv.Diem = 11.' },
+              { line: 17, vars: { 'sv.Diem': '8.5', value: '11' }, note: 'Ném ArgumentException — phép gán bị chặn, field diem GIỮ NGUYÊN 8.5. Nếu Diem là field public thì số 11 đã lọt vào rồi.' },
+              { line: 23, vars: { 'sv.Diem': '8.5', 'sv.XepLoai': '"Giỏi"' }, note: 'XepLoai chỉ có get, không lưu trữ gì — mỗi lần đọc là tính lại từ Diem nên không bao giờ lệch dữ liệu.' },
+            ],},
             },
             {
               type: 'visual',
@@ -140,7 +151,17 @@ const buoi11: Buoi = {
     Console.WriteLine(tk2.SoTaiKhoan);         // TK002
     Console.WriteLine(TaiKhoan.DemTaiKhoan()); // 2 — gọi qua tên class`,
                 note: 'Không viết được tk1.DemTaiKhoan() — thành phần static thuộc về class chứ không thuộc về đối tượng.',
-              },
+              
+            trace: [
+
+              { line: 20, vars: { demSoTaiKhoan: '0' }, note: 'Biến static tồn tại sẵn từ trước, chưa cần đối tượng nào.' },
+              { line: 11, vars: { demSoTaiKhoan: '1', tenChuThe: '"An"' }, refs: { tk1: '0x900' }, heap: { '0x900': 'TaiKhoan { SoTaiKhoan: null }' }, note: 'Tạo tk1: biến đếm dùng chung tăng lên 1.' },
+              { line: 12, vars: { demSoTaiKhoan: '1' }, refs: { tk1: '0x900' }, heap: { '0x900': 'TaiKhoan { SoTaiKhoan: "TK001", TenChuThe: "An" }' }, note: 'D3 ép đủ ba chữ số.' },
+              { line: 11, vars: { demSoTaiKhoan: '2', tenChuThe: '"Bình"' }, refs: { tk1: '0x900', tk2: '0x910' }, heap: { '0x900': 'TaiKhoan { SoTaiKhoan: "TK001", TenChuThe: "An" }', '0x910': 'TaiKhoan { SoTaiKhoan: null }' }, note: 'Tạo tk2: biến đếm KHÔNG quay về 0 mà tiếp tục lên 2 — vì nó thuộc về class chứ không thuộc về từng đối tượng.' },
+              { line: 12, vars: { demSoTaiKhoan: '2' }, refs: { tk1: '0x900', tk2: '0x910' }, heap: { '0x900': 'TaiKhoan { SoTaiKhoan: "TK001", TenChuThe: "An" }', '0x910': 'TaiKhoan { SoTaiKhoan: "TK002", TenChuThe: "Bình" }' }, note: 'Nhờ vậy mã tài khoản không bao giờ trùng.' },
+              { line: 22, vars: { demSoTaiKhoan: '2' }, output: ['TK002'], note: 'SoTaiKhoan là thuộc tính riêng của từng đối tượng — đọc qua tên biến.' },
+              { line: 23, vars: { demSoTaiKhoan: '2' }, output: ['TK002', '2'], note: 'Còn DemTaiKhoan là static — gọi qua TÊN CLASS. Viết tk1.DemTaiKhoan() sẽ lỗi biên dịch.' },
+            ],},
             },
             {
               type: 'callout',
@@ -164,7 +185,14 @@ const buoi11: Buoi = {
         }
     }`,
                 note: 'Không có tham số, không có access modifier. Dùng để chuẩn bị dữ liệu dùng chung.',
-              },
+              
+            trace: [
+
+              { line: 3, vars: { 'CauHinh.DuongDanLog': 'null' }, note: 'Class vừa được nạp, biến static chưa có giá trị.' },
+              { line: 6, vars: { 'CauHinh.DuongDanLog': 'null' }, note: 'Lần ĐẦU TIÊN chương trình chạm tới class CauHinh, static constructor tự kích hoạt — không ai gọi nó cả.' },
+              { line: 8, vars: { 'CauHinh.DuongDanLog': '"logs/app.log"' } },
+              { line: 9, vars: { 'CauHinh.DuongDanLog': '"logs/app.log"' }, output: ['Đã nạp cấu hình'], note: 'Chạm vào class lần thứ hai, thứ ba… dòng này KHÔNG in lại. Static constructor chỉ chạy đúng một lần trong suốt vòng đời chương trình.' },
+            ],},
             },
             {
               type: 'table',
@@ -220,7 +248,14 @@ const buoi11: Buoi = {
     }
 }`,
             note: 'readonly chặn ngay lúc biên dịch, an toàn hơn hẳn việc chỉ dặn nhau "đừng sửa cái này".',
-          },
+          
+            trace: [
+
+              { line: 8, vars: { ma: '"TK001"', soDuBanDau: '20000' }, heap: { '0xA00': 'TaiKhoan { ma: null, soDu: 0 }' }, note: 'Constructor bắt đầu chạy.' },
+              { line: 10, vars: { ma: '"TK001"', soDuBanDau: '20000' }, heap: { '0xA00': 'TaiKhoan { ma: "TK001", soDu: 0 }' }, note: 'Gán readonly ở đây là HỢP LỆ — trong constructor thì được phép.' },
+              { line: 11, vars: { ma: '"TK001"', soDuBanDau: '20000' }, heap: { '0xA00': 'TaiKhoan { ma: "TK001", soDu: 50000 }' }, note: 'Số dư ban đầu 20.000 thấp hơn mức tối thiểu nên bị nâng lên 50.000. Hằng số const thuộc về cả class, không tốn bộ nhớ cho từng đối tượng.' },
+              { line: 16, vars: {}, heap: { '0xA00': 'TaiKhoan { ma: "TK001", soDu: 50000 }' }, note: 'Dòng này nếu bỏ comment sẽ LỖI BIÊN DỊCH — readonly chỉ cho gán trong constructor. Mã tài khoản khoá cứng từ lúc đối tượng ra đời, không cách nào đổi.' },
+            ],},
         },
         {
           type: 'visual',

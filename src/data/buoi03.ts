@@ -74,7 +74,13 @@ const buoi03: Buoi = {
 bool duocGiam = laHocSinh || laNguoiCaoTuoi;  // thuộc một trong hai nhóm
 bool chuaThanhToan = !daThanhToan;            // đảo ngược`,
             note: '&& và || có "short-circuit": nếu vế trái đã đủ kết luận thì vế phải không được tính.',
-          },
+          
+            trace: [
+
+              { line: 1, vars: { diem: '8', hopLe: 'true' }, note: '8 >= 0 đúng VÀ 8 <= 10 cũng đúng nên cả biểu thức đúng. Đây là cách chuẩn để kiểm tra một số nằm trong khoảng.' },
+              { line: 2, vars: { diem: '8', hopLe: 'true', laHocSinh: 'true', laNguoiCaoTuoi: 'false', duocGiam: 'true' }, note: '|| chỉ cần một vế đúng. Hơn nữa vế trái đã đúng thì C# bỏ qua luôn vế phải, không thèm tính — gọi là short-circuit.' },
+              { line: 3, vars: { daThanhToan: 'false', chuaThanhToan: 'true' }, note: 'Dấu ! lật ngược: chưa thanh toán nghĩa là NOT đã thanh toán.' },
+            ],},
         },
       ],
     },
@@ -144,7 +150,16 @@ else if (dtb >= 6.5) Console.WriteLine("Khá");
 else if (dtb >= 5.0) Console.WriteLine("Trung bình");
 else                 Console.WriteLine("Yếu");`,
             note: 'Nhiều câu lệnh trong một nhánh thì phải bọc trong cặp { }.',
-          },
+          
+            trace: [
+
+              { line: 2, vars: { t: '30' }, note: 'Dạng 1: chỉ có if, không có else.' },
+              { line: 3, vars: { t: '30' }, output: ['Mở điều hoà'], note: '30 > 25 đúng nên chạy. Nếu sai thì bỏ qua luôn, không làm gì cả.' },
+              { line: 6, vars: { t: '30', so: '7' }, output: ['Mở điều hoà'], note: 'Dạng 2: có else nên chắc chắn một trong hai nhánh sẽ chạy.' },
+              { line: 9, vars: { t: '30', so: '7' }, output: ['Mở điều hoà', 'Số lẻ'], note: '7 % 2 = 1 nên điều kiện sai, nhảy vào else.' },
+              { line: 12, vars: { dtb: '7.0' }, output: ['Mở điều hoà', 'Số lẻ'], note: 'Dạng 3: chuỗi else if. 7.0 >= 8.0 sai.' },
+              { line: 13, vars: { dtb: '7.0' }, output: ['Mở điều hoà', 'Số lẻ', 'Khá'], note: '7.0 >= 6.5 đúng — in "Khá" rồi DỪNG. Hai điều kiện phía dưới không được kiểm tra nữa, đó là điểm khác với việc viết ba if rời rạc.' },
+            ],},
         },
         {
           type: 'callout',

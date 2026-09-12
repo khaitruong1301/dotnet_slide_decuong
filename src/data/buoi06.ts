@@ -36,7 +36,18 @@ const buoi06: Buoi = {
     }
 }`,
             note: 'Vòng ngoài 8 lượt × vòng trong 10 lượt = 80 dòng in ra.',
-          },
+          
+            trace: [
+
+              { line: 1, vars: { i: '2' }, note: 'Vòng ngoài quyết định đang làm bảng số mấy.' },
+              { line: 3, vars: { i: '2' }, output: ['--- Bảng 2 ---'] },
+              { line: 4, vars: { i: '2', j: '1' }, output: ['--- Bảng 2 ---'], note: 'Vòng trong khởi tạo j = 1.' },
+              { line: 6, vars: { i: '2', j: '1' }, output: ['--- Bảng 2 ---', '2 x 1 = 2'] },
+              { line: 6, vars: { i: '2', j: '2' }, output: ['--- Bảng 2 ---', '2 x 1 = 2', '2 x 2 = 4'] },
+              { line: 6, vars: { i: '2', j: '10' }, output: ['--- Bảng 2 ---', '2 x 1 = 2', '…', '2 x 10 = 20'], note: 'Vòng trong chạy trọn 10 lượt rồi mới thoát.' },
+              { line: 1, vars: { i: '3' }, output: ['--- Bảng 2 ---', '2 x 1 = 2', '…', '2 x 10 = 20'], note: 'Quay lại vòng ngoài, i lên 3.' },
+              { line: 4, vars: { i: '3', j: '1' }, output: ['--- Bảng 2 ---', '…', '--- Bảng 3 ---'], note: 'Điểm mấu chốt: j được khởi tạo LẠI từ 1 ở mỗi lượt vòng ngoài. Tổng cộng 8 × 10 = 80 dòng.' },
+            ],},
         },
         {
           type: 'visual',
@@ -121,7 +132,19 @@ foreach (char c in str)              // duyệt từng ký tự
 for (int i = str.Length - 1; i >= 0; i--)  // duyệt ngược -> đảo chuỗi
     Console.Write(str[i]);`,
             note: 'Truy cập str[11] sẽ văng lỗi IndexOutOfRange — chỉ số cuối cùng luôn là Length − 1.',
-          },
+          
+            trace: [
+
+              { line: 1, vars: { str: '[H, e, l, l, o,  , W, o, r, l, d]' }, note: 'Chuỗi thực chất là một dãy ký tự có chỉ số.' },
+              { line: 3, vars: { str: '[H, e, l, l, o,  , W, o, r, l, d]' }, output: ['11'], note: 'Length đếm cả dấu cách ở giữa.' },
+              { line: 4, vars: { str: '[H, e, l, l, o,  , W, o, r, l, d]' }, output: ['11', 'H'], focus: { str: [0] }, note: 'Chỉ số luôn bắt đầu từ 0.' },
+              { line: 5, vars: { str: '[H, e, l, l, o,  , W, o, r, l, d]' }, output: ['11', 'H', 'd'], focus: { str: [10] }, note: 'Phần tử cuối là Length − 1 = 10. Viết str[11] sẽ văng IndexOutOfRange.' },
+              { line: 8, vars: { str: '[H, e, l, l, o,  , W, o, r, l, d]', c: 'H' }, output: ['11', 'H', 'd', 'H.'], focus: { str: [0] } },
+              { line: 8, vars: { str: '[H, e, l, l, o,  , W, o, r, l, d]', c: 'e' }, output: ['11', 'H', 'd', 'H.e.'], focus: { str: [1] } },
+              { line: 8, vars: { str: '[H, e, l, l, o,  , W, o, r, l, d]', c: 'd' }, output: ['11', 'H', 'd', 'H.e.l.l.o. .W.o.r.l.d.'], focus: { str: [10] }, note: 'foreach đi hết từ trái sang phải, không cần quản chỉ số.' },
+              { line: 11, vars: { str: '[H, e, l, l, o,  , W, o, r, l, d]', i: '10' }, output: ['11', 'H', 'd', 'H.e.l.l.o. .W.o.r.l.d.', 'd'], focus: { str: [10] }, note: 'Vòng for đi ngược từ cuối về đầu.' },
+              { line: 11, vars: { str: '[H, e, l, l, o,  , W, o, r, l, d]', i: '0' }, output: ['11', 'H', 'd', 'H.e.l.l.o. .W.o.r.l.d.', 'dlroW olleH'], focus: { str: [0] }, note: 'Duyệt ngược chính là cách đảo chuỗi.' },
+            ],},
         },
       ],
     },
@@ -169,7 +192,18 @@ for (int i = 0; i < tu.Length; i++)
 
 Console.WriteLine(string.Join(" ", tu));   // "Nguyễn Văn A"`,
             note: 'Ghép nhiều hàm chuỗi lại là kỹ thuật dùng hằng ngày khi làm dự án thật.',
-          },
+          
+            trace: [
+
+              { line: 1, vars: { nhap: '"   nguyỄn   vĂn a  "' }, note: 'Chuỗi thô có khoảng trắng thừa và hoa thường lộn xộn.' },
+              { line: 3, vars: { nhap: '"   nguyỄn   vĂn a  "', 'sau Trim': '"nguyỄn   vĂn a"' }, note: 'Trim cắt khoảng trắng hai đầu, nhưng khoảng trắng GIỮA vẫn còn.' },
+              { line: 4, vars: { nhap: '"   nguyỄn   vĂn a  "', 'sau ToLower': '"nguyễn   văn a"' }, note: 'Chuỗi là bất biến nên mỗi hàm trả về một chuỗi MỚI, chuỗi gốc nhap không đổi.' },
+              { line: 5, vars: { nhap: '"   nguyỄn   vĂn a  "', tu: '[nguyễn, văn, a]' }, note: 'RemoveEmptyEntries bỏ các phần rỗng sinh ra do nhiều khoảng trắng liền nhau.' },
+              { line: 8, vars: { tu: '[Nguyễn, văn, a]', i: '0' }, focus: { tu: [0] }, note: 'Viết hoa ký tự đầu rồi ghép với phần còn lại.' },
+              { line: 8, vars: { tu: '[Nguyễn, Văn, a]', i: '1' }, focus: { tu: [1] } },
+              { line: 8, vars: { tu: '[Nguyễn, Văn, A]', i: '2' }, focus: { tu: [2] } },
+              { line: 10, vars: { tu: '[Nguyễn, Văn, A]' }, output: ['Nguyễn Văn A'], note: 'Join ghép lại bằng đúng một dấu cách.' },
+            ],},
         },
       ],
     },
@@ -191,7 +225,19 @@ foreach (char c in s)
         dem++;
 }
 Console.WriteLine($"Có {dem} nguyên âm");`,
-          },
+          
+            trace: [
+
+              { line: 1, vars: { s: '[h, e, l, l, o]' }, output: ['hello'], note: 'ToLower để khỏi phải so cả chữ hoa lẫn chữ thường.' },
+              { line: 2, vars: { s: '[h, e, l, l, o]', dem: '0' } },
+              { line: 4, vars: { s: '[h, e, l, l, o]', dem: '0', c: 'h' }, focus: { s: [0] }, note: "'h' không phải nguyên âm." },
+              { line: 6, vars: { s: '[h, e, l, l, o]', dem: '0', c: 'e' }, focus: { s: [1] }, note: "'e' khớp điều kiện!" },
+              { line: 7, vars: { s: '[h, e, l, l, o]', dem: '1', c: 'e' }, focus: { s: [1] } },
+              { line: 4, vars: { s: '[h, e, l, l, o]', dem: '1', c: 'l' }, focus: { s: [2] } },
+              { line: 4, vars: { s: '[h, e, l, l, o]', dem: '1', c: 'l' }, focus: { s: [3] } },
+              { line: 7, vars: { s: '[h, e, l, l, o]', dem: '2', c: 'o' }, focus: { s: [4] }, note: "'o' là nguyên âm thứ hai." },
+              { line: 9, vars: { s: '[h, e, l, l, o]', dem: '2' }, output: ['hello', 'Có 2 nguyên âm'] },
+            ],},
         },
         {
           type: 'code',

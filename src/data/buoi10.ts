@@ -66,7 +66,16 @@ const buoi10: Buoi = {
     // Tạo đối tượng: truyền đủ dữ liệu ngay lúc new
     NhanVien nv = new NhanVien("NV01", "Trần Văn B", 50000);`,
                 note: 'this.Ten = ten dùng khi tên tham số trùng tên thuộc tính — this trỏ tới chính đối tượng đang được tạo.',
-              },
+              
+            trace: [
+
+              { line: 17, vars: {}, note: 'Gặp new — bắt đầu quy trình tạo đối tượng.' },
+              { line: 8, vars: { ma: '"NV01"', ten: '"Trần Văn B"', luong1h: '50000' }, refs: { nv: '0x600' }, heap: { '0x600': 'NhanVien { Ma: null, Ten: null, Luong1h: 0 }' }, note: 'Bộ nhớ đã cấp phát, mọi thuộc tính đang là giá trị mặc định. Constructor bắt đầu chạy.' },
+              { line: 10, vars: { ma: '"NV01"', ten: '"Trần Văn B"', luong1h: '50000' }, refs: { nv: '0x600' }, heap: { '0x600': 'NhanVien { Ma: "NV01", Ten: null, Luong1h: 0 }' } },
+              { line: 11, vars: { ma: '"NV01"', ten: '"Trần Văn B"', luong1h: '50000' }, refs: { nv: '0x600' }, heap: { '0x600': 'NhanVien { Ma: "NV01", Ten: "Trần Văn B", Luong1h: 0 }' } },
+              { line: 12, vars: { ma: '"NV01"', ten: '"Trần Văn B"', luong1h: '50000' }, refs: { nv: '0x600' }, heap: { '0x600': 'NhanVien { Ma: "NV01", Ten: "Trần Văn B", Luong1h: 50000 }' }, note: '50000 > 0 nên nhận. Truyền số âm thì luật ở đây chặn lại, gán về 0 — đối tượng không bao giờ ra đời ở trạng thái vô lý.' },
+              { line: 17, vars: { nv: '→ 0x600' }, refs: { nv: '0x600' }, heap: { '0x600': 'NhanVien { Ma: "NV01", Ten: "Trần Văn B", Luong1h: 50000 }' }, note: 'Constructor xong, địa chỉ được trả về và gán vào biến nv.' },
+            ],},
             },
             {
               type: 'visual',
@@ -122,7 +131,15 @@ const buoi10: Buoi = {
         }
     }`,
                 note: ': this(...) gọi lại constructor khác trong cùng class — viết luật kiểm tra một lần ở constructor đầy đủ, các bản còn lại dùng chung.',
-              },
+              
+            trace: [
+
+              { line: 7, vars: {}, note: 'Giả sử gọi new NhanVien() — bản không tham số.' },
+              { line: 13, vars: { ma: '"NV000"', ten: '"Chưa đặt tên"', luong1h: '0' }, note: ': this(...) chuyển ngay sang bản đầy đủ, mang theo ba giá trị mặc định. Thân của constructor rỗng chưa chạy dòng nào.' },
+              { line: 15, vars: { ma: '"NV000"', ten: '"Chưa đặt tên"', luong1h: '0' }, heap: { '0x700': 'NhanVien { Ma: "NV000" }' } },
+              { line: 17, vars: { ma: '"NV000"', ten: '"Chưa đặt tên"', luong1h: '0' }, heap: { '0x700': 'NhanVien { Ma: "NV000", Ten: "Chưa đặt tên", Luong1h: 0 }' } },
+              { line: 7, vars: {}, heap: { '0x700': 'NhanVien { Ma: "NV000", Ten: "Chưa đặt tên", Luong1h: 0 }' }, note: 'Quay lại thân constructor rỗng — ở đây trống nên xong luôn. Nhờ : this(...) mà luật kiểm tra chỉ cần viết ở đúng một chỗ.' },
+            ],},
             },
             {
               type: 'callout',
@@ -140,7 +157,14 @@ const buoi10: Buoi = {
 
     Console.WriteLine(Cong(1, 2));        // gọi bản int
     Console.WriteLine(Cong(1.5, 2.5));    // gọi bản double`,
-              },
+              
+            trace: [
+
+              { line: 5, vars: {}, note: 'Gọi Cong(1, 2) — hai đối số đều là int.' },
+              { line: 1, vars: { a: '1', b: '2' }, output: ['3'], note: 'Trình biên dịch nhìn số lượng và KIỂU đối số rồi chọn đúng bản int. Việc chọn diễn ra lúc biên dịch chứ không phải lúc chạy.' },
+              { line: 6, vars: {}, output: ['3'], note: 'Gọi Cong(1.5, 2.5) — hai đối số là double.' },
+              { line: 2, vars: { a: '1.5', b: '2.5' }, output: ['3', '4'], note: 'Lần này bản double được chọn. Cùng một cái tên nhưng người viết không phải nhớ ba tên hàm khác nhau.' },
+            ],},
             },
           ],
         },
@@ -169,7 +193,14 @@ var sv = new SinhVien { Ma = "SV01", Ten = "An", Diem = 8.5 };
 // Kết hợp cả hai: constructor lo phần bắt buộc, initializer lo phần tuỳ chọn
 var nv = new NhanVien("NV01", "Bình") { SoGioLam = 160 };`,
             note: 'Cách này cần một constructor không tham số. Nó chạy SAU constructor, nên luật kiểm tra trong constructor không chặn được giá trị gán ở đây.',
-          },
+          
+            trace: [
+
+              { line: 9, vars: { sv: '→ 0x800' }, refs: { sv: '0x800' }, heap: { '0x800': 'SinhVien { Ma: null, Ten: null, Diem: 0 }' }, note: 'Trước tiên chạy constructor rỗng — đó là lý do class phải có constructor không tham số mới dùng được cú pháp này.' },
+              { line: 9, vars: { sv: '→ 0x800' }, refs: { sv: '0x800' }, heap: { '0x800': 'SinhVien { Ma: "SV01", Ten: "An", Diem: 8.5 }' }, note: 'Sau đó initializer mới lần lượt gán từng thuộc tính, mỗi phép gán đi qua setter của property.' },
+              { line: 12, vars: { sv: '→ 0x800', nv: '→ 0x810' }, refs: { sv: '0x800', nv: '0x810' }, heap: { '0x800': 'SinhVien { Ma: "SV01", Ten: "An", Diem: 8.5 }', '0x810': 'NhanVien { Ma: "NV01", Ten: "Bình", SoGioLam: 0 }' }, note: 'Constructor chạy trước, lo phần bắt buộc.' },
+              { line: 12, vars: { sv: '→ 0x800', nv: '→ 0x810' }, refs: { sv: '0x800', nv: '0x810' }, heap: { '0x800': 'SinhVien { Ma: "SV01", Ten: "An", Diem: 8.5 }', '0x810': 'NhanVien { Ma: "NV01", Ten: "Bình", SoGioLam: 160 }' }, note: 'Rồi initializer chạy sau. Thứ tự này quan trọng: initializer ghi đè được cả giá trị mà constructor vừa gán.' },
+            ],},
         },
         {
           type: 'visual',

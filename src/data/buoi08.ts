@@ -65,7 +65,22 @@ numbers.Add(50);                          // thêm vào cuối
 numbers.AddRange(new int[] { 60, 70 });   // thêm nhiều phần tử
 numbers.Insert(1, 99);                    // chèn vào vị trí 1`,
             note: 'Insert làm dịch chuyển vị trí của mọi phần tử phía sau.',
-          },
+          
+            trace: [
+
+              { line: 1, vars: { numbers: '→ 0x100' }, refs: { numbers: '0x100' },
+                heap: { '0x100': '[10, 20, 30, 40]' },
+                note: 'List là kiểu tham chiếu: biến numbers nằm trên stack chỉ giữ địa chỉ, dữ liệu thật nằm trên heap.' },
+              { line: 3, vars: { numbers: '→ 0x100' }, refs: { numbers: '0x100' },
+                heap: { '0x100': '[10, 20, 30, 40, 50]' }, focus: { '0x100': [4] },
+                note: 'Add gắn 50 vào cuối, nhận chỉ số 4. Các phần tử cũ giữ nguyên chỗ.' },
+              { line: 4, vars: { numbers: '→ 0x100' }, refs: { numbers: '0x100' },
+                heap: { '0x100': '[10, 20, 30, 40, 50, 60, 70]' }, focus: { '0x100': [5, 6] },
+                note: 'AddRange nối thêm nhiều phần tử một lượt, vẫn ở cuối nên chỉ số cũ không đổi.' },
+              { line: 5, vars: { numbers: '→ 0x100' }, refs: { numbers: '0x100' },
+                heap: { '0x100': '[10, 99, 20, 30, 40, 50, 60, 70]' }, focus: { '0x100': [1] },
+                note: 'Insert chèn 99 vào chỗ số 1. Đây là chỗ khác hẳn Add: MỌI phần tử từ vị trí 1 trở đi bị đẩy lùi một bậc — 20 từ chỉ số 1 sang 2, 30 từ 2 sang 3, và cứ thế.' },
+            ],},
         },
         {
           type: 'code',
@@ -81,7 +96,18 @@ foreach (string name in lstName)            // duyệt bằng foreach
 
 for (int i = 0; i < lstName.Count; i++)     // duyệt bằng for
     Console.WriteLine($"{i}: {lstName[i]}");`,
-          },
+          
+            trace: [
+
+              { line: 1, vars: { lstName: '[A, B, C, D, E]' }, output: ['5'] },
+              { line: 2, vars: { lstName: '[A, B, C, D, E]' }, output: ['5', 'A'], focus: { lstName: [0] } },
+              { line: 3, vars: { lstName: '[A, B, C, D, E]' }, output: ['5', 'A', 'E'], focus: { lstName: [4] }, note: 'Cú pháp ^1 nghĩa là đếm ngược từ cuối — gọn hơn lstName[lstName.Count - 1].' },
+              { line: 4, vars: { lstName: '[A, B, C, D, E]' }, output: ['5', 'A', 'E', 'A, B, C, D, E'] },
+              { line: 7, vars: { lstName: '[A, B, C, D, E]', name: '"A"' }, output: ['5', 'A', 'E', 'A, B, C, D, E', 'A'], focus: { lstName: [0] }, note: 'foreach không cho biết chỉ số, chỉ đưa lần lượt từng phần tử.' },
+              { line: 7, vars: { lstName: '[A, B, C, D, E]', name: '"E"' }, output: ['5', 'A', 'E', 'A, B, C, D, E', 'A', '…', 'E'], focus: { lstName: [4] } },
+              { line: 10, vars: { lstName: '[A, B, C, D, E]', i: '0' }, output: ['…', '0: A'], focus: { lstName: [0] }, note: 'Cần biết chỉ số thì phải dùng for.' },
+              { line: 10, vars: { lstName: '[A, B, C, D, E]', i: '4' }, output: ['…', '0: A', '1: B', '2: C', '3: D', '4: E'], focus: { lstName: [4] } },
+            ],},
         },
         {
           type: 'code',
@@ -94,7 +120,15 @@ int  soDauTien = so.Find(x => x > 50);        // 81
 List<int> tatCa = so.FindAll(x => x > 50);    // [81, 97, 63, 72]
 bool coChua    = so.Contains(20);             // True`,
             note: 'x => x > 50 chính là lambda đã học ở buổi 7 — một hàm điều kiện truyền vào.',
-          },
+          
+            trace: [
+
+              { line: 1, vars: { so: '[20, 81, 97, 63, 72, 11]' } },
+              { line: 3, vars: { so: '[20, 81, 97, 63, 72, 11]', coSoLon: 'true' }, focus: { so: [2] }, note: 'Exists duyệt tới khi gặp phần tử đầu tiên thoả rồi dừng — 97 > 90 nên trả về true ngay, không cần xét 63, 72, 11.' },
+              { line: 4, vars: { so: '[20, 81, 97, 63, 72, 11]', coSoLon: 'true', soDauTien: '81' }, focus: { so: [1] }, note: 'Find trả về chính PHẦN TỬ đầu tiên thoả, không phải chỉ số. Không tìm thấy thì trả về 0 với int.' },
+              { line: 5, vars: { so: '[20, 81, 97, 63, 72, 11]', coSoLon: 'true', soDauTien: '81', tatCa: '[81, 97, 63, 72]' }, focus: { so: [1, 2, 3, 4] }, note: 'FindAll duyệt hết mảng, gom mọi phần tử thoả vào một List mới. List gốc không đổi.' },
+              { line: 6, vars: { so: '[20, 81, 97, 63, 72, 11]', coSoLon: 'true', soDauTien: '81', tatCa: '[81, 97, 63, 72]', coChua: 'true' }, focus: { so: [0] }, note: 'Contains so bằng giá trị, không nhận lambda. Trên List nó duyệt lần lượt nên chậm hơn Contains của HashSet.' },
+            ],},
         },
         {
           type: 'code',
@@ -107,7 +141,20 @@ numbers.RemoveAt(0);             // xoá phần tử ở vị trí 0
 numbers.RemoveAll(x => x >= 20); // xoá mọi phần tử thoả điều kiện
 numbers.Clear();                 // xoá sạch, list vẫn tồn tại`,
             note: 'Sau khi xoá, chỉ số các phần tử phía sau đều thay đổi. Đừng vừa duyệt vừa xoá bằng for xuôi.',
-          },
+          
+            trace: [
+
+              { line: 1, vars: { lstName: '[X, B, C, D, E]', numbers: '[10, 20, 30, 40]' }, focus: { lstName: [0] },
+                note: 'Gán theo chỉ số chỉ thay giá trị tại chỗ, không ai bị dịch chuyển.' },
+              { line: 3, vars: { lstName: '[X, B, C, D, E]', numbers: '[20, 30, 40]' }, focus: { numbers: [0] },
+                note: 'Remove nhận GIÁ TRỊ 10. Xoá xong, mọi phần tử phía sau dồn lên một bậc: 20 từ chỉ số 1 về 0.' },
+              { line: 4, vars: { lstName: '[X, B, C, D, E]', numbers: '[30, 40]' }, focus: { numbers: [0] },
+                note: 'RemoveAt nhận CHỈ SỐ. Vị trí 0 lúc này đang là 20 chứ không còn là 10 — đây là bẫy hay gặp khi xoá liên tiếp.' },
+              { line: 5, vars: { lstName: '[X, B, C, D, E]', numbers: '[]' },
+                note: 'RemoveAll quét cả list, xoá mọi phần tử >= 20. Cả 30 và 40 đều bay.' },
+              { line: 6, vars: { lstName: '[X, B, C, D, E]', numbers: '[]' },
+                note: 'Clear xoá sạch phần tử nhưng đối tượng list vẫn còn — khác với gán numbers = null là bỏ luôn cả list.' },
+            ],},
         },
         {
           type: 'table',
@@ -165,7 +212,19 @@ foreach (var item in data)
 
 data.Remove("ly");`,
             note: 'Đọc một khoá không tồn tại sẽ văng KeyNotFoundException — luôn dùng ContainsKey hoặc TryGetValue.',
-          },
+          
+            trace: [
+
+              { line: 5, vars: { data: '{toan: 8, ly: 7}' }, note: 'Dictionary lưu theo cặp khoá-giá trị, khoá do ta tự đặt chứ không phải chỉ số tăng dần.' },
+              { line: 7, vars: { data: '{toan: 8, ly: 7, hoa: 9}' }, note: 'Khoá "hoa" chưa có nên phép gán tạo cặp mới. Nếu khoá đã tồn tại thì dòng này ghi đè giá trị cũ.' },
+              { line: 8, vars: { data: '{toan: 8, ly: 7, hoa: 9}' }, output: ['8'], note: 'Đọc theo khoá gần như tức thì, không phải duyệt như List.' },
+              { line: 10, vars: { data: '{toan: 8, ly: 7, hoa: 9}' }, output: ['8'], note: 'ContainsKey("van") trả về false nên bỏ qua dòng in. Đọc thẳng data["van"] ở đây sẽ văng KeyNotFoundException.' },
+              { line: 13, vars: { data: '{toan: 8, ly: 7, hoa: 9}', diemLy: '7' }, output: ['8'], note: 'TryGetValue vừa kiểm tra vừa lấy giá trị ra — chỉ tra cứu một lần thay vì hai.' },
+              { line: 14, vars: { data: '{toan: 8, ly: 7, hoa: 9}', diemLy: '7' }, output: ['8', '7'] },
+              { line: 17, vars: { data: '{toan: 8, ly: 7, hoa: 9}', item: 'toan = 8' }, output: ['8', '7', 'toan = 8'] },
+              { line: 17, vars: { data: '{toan: 8, ly: 7, hoa: 9}', item: 'hoa = 9' }, output: ['8', '7', 'toan = 8', 'ly = 7', 'hoa = 9'] },
+              { line: 19, vars: { data: '{toan: 8, hoa: 9}' }, output: ['8', '7', 'toan = 8', 'ly = 7', 'hoa = 9'], note: 'Xoá theo khoá. Khác List: các cặp còn lại không bị dịch chỉ số vì Dictionary vốn không có chỉ số.' },
+            ],},
         },
         {
           type: 'callout',
@@ -194,7 +253,16 @@ Console.WriteLine(set.Contains(2));  // True — kiểm tra rất nhanh
 List<int> co = new List<int> { 1, 2, 2, 3, 3, 3 };
 List<int> khongTrung = new HashSet<int>(co).ToList();   // [1, 2, 3]`,
             note: 'HashSet không có chỉ số nên không truy cập bằng set[0] được.',
-          },
+          
+            trace: [
+
+              { line: 1, vars: { set: '[1, 2, 3]' } },
+              { line: 3, vars: { set: '[1, 2, 3]', 'kết quả Add': 'false' }, note: 'Số 3 đã có sẵn nên Add từ chối và trả về false. Tập hợp không đổi — đây chính là cách loại trùng chỉ bằng một dòng.' },
+              { line: 4, vars: { set: '[1, 2, 3]', 'kết quả Add': 'false' }, output: ['3'], note: 'Vẫn là 3 phần tử chứ không phải 4.' },
+              { line: 5, vars: { set: '[1, 2, 3]' }, output: ['3', 'True'], note: 'Contains trên HashSet gần như tức thì, còn Contains trên List phải duyệt lần lượt.' },
+              { line: 8, vars: { set: '[1, 2, 3]', co: '[1, 2, 2, 3, 3, 3]' }, output: ['3', 'True'], note: 'List gốc có 6 phần tử, trong đó 2 lặp hai lần và 3 lặp ba lần.' },
+              { line: 9, vars: { set: '[1, 2, 3]', co: '[1, 2, 2, 3, 3, 3]', khongTrung: '[1, 2, 3]' }, output: ['3', 'True'], note: 'Đổ List vào HashSet rồi đổ ngược ra: mọi bản trùng tự biến mất.' },
+            ],},
         },
         {
           type: 'code',
@@ -206,7 +274,13 @@ Console.WriteLine(names.Length);   // 5 — dùng Length, không phải Count
 names[0] = "X";                    // sửa được
 
 // Không có Add hay Remove — bộ nhớ đã cấp phát cố định`,
-          },
+          
+            trace: [
+
+              { line: 1, vars: { names: '→ 0x500' }, refs: { names: '0x500' }, heap: { '0x500': '[A, B, C, D, E]' }, note: 'Mảng cấp phát đúng 5 ô ngay lúc tạo, không co giãn được.' },
+              { line: 3, vars: { names: '→ 0x500' }, refs: { names: '0x500' }, heap: { '0x500': '[A, B, C, D, E]' }, output: ['5'], note: 'Mảng dùng Length, còn List và HashSet dùng Count — chỗ này hay gõ nhầm.' },
+              { line: 4, vars: { names: '→ 0x500' }, refs: { names: '0x500' }, heap: { '0x500': '[X, B, C, D, E]' }, focus: { '0x500': [0] }, output: ['5'], note: 'Sửa giá trị một ô thì được, nhưng không có Add hay Remove vì số ô đã khoá cứng từ lúc cấp phát.' },
+            ],},
         },
         {
           type: 'code',
@@ -219,7 +293,15 @@ List<int> back = set2.ToList();
 
 // Dictionary -> List các cặp khoá giá trị
 List<KeyValuePair<string, int>> pairs = data.ToList();`,
-          },
+          
+            trace: [
+
+              { line: 1, vars: { array: '[1, 2, 2, 3]', list: '[1, 2, 2, 3]' }, note: 'ToList tạo một List MỚI, mảng gốc vẫn còn nguyên.' },
+              { line: 2, vars: { array: '[1, 2, 2, 3]', list: '[1, 2, 2, 3]', array2: '[1, 2, 2, 3]' }, note: 'Và ngược lại — mỗi lần chuyển là một bản sao độc lập.' },
+              { line: 3, vars: { list: '[1, 2, 2, 3]', set2: '[1, 2, 3]' }, note: 'Đổ vào HashSet là phần tử trùng tự rụng: hai số 2 còn lại một.' },
+              { line: 4, vars: { list: '[1, 2, 2, 3]', set2: '[1, 2, 3]', back: '[1, 2, 3]' }, note: 'Đi vòng List → HashSet → List chính là mẹo loại trùng chỉ bằng một dòng.' },
+              { line: 7, vars: { data: '{toan: 8, ly: 7}', pairs: '[toan=8, ly=7]' }, note: 'Dictionary chuyển thành List các cặp KeyValuePair, lúc đó mới có chỉ số để sắp xếp.' },
+            ],},
         },
       ],
     },
@@ -315,7 +397,21 @@ foreach (int x in set)
 }
 Console.WriteLine(daiNhat);   // 4 — chuỗi [1, 2, 3, 4]`,
             note: 'HashSet cho phép hỏi "số này có tồn tại không" gần như tức thì — chính là chìa khoá của lời giải.',
-          },
+          
+            trace: [
+
+              { line: 2, vars: { nums: '[100, 4, 200, 1, 3, 2]', set: '[100, 4, 200, 1, 3, 2]' }, note: 'Đưa vào HashSet để hỏi "số này có tồn tại không" gần như tức thì.' },
+              { line: 5, vars: { set: '[100, 4, 200, 1, 3, 2]', x: '100', daiNhat: '0' }, focus: { set: [0] } },
+              { line: 7, vars: { set: '[100, 4, 200, 1, 3, 2]', x: '100', daiNhat: '0' }, focus: { set: [0] }, note: 'set không chứa 99 nên 100 LÀ đầu một chuỗi — không bỏ qua.' },
+              { line: 10, vars: { set: '[100, 4, 200, 1, 3, 2]', x: '100', hienTai: '100', dai: '1', daiNhat: '1' }, note: 'Không có 101 nên chuỗi dừng ở độ dài 1.' },
+              { line: 7, vars: { set: '[100, 4, 200, 1, 3, 2]', x: '4', daiNhat: '1' }, focus: { set: [1] }, note: 'Tới số 4: set CÓ chứa 3 nên 4 không phải đầu chuỗi — continue, bỏ qua ngay.' },
+              { line: 7, vars: { set: '[100, 4, 200, 1, 3, 2]', x: '1', daiNhat: '1' }, focus: { set: [3] }, note: 'Tới số 1: không có 0 nên đây là đầu chuỗi thật.' },
+              { line: 10, vars: { set: '[100, 4, 200, 1, 3, 2]', x: '1', hienTai: '2', dai: '2' }, focus: { set: [5] }, note: 'Có 2 — đi tiếp.' },
+              { line: 10, vars: { set: '[100, 4, 200, 1, 3, 2]', x: '1', hienTai: '3', dai: '3' }, focus: { set: [4] }, note: 'Có 3 — đi tiếp.' },
+              { line: 10, vars: { set: '[100, 4, 200, 1, 3, 2]', x: '1', hienTai: '4', dai: '4' }, focus: { set: [1] }, note: 'Có 4 — đi tiếp. Không có 5 nên dừng.' },
+              { line: 11, vars: { set: '[100, 4, 200, 1, 3, 2]', x: '1', dai: '4', daiNhat: '4' }, note: 'Kỷ lục mới.' },
+              { line: 13, vars: { daiNhat: '4' }, output: ['4'], note: 'Nhờ mẹo bỏ qua số không phải đầu chuỗi, mỗi số chỉ bị chạm đúng một lần — cả thuật toán chạy trong O(n) chứ không phải O(n²).' },
+            ],},
         },
       ],
     },
@@ -352,7 +448,17 @@ Console.WriteLine(c + 5);           // 15 — chạy được
 c = "abc";
 Console.WriteLine(c + 5);           // "abc5" — không báo lỗi biên dịch`,
             note: 'var là bạn thân hằng ngày. object dùng khi cần chứa nhiều kiểu. dynamic chỉ dùng khi thật sự cần.',
-          },
+          
+            trace: [
+
+              { line: 1, vars: { a: '10 (kiểu int)' }, note: 'var không phải là "kiểu động" — trình biên dịch nhìn giá trị 10 rồi chốt luôn a là int. Dòng 2 nếu bỏ comment sẽ lỗi ngay lúc build.' },
+              { line: 4, vars: { a: '10 (kiểu int)', b: '10 (kiểu object)' }, note: 'object chứa được mọi thứ, nhưng lúc lấy ra thì C# chỉ biết nó là object.' },
+              { line: 6, vars: { a: '10 (kiểu int)', b: '10 (kiểu object)' }, output: ['15'], note: 'Phải ép (int)b thì mới cộng được — dòng 5 nếu bỏ comment sẽ lỗi biên dịch.' },
+              { line: 8, vars: { a: '10', b: '10', c: '10 (kiểu dynamic)' }, output: ['15'], note: 'dynamic hoãn mọi kiểm tra kiểu tới lúc chạy.' },
+              { line: 9, vars: { c: '10 (kiểu dynamic)' }, output: ['15', '15'], note: 'Cộng được mà không cần ép kiểu.' },
+              { line: 10, vars: { c: '"abc" (kiểu dynamic)' }, output: ['15', '15'], note: 'Cùng một biến giờ đổi hẳn sang chuỗi — var không làm được điều này.' },
+              { line: 11, vars: { c: '"abc" (kiểu dynamic)' }, output: ['15', '15', 'abc5'], note: 'Trình biên dịch im lặng cho qua, phép + trở thành nối chuỗi. Bug kiểu này chỉ lộ ra khi chạy — đó là lý do nên hạn chế dynamic.' },
+            ],},
         },
       ],
     },
