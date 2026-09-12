@@ -27,7 +27,8 @@ chính, diễn đạt ngắn, và bổ sung lưu đồ / sơ đồ trực quan c
 | 14 | Abstract class & Generic — ràng buộc `where`, `Activator` |
 | 15 | 4 tính chất OOP & SOLID — SRP, OCP, LSP, ISP, DIP và Dependency Injection |
 
-193 bài tập, chia ba mức Cơ bản / Trung bình / Nâng cao. Riêng buổi 8 (Collection) có
+205 bài tập, chia ba mức Cơ bản / Trung bình / Nâng cao. Đề bài viết theo lối LeetCode:
+mô tả bài toán, chữ ký hàm cần cài đặt, ràng buộc đầu vào và các test case mẫu kèm giải thích. Riêng buổi 8 (Collection) có
 bộ 60 bài — 20 bài mỗi mức — nằm trong `src/data/buoi08-baitap.ts`.
 
 ## Truy cập
@@ -44,6 +45,8 @@ Muốn bảo vệ thật thì phải kiểm tra ở phía máy chủ.
 
 - **Hai theme sáng / tối**, nút chuyển nằm ở chân menu trái. Lần đầu vào trang sẽ theo
   thiết lập của hệ điều hành, sau đó ghi nhớ lựa chọn trong `localStorage`.
+- **Bốc đề ngẫu nhiên**: nút *Bốc đề 10 bài* chọn sẵn một đề theo tỷ lệ 2 Cơ bản ·
+  6 Trung bình · 2 Nâng cao, xuất PDF được ngay.
 - **Tab thay cho cuộn dài**: mỗi trang buổi học chia hai tab *Lý thuyết* và *Bài tập*;
   trong tab Bài tập lại có tab con theo cấp độ (Cơ bản / Trung bình / Nâng cao / Tất cả).
   Link có hash (`#bai-tap`, `#ten-muc`) tự mở đúng tab rồi mới cuộn tới.

@@ -109,7 +109,7 @@ function ExerciseCard({
 }) {
   const [done, setDone] = useState(false)
   return (
-    <li className={`card p-4 transition ${done ? 'opacity-55' : ''} ${picked ? 'ring-1 ring-brand-400/45' : ''}`}>
+    <li data-ex className={`card p-4 transition ${done ? 'opacity-55' : ''} ${picked ? 'ring-1 ring-brand-400/45' : ''}`}>
       <div className="mb-2.5 flex flex-wrap items-center gap-2.5">
         <label className="no-print flex cursor-pointer items-center" title="Chọn bài này để xuất PDF">
           <input
@@ -135,16 +135,47 @@ function ExerciseCard({
 
       <p className="text-[14.5px] leading-[1.75] text-ink/60">{ex.requirement}</p>
 
-      {ex.io && (
-        <div className="mt-3.5 grid gap-2.5 sm:grid-cols-2">
-          <div className="rounded-lg border border-accent-400/25 bg-accent-400/6 px-3 py-2">
-            <div className="mb-1 text-[10px] font-bold uppercase tracking-widest text-accent-400">Input</div>
-            <pre className="whitespace-pre-wrap font-mono text-[12.5px] text-ink/75">{ex.io.input}</pre>
+      {ex.signature && (
+        <pre className="mt-3 overflow-x-auto rounded-lg border border-ink/10 bg-ink/5 px-3 py-2 font-mono text-[12.5px] text-accent-400">
+          {ex.signature}
+        </pre>
+      )}
+
+      {ex.examples?.map((tc, i) => (
+        <div key={i} className="mt-3 rounded-lg border border-ink/10 bg-ink/4 px-3.5 py-2.5">
+          <div className="mb-1.5 text-[10.5px] font-bold uppercase tracking-widest text-ink/40">
+            Ví dụ {ex.examples!.length > 1 ? i + 1 : ''}
           </div>
-          <div className="rounded-lg border border-mint-400/25 bg-mint-400/6 px-3 py-2">
-            <div className="mb-1 text-[10px] font-bold uppercase tracking-widest text-mint-400">Output</div>
-            <pre className="whitespace-pre-wrap font-mono text-[12.5px] text-ink/75">{ex.io.output}</pre>
-          </div>
+          <dl className="space-y-1 font-mono text-[12.5px]">
+            <div className="flex gap-2">
+              <dt className="shrink-0 text-accent-400">Input:</dt>
+              <dd className="whitespace-pre-wrap text-ink/80">{tc.input}</dd>
+            </div>
+            <div className="flex gap-2">
+              <dt className="shrink-0 text-mint-400">Output:</dt>
+              <dd className="whitespace-pre-wrap text-ink/80">{tc.output}</dd>
+            </div>
+          </dl>
+          {tc.explain && (
+            <p className="mt-1.5 text-[12.5px] leading-relaxed text-ink/50">
+              <span className="font-semibold text-ink/65">Giải thích: </span>
+              {tc.explain}
+            </p>
+          )}
+        </div>
+      ))}
+
+      {ex.constraints && ex.constraints.length > 0 && (
+        <div className="mt-3">
+          <div className="mb-1 text-[10.5px] font-bold uppercase tracking-widest text-ink/40">Ràng buộc</div>
+          <ul className="space-y-0.5">
+            {ex.constraints.map((c, i) => (
+              <li key={i} className="flex gap-2 font-mono text-[12.5px] text-ink/55">
+                <span className="text-ink/25">·</span>
+                <span>{c}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
@@ -256,6 +287,41 @@ export default function BuoiPage() {
     window.addEventListener('afterprint', cleanup)
     window.print()
     setTimeout(cleanup, 1000)
+  }
+
+  /** Bốc ngẫu nhiên một đề 10 bài theo tỷ lệ 2 Cơ bản · 6 Trung bình · 2 Nâng cao. */
+  function pickRandomSet() {
+    const TY_LE: [string, number][] = [
+      ['Cơ bản', 2],
+      ['Trung bình', 6],
+      ['Nâng cao', 2],
+    ]
+    const chon = new Set<string>()
+    let thieu = 0
+
+    for (const [lv, soLuong] of TY_LE) {
+      const kho = buoi!.exercises.filter((e) => e.level === lv)
+      // Trộn Fisher–Yates rồi lấy từ đầu
+      for (let i = kho.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[kho[i], kho[j]] = [kho[j], kho[i]]
+      }
+      kho.slice(0, soLuong).forEach((e) => chon.add(e.id))
+      thieu += Math.max(0, soLuong - kho.length)
+    }
+
+    // Buổi nào thiếu bài ở một mức thì bù bằng bài bất kỳ còn lại, cho đủ 10
+    if (thieu > 0) {
+      const conLai = buoi!.exercises.filter((e) => !chon.has(e.id))
+      for (let i = conLai.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[conLai[i], conLai[j]] = [conLai[j], conLai[i]]
+      }
+      conLai.slice(0, thieu).forEach((e) => chon.add(e.id))
+    }
+
+    setPicked(chon)
+    setLevel('Tất cả')
   }
 
   function togglePick(id: string) {
@@ -403,6 +469,15 @@ export default function BuoiPage() {
                 className="rounded-lg border border-ink/12 px-2.5 py-1 text-[12.5px] text-ink/60 transition hover:bg-ink/8 hover:text-ink"
               >
                 Chọn hết mục đang xem
+              </button>
+
+              <button
+                onClick={pickRandomSet}
+                title="Bốc ngẫu nhiên 2 bài Cơ bản, 6 bài Trung bình, 2 bài Nâng cao"
+                className="rounded-lg border border-brand-400/35 bg-brand-500/10 px-2.5 py-1 text-[12.5px] font-semibold text-brand-300 transition hover:bg-brand-500/20"
+              >
+                Bốc đề 10 bài
+                <span className="ml-1.5 font-normal opacity-60">2 · 6 · 2</span>
               </button>
 
               <button

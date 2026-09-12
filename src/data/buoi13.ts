@@ -226,16 +226,104 @@ if (h is HinhChuNhat cn)
   ],
 
   exercises: [
-    { id: 'b13-1', level: 'Trung bình', title: 'Interface hình học', requirement: 'Interface IHinhHoc gồm TinhChuVi, TinhDienTich, MoTa. Ba class HinhTron, HinhChuNhat, TamGiac cài đặt. Cho vào List<IHinhHoc> rồi in bảng tổng hợp.', io: { input: 'Tròn r=5, CN 4x6', output: 'Hình tròn bán kính 5: chu vi 31.42, diện tích 78.54' } },
-    { id: 'b13-2', level: 'Trung bình', title: 'Toán tử is và as', requirement: 'Duyệt List<IHinhHoc>, dùng is để nhận ra hình tròn và in thêm dòng "không có cạnh"; các hình khác thì in số cạnh.', hint: 'if (h is HinhTron ht) — vừa kiểm tra vừa gán.' },
-    { id: 'b13-3', level: 'Trung bình', title: 'Một class nhiều interface', requirement: 'Interface IBayDuoc và IBoiDuoc. Class Vit cài đặt cả hai, class ChimSe chỉ cài IBayDuoc, class Ca chỉ cài IBoiDuoc.', hint: 'class Vit : IBayDuoc, IBoiDuoc' },
-    { id: 'b13-4', level: 'Nâng cao', title: 'Quản lý nhân viên đa hình đầy đủ', requirement: 'Ba loại nhân viên với cách tính lương riêng. Menu: thêm nhân viên (chọn loại), tìm theo tên không dấu, đổi tên theo mã, xoá, hiển thị danh sách kèm lương, thoát. Dùng đa hình để tính lương.', hint: 'List<NhanVien> chứa được cả ba loại nhờ đa hình.' },
-    { id: 'b13-5', level: 'Nâng cao', title: 'Lưu và đọc danh sách bằng JSON', requirement: 'Nâng cấp bài trên: lưu danh sách nhân viên ra file JSON và đọc lại khi khởi động chương trình.', hint: 'System.Text.Json — JsonSerializer.Serialize và Deserialize. Đa hình cần cấu hình thêm để giữ đúng kiểu lớp con.' },
-    { id: 'b13-6', level: 'Cơ bản', title: 'Danh sách hỗn hợp', requirement: 'Tạo List<DongVat> chứa cả chó, mèo, bò. Duyệt một vòng lặp duy nhất gọi KeuNhuThe() cho từng con.', io: { input: '—', output: 'Gâu gâu / Meo meo / Ò ó o' } },
-    { id: 'b13-7', level: 'Trung bình', title: 'Interface ISoSanh', requirement: 'Viết interface ISoSanh với phương thức SoSanh(object khac) trả về −1, 0 hoặc 1. Cho class SanPham cài đặt để so theo giá, rồi tự viết hàm sắp xếp danh sách.', hint: 'Không dùng Sort có sẵn, tự cài thuật toán sắp xếp nổi bọt.' },
-    { id: 'b13-8', level: 'Trung bình', title: 'Interface làm tham số', requirement: 'Viết hàm InBaoCao(List<IHinhHoc> ds) nhận vào danh sách bất kỳ hình nào, in bảng chu vi và diện tích. Thêm loại hình mới không phải sửa hàm này.' },
-    { id: 'b13-9', level: 'Nâng cao', title: 'Máy tính tiền đa hình', requirement: 'Interface IGiamGia với các bản cài đặt: giảm theo phần trăm, giảm số tiền cố định, mua 2 tặng 1. Đơn hàng nhận một IGiamGia và tính ra tiền phải trả.', io: { input: 'Đơn 500.000, giảm 10%', output: 'Phải trả: 450.000 đ' } },
-    { id: 'b13-10', level: 'Nâng cao', title: 'Hệ thống thông báo', requirement: 'Interface IThongBao với ba bản: email, SMS, push. Một lớp NotificationService nhận List<IThongBao> và gửi qua tất cả các kênh bằng một vòng lặp.' },
+
+    {
+      id: 'b13-1', level: 'Cơ bản', title: 'Danh sách hỗn hợp',
+      requirement: 'Cho một List<DongVat> chứa nhiều loài khác nhau. Trả về mảng tiếng kêu của từng con, dùng đúng một vòng lặp và không kiểm tra kiểu.',
+      signature: 'string[] TatCaTiengKeu(List<DongVat> ds)',
+      constraints: ['Không được dùng if theo loại con vật'],
+      examples: [
+        { input: 'ds = [Cho, Meo, Bo]', output: '["Gâu gâu", "Meo meo", "Ò ó o"]' },
+        { input: 'ds = []', output: '[]' },
+      ],
+    },
+    {
+      id: 'b13-2', level: 'Cơ bản', title: 'Interface hình học',
+      requirement: 'Thiết kế interface IHinhHoc gồm TinhChuVi, TinhDienTich, MoTa. Cài đặt cho HinhTron, HinhChuNhat, TamGiac rồi trả về bảng tổng hợp cho một danh sách hình.',
+      signature: 'interface IHinhHoc { double TinhChuVi(); double TinhDienTich(); string MoTa(); }',
+      constraints: ['Mỗi lớp phải cài đặt đủ cả ba thành phần'],
+      examples: [
+        { input: 'HinhTron(5)', output: '"Hình tròn bán kính 5: chu vi 31.42, diện tích 78.54"' },
+        { input: 'HinhChuNhat(4, 6)', output: '"Hình chữ nhật 4 x 6: chu vi 20, diện tích 24"' },
+      ],
+    },
+    {
+      id: 'b13-3', level: 'Cơ bản', title: 'Toán tử is và as',
+      requirement: 'Duyệt một List<IHinhHoc>. Với hình tròn thì thêm dòng "không có cạnh", với các hình khác thì in số cạnh. Dùng is kèm biến thay vì ép kiểu trực tiếp.',
+      signature: 'string[] MoTaChiTiet(List<IHinhHoc> ds)',
+      constraints: ['Không được dùng phép ép kiểu (Type)obj'],
+      examples: [
+        { input: 'ds = [HinhTron(5), HinhChuNhat(4,6)]', output: '["Hình tròn — không có cạnh", "Hình chữ nhật — 4 cạnh"]' },
+      ],
+    },
+    {
+      id: 'b13-4', level: 'Trung bình', title: 'Một class nhiều interface',
+      requirement: 'Thiết kế interface IBayDuoc và IBoiDuoc. Class Vit cài đặt cả hai, ChimSe chỉ cài IBayDuoc, Ca chỉ cài IBoiDuoc. Trả về danh sách tên các con vật bay được trong một danh sách hỗn hợp.',
+      signature: 'string[] NhungConBayDuoc(List<object> ds)',
+      constraints: ['Một class được cài đặt nhiều interface cùng lúc'],
+      examples: [
+        { input: 'ds = [Vit, ChimSe, Ca]', output: '["Vịt", "Chim sẻ"]' },
+      ],
+    },
+    {
+      id: 'b13-5', level: 'Trung bình', title: 'Interface ISoSanh',
+      requirement: 'Thiết kế interface ISoSanh với phương thức SoSanh trả về -1, 0 hoặc 1. Cho SanPham cài đặt để so theo giá, rồi tự viết hàm sắp xếp danh sách theo interface đó.',
+      signature: 'interface ISoSanh { int SoSanh(object khac); }',
+      constraints: ['Không dùng Sort có sẵn, tự cài thuật toán sắp xếp nổi bọt'],
+      examples: [
+        { input: 'ds = [SP(500k), SP(100k), SP(250k)]', output: '[100k, 250k, 500k]' },
+      ],
+    },
+    {
+      id: 'b13-6', level: 'Trung bình', title: 'Interface làm kiểu tham số',
+      requirement: 'Viết hàm nhận vào danh sách IHinhHoc bất kỳ và trả về tổng diện tích. Thêm loại hình mới sau này không được sửa hàm này.',
+      signature: 'double TongDienTich(List<IHinhHoc> ds)',
+      constraints: ['Hàm không được biết tên bất kỳ class cụ thể nào'],
+      examples: [
+        { input: 'ds = [HinhChuNhat(4,6), HinhChuNhat(2,3)]', output: '30' },
+        { input: 'ds = []', output: '0' },
+      ],
+    },
+    {
+      id: 'b13-7', level: 'Trung bình', title: 'switch theo kiểu đối tượng',
+      requirement: 'Cho một IHinhHoc. Trả về chuỗi mô tả tương ứng bằng switch expression khớp theo kiểu, xử lý cả trường hợp null và kiểu chưa hỗ trợ.',
+      signature: 'string MoTaHinh(IHinhHoc? h)',
+      constraints: ['Phải dùng switch expression, không dùng chuỗi if else'],
+      examples: [
+        { input: 'h = HinhTron(5)', output: '"Hình tròn, diện tích 78.54"' },
+        { input: 'h = null', output: '"Chưa có hình"' },
+      ],
+    },
+    {
+      id: 'b13-8', level: 'Nâng cao', title: 'Máy tính tiền đa hình',
+      requirement: 'Thiết kế interface IGiamGia với ba bản cài đặt: giảm theo phần trăm, giảm số tiền cố định, mua 2 tặng 1. Đơn hàng nhận một IGiamGia và trả về số tiền phải trả.',
+      signature: 'decimal TinhTien(List<decimal> giaSanPham, IGiamGia giamGia)',
+      constraints: ['Thêm kiểu giảm giá mới không được sửa lớp đơn hàng'],
+      examples: [
+        { input: 'Đơn 500.000, GiamPhanTram(10)', output: '450000' },
+        { input: 'Đơn [100k, 100k, 100k], Mua2Tang1()', output: '200000', explain: 'Sản phẩm rẻ nhất trong mỗi nhóm ba được miễn phí.' },
+      ],
+    },
+    {
+      id: 'b13-9', level: 'Nâng cao', title: 'Hệ thống thông báo',
+      requirement: 'Thiết kế interface IThongBao với ba bản: email, SMS, push. Lớp NotificationService nhận danh sách kênh và gửi qua tất cả bằng một vòng lặp, trả về số kênh đã gửi thành công.',
+      signature: 'int GuiTatCa(List<IThongBao> kenh, string noiDung)',
+      constraints: ['Thêm kênh mới không được sửa NotificationService'],
+      examples: [
+        { input: 'kenh = [Email, Sms, Push], noiDung = "Xin chào"', output: '3' },
+        { input: 'kenh = []', output: '0' },
+      ],
+    },
+    {
+      id: 'b13-10', level: 'Nâng cao', title: 'Quản lý nhân viên đa hình đầy đủ',
+      requirement: 'Xây chương trình quản lý ba loại nhân viên với cách tính lương riêng: thêm (chọn loại), tìm theo tên không dấu, đổi tên theo mã, xoá, hiển thị danh sách kèm lương, thoát. Dùng đa hình để tính lương.',
+      signature: 'List<NhanVien> danhSach',
+      constraints: ['Không được dùng if theo loại nhân viên khi tính lương'],
+      examples: [
+        { input: 'Thêm 3 loại nhân viên rồi chọn hiển thị', output: 'Bảng danh sách kèm lương từng người và tổng quỹ lương' },
+      ],
+      hint: 'List<NhanVien> chứa được cả ba loại nhờ đa hình.',
+    },
   ],
 }
 

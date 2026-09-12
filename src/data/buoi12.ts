@@ -276,16 +276,100 @@ class QuanLy : NhanVien
   ],
 
   exercises: [
-    { id: 'b12-1', level: 'Cơ bản', title: 'Kế thừa cơ bản', requirement: 'Tạo class Nguoi (tên, tuổi) và class SinhVien kế thừa Nguoi, thêm mã số và trường. Gọi constructor lớp cha bằng base.', io: { input: '—', output: 'Nguyễn Văn A — 20 tuổi — SV001 — CNTT' } },
-    { id: 'b12-2', level: 'Cơ bản', title: 'protected và private', requirement: 'Chứng minh bằng code rằng lớp con truy cập được thành phần protected của lớp cha nhưng không truy cập được thành phần private.', hint: 'Viết thử rồi đọc thông báo lỗi biên dịch.' },
-    { id: 'b12-3', level: 'Cơ bản', title: 'Ghi đè phương thức', requirement: 'Class DongVat có phương thức virtual KeuNhuThe(). Ba lớp con Cho, Meo, Bo override lại. Cho cả ba vào List<DongVat> rồi duyệt.', io: { input: '—', output: 'Gâu gâu / Meo meo / Ò ó o' } },
-    { id: 'b12-4', level: 'Cơ bản', title: 'Gọi lại lớp cha bằng base', requirement: 'Lớp con override HienThi() nhưng vẫn gọi base.HienThi() trước rồi in thêm thông tin riêng.', hint: 'base.TenPhuongThuc().' },
-    { id: 'b12-5', level: 'Trung bình', title: 'Ba loại nhân viên', requirement: 'Lớp cha NhanVien có TinhLuong() virtual. Ba lớp con: văn phòng (lương tháng cố định), sản xuất (số sản phẩm × đơn giá), kinh doanh (lương cứng + hoa hồng doanh số). Tính tổng quỹ lương bằng một vòng lặp.', io: { input: '3 nhân viên mỗi loại', output: 'Tổng quỹ lương: …' } },
-    { id: 'b12-6', level: 'Trung bình', title: 'Chặn kế thừa bằng sealed', requirement: 'Đánh dấu một lớp con là sealed, thử kế thừa tiếp từ nó và giải thích thông báo lỗi nhận được.' },
-    { id: 'b12-7', level: 'Trung bình', title: 'Cây kế thừa ba tầng', requirement: 'Xây chuỗi kế thừa Nguoi → NhanVien → QuanLy. Mỗi tầng thêm thuộc tính riêng và ghi đè HienThi(), tầng dưới gọi base.HienThi() của tầng trên.', hint: 'Chuỗi base(...) phải nối đủ từ dưới lên trên.' },
-    { id: 'b12-8', level: 'Trung bình', title: 'Ghi đè property', requirement: 'Lớp cha có property virtual MoTa. Lớp con override lại để trả về chuỗi khác. Property cũng ghi đè được như phương thức.' },
-    { id: 'b12-9', level: 'Nâng cao', title: 'new và override khác nhau chỗ nào', requirement: 'Viết hai lớp con: một dùng override, một dùng từ khoá new để che phương thức lớp cha. Gán cả hai vào biến kiểu lớp cha rồi gọi phương thức, giải thích vì sao kết quả khác nhau.', hint: 'override quyết định theo kiểu THẬT, new quyết định theo kiểu KHAI BÁO.' },
-    { id: 'b12-10', level: 'Nâng cao', title: 'Hệ thống phương tiện', requirement: 'Lớp cha PhuongTien (tên, tốc độ) với phương thức virtual DiChuyen(). Ba lớp con XeMay, OTo, MayBay ghi đè lại. In cách di chuyển của từng loại.' },
+
+    {
+      id: 'b12-1', level: 'Cơ bản', title: 'Kế thừa cơ bản',
+      requirement: 'Thiết kế class Nguoi gồm tên và tuổi, và class SinhVien kế thừa Nguoi, bổ sung mã số và tên trường. Constructor của SinhVien phải gọi constructor lớp cha.',
+      signature: 'class SinhVien : Nguoi { SinhVien(string ten, int tuoi, string ma, string truong) : base(ten, tuoi) }',
+      constraints: ['Không được chép lại tên và tuổi xuống lớp con'],
+      examples: [
+        { input: 'new SinhVien("Nguyễn Văn A", 20, "SV001", "CNTT")', output: '"Nguyễn Văn A — 20 tuổi — SV001 — CNTT"' },
+      ],
+    },
+    {
+      id: 'b12-2', level: 'Cơ bản', title: 'protected khác private chỗ nào',
+      requirement: 'Trong lớp cha khai báo một field private và một field protected. Từ lớp con thử truy cập cả hai, ghi lại kết quả biên dịch của từng trường hợp.',
+      signature: 'class Cha { private int a; protected int b; }',
+      constraints: ['Phải giải thích được vì sao một cái được và một cái không'],
+      examples: [
+        { input: 'Lớp con đọc b', output: 'Biên dịch được' },
+        { input: 'Lớp con đọc a', output: 'Lỗi CS0122: a không truy cập được vì mức bảo vệ' },
+      ],
+    },
+    {
+      id: 'b12-3', level: 'Cơ bản', title: 'Ghi đè phương thức',
+      requirement: 'Class DongVat có phương thức virtual KeuNhuThe(). Ba lớp con Cho, Meo, Bo ghi đè lại. Cho cả ba vào List<DongVat> rồi duyệt, trả về mảng tiếng kêu.',
+      signature: 'virtual string KeuNhuThe()',
+      constraints: ['Lớp cha phải đánh dấu virtual, lớp con phải dùng override'],
+      examples: [
+        { input: 'ds = [Cho, Meo, Bo]', output: '["Gâu gâu", "Meo meo", "Ò ó o"]' },
+      ],
+    },
+    {
+      id: 'b12-4', level: 'Cơ bản', title: 'Gọi lại lớp cha bằng base',
+      requirement: 'Lớp con ghi đè HienThi() nhưng vẫn gọi base.HienThi() trước rồi mới in thêm thông tin riêng của mình.',
+      signature: 'override void HienThi() { base.HienThi(); … }',
+      constraints: ['Không được chép lại nội dung của lớp cha vào lớp con'],
+      examples: [
+        { input: 'NhanVienKinhDoanh("Cường", doanhSo=80tr).HienThi()', output: '"Cường: 9.000.000 đ"\\n"   Doanh số: 80.000.000 đ"' },
+      ],
+    },
+    {
+      id: 'b12-5', level: 'Trung bình', title: 'Ba loại nhân viên',
+      requirement: 'Lớp cha NhanVien có TinhLuong() là virtual. Ba lớp con: văn phòng (lương tháng cố định), sản xuất (số sản phẩm × 15.000), kinh doanh (5.000.000 cộng 5% doanh số). Trả về tổng quỹ lương của cả danh sách bằng một vòng lặp duy nhất.',
+      signature: 'decimal TongQuyLuong(List<NhanVien> ds)',
+      constraints: ['Chỉ được dùng một vòng lặp, không if theo loại nhân viên'],
+      examples: [
+        { input: 'ds = [VanPhong(12tr), SanXuat(300sp), KinhDoanh(80tr)]', output: '25500000', explain: '12.000.000 + 4.500.000 + 9.000.000.' },
+      ],
+    },
+    {
+      id: 'b12-6', level: 'Trung bình', title: 'Chặn kế thừa bằng sealed',
+      requirement: 'Đánh dấu một lớp con là sealed rồi thử kế thừa tiếp từ nó. Ghi lại thông báo lỗi và giải thích khi nào nên dùng sealed.',
+      signature: 'sealed class A : B { }',
+      constraints: ['Phải nêu được một tình huống thực tế nên khoá lớp lại'],
+      examples: [
+        { input: 'class C : A { }', output: 'Lỗi CS0509: không kế thừa được từ lớp sealed' },
+      ],
+    },
+    {
+      id: 'b12-7', level: 'Trung bình', title: 'Cây kế thừa ba tầng',
+      requirement: 'Xây chuỗi kế thừa Nguoi → NhanVien → QuanLy. Mỗi tầng thêm thuộc tính riêng và ghi đè HienThi(), tầng dưới gọi base.HienThi() của tầng trên.',
+      signature: 'class QuanLy : NhanVien : Nguoi',
+      constraints: ['Chuỗi base(...) phải nối đủ từ tầng dưới lên tầng trên cùng'],
+      examples: [
+        { input: 'new QuanLy("An", "NV01", 5).HienThi()', output: '"Người: An"\\n"  Mã NV: NV01"\\n"  Quản lý 5 người"' },
+      ],
+    },
+    {
+      id: 'b12-8', level: 'Trung bình', title: 'Ghi đè property',
+      requirement: 'Lớp cha có property virtual MoTa. Lớp con ghi đè lại để trả về chuỗi khác. Chứng minh property cũng ghi đè được như phương thức.',
+      signature: 'public virtual string MoTa { get; }',
+      constraints: ['Không được chuyển property thành phương thức'],
+      examples: [
+        { input: 'Cha.MoTa', output: '"Một phương tiện"' },
+        { input: 'XeMay.MoTa', output: '"Xe hai bánh chạy xăng"' },
+      ],
+    },
+    {
+      id: 'b12-9', level: 'Nâng cao', title: 'override khác new thế nào',
+      requirement: 'Viết hai lớp con: một dùng override, một dùng từ khoá new để che phương thức lớp cha. Gán cả hai vào biến kiểu lớp cha rồi gọi phương thức, trả về hai kết quả và giải thích chênh lệch.',
+      signature: 'override void Chao() / new void Chao()',
+      constraints: ['Cả hai đều gán vào biến khai báo kiểu lớp cha'],
+      examples: [
+        { input: 'Cha x = new ConOverride(); x.Chao()', output: '"Con"', explain: 'override quyết định theo kiểu THẬT của đối tượng.' },
+        { input: 'Cha y = new ConNew(); y.Chao()', output: '"Cha"', explain: 'new chỉ che đi, quyết định theo kiểu KHAI BÁO của biến.' },
+      ],
+    },
+    {
+      id: 'b12-10', level: 'Nâng cao', title: 'Hệ thống phương tiện',
+      requirement: 'Lớp cha PhuongTien gồm tên và tốc độ, có phương thức virtual DiChuyen(). Ba lớp con XeMay, OTo, MayBay ghi đè lại. Trả về mảng mô tả cách di chuyển của từng loại trong danh sách.',
+      signature: 'string[] MoTaDiChuyen(List<PhuongTien> ds)',
+      constraints: ['Thêm loại phương tiện mới không được sửa hàm MoTaDiChuyen'],
+      examples: [
+        { input: 'ds = [XeMay, OTo, MayBay]', output: '["Chạy trên đường bằng hai bánh", "Chạy trên đường bằng bốn bánh", "Bay trên không"]' },
+      ],
+    },
   ],
 }
 

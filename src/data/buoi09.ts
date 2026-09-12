@@ -280,16 +280,105 @@ Console.WriteLine(tk.XemSoDu());`,
   ],
 
   exercises: [
-    { id: 'b9-1', level: 'Cơ bản', title: 'Class SinhVien', requirement: 'Tạo class SinhVien có các thuộc tính mã, tên, điểm trung bình và phương thức HienThi() in ra thông tin. Tạo 3 đối tượng và gọi HienThi().', io: { input: '—', output: 'SV001 — Nguyễn Văn A — ĐTB 8.5' } },
-    { id: 'b9-2', level: 'Cơ bản', title: 'Class HinhChuNhat', requirement: 'Tạo class HinhChuNhat có thuộc tính dài, rộng và hai phương thức TinhChuVi(), TinhDienTich().', io: { input: 'dài 5, rộng 3', output: 'Chu vi 16, diện tích 15' } },
-    { id: 'b9-3', level: 'Cơ bản', title: 'Class NhanVat game', requirement: 'Tạo class NhanVat có tên, máu, sát thương và phương thức TanCong(NhanVat mucTieu) làm giảm máu mục tiêu. Cho hai nhân vật đánh nhau vài lượt.', hint: 'Truyền chính đối tượng khác vào làm tham số.' },
-    { id: 'b9-4', level: 'Cơ bản', title: 'Tham chiếu hay giá trị', requirement: 'Viết chương trình chứng minh gán hai biến đối tượng cho nhau thì cả hai cùng trỏ một vùng nhớ, còn gán hai biến int thì không.', hint: 'In giá trị trước và sau khi sửa qua biến thứ hai.' },
-    { id: 'b9-5', level: 'Trung bình', title: 'Bảo vệ dữ liệu bằng private', requirement: 'Tạo class TaiKhoan có soDu là private, chỉ cho nạp và rút qua phương thức. Rút quá số dư thì báo lỗi và không trừ tiền.', io: { input: 'Số dư 500.000, rút 800.000', output: 'Số dư không đủ' } },
-    { id: 'b9-6', level: 'Trung bình', title: 'Danh sách đối tượng', requirement: 'Dùng List<SinhVien> lưu nhiều sinh viên. Cho phép thêm, in toàn bộ và tìm sinh viên có điểm cao nhất.', hint: 'Kết hợp kiến thức List của buổi 8.' },
-    { id: 'b9-7', level: 'Trung bình', title: 'Quản lý danh sách công việc', requirement: 'Tạo class Task gồm tên và trạng thái hoàn thành. Xây dựng menu: 1/ Thêm task, 2/ Hiển thị danh sách, 3/ Đánh dấu hoàn thành, 4/ Thoát.', io: { input: 'Thêm "Task abc"', output: 'Danh sách:\n1/ Task abc — Pending' } },
-    { id: 'b9-8', level: 'Trung bình', title: 'Quản lý thực đơn quán ăn', requirement: 'Tạo class MonAn gồm tên và giá. Menu: 1/ Thêm món, 2/ Hiển thị thực đơn, 3/ Xoá món theo số thứ tự, 4/ Thoát.', io: { input: 'Chọn món xoá: 2', output: '1/ cơm chiên — 1000' } },
-    { id: 'b9-9', level: 'Nâng cao', title: 'Quản lý thông tin nhân viên', requirement: 'Class NhanVien gồm mã, tên, lương 1 giờ, số giờ làm. Menu: thêm, tìm theo tên (không dấu), đổi tên, xoá, hiển thị danh sách kèm lương tính theo số giờ, thoát. Phân tích class trước khi code.', hint: 'Lương = luong1h × soGioLam. Tìm không dấu thì chuẩn hoá chuỗi trước khi so.' },
-    { id: 'b9-10', level: 'Nâng cao', title: 'Vẽ sơ đồ lớp cho bài quản lý nhân viên', requirement: 'Vẽ class diagram cho bài trên bằng Mermaid: ghi rõ thuộc tính, phương thức và ký hiệu phạm vi truy cập (+ − #).', hint: 'mermaid.live để xem trước hình.' },
+
+    {
+      id: 'b9-1', level: 'Cơ bản', title: 'Thiết kế class SinhVien',
+      requirement: 'Thiết kế class SinhVien gồm mã, tên, điểm trung bình và phương thức HienThi() trả về chuỗi mô tả sinh viên theo dạng "mã — tên — ĐTB điểm".',
+      signature: 'class SinhVien { string Ma; string Ten; double Dtb; string HienThi(); }',
+      constraints: ['0 <= Dtb <= 10'],
+      examples: [
+        { input: 'Ma = "SV001", Ten = "Nguyễn Văn A", Dtb = 8.5', output: '"SV001 — Nguyễn Văn A — ĐTB 8.5"' },
+      ],
+    },
+    {
+      id: 'b9-2', level: 'Cơ bản', title: 'Class HinhChuNhat',
+      requirement: 'Thiết kế class HinhChuNhat gồm chiều dài, chiều rộng và hai phương thức tính chu vi, diện tích.',
+      signature: 'class HinhChuNhat { double TinhChuVi(); double TinhDienTich(); }',
+      constraints: ['0 < dai, rong <= 10000'],
+      examples: [
+        { input: 'dai = 5, rong = 3', output: 'ChuVi = 16, DienTich = 15' },
+        { input: 'dai = 2, rong = 2', output: 'ChuVi = 8, DienTich = 4' },
+      ],
+    },
+    {
+      id: 'b9-3', level: 'Cơ bản', title: 'Nhân vật game tấn công nhau',
+      requirement: 'Thiết kế class NhanVat gồm tên, máu, sát thương và phương thức TanCong nhận vào một nhân vật khác, trừ máu mục tiêu đúng bằng sát thương của mình. Máu không được xuống dưới 0.',
+      signature: 'class NhanVat { void TanCong(NhanVat mucTieu); }',
+      constraints: ['0 <= Mau <= 10000', '0 <= SatThuong <= 1000'],
+      examples: [
+        { input: 'a(Mau=100, SatThuong=30) tấn công b(Mau=50)', output: 'b.Mau = 20' },
+        { input: 'a(SatThuong=80) tấn công b(Mau=50)', output: 'b.Mau = 0', explain: 'Máu bị chặn ở 0, không cho âm.' },
+      ],
+      hint: 'Truyền chính đối tượng khác vào làm tham số của phương thức.',
+    },
+    {
+      id: 'b9-4', level: 'Cơ bản', title: 'Kiểu tham chiếu và kiểu giá trị',
+      requirement: 'Cho một class NhanVat có thuộc tính Ten. Gán b = a rồi đổi b.Ten. Trả về giá trị của a.Ten sau khi đổi, và giải thích vì sao khác với trường hợp gán hai biến int.',
+      signature: 'string KetQuaSauKhiGan()',
+      constraints: ['NhanVat là class, không phải struct'],
+      examples: [
+        { input: 'a.Ten = "Mario"; b = a; b.Ten = "Luigi"', output: '"Luigi"', explain: 'Class là kiểu tham chiếu nên a và b cùng trỏ một vùng nhớ.' },
+        { input: 'int x = 5; int y = x; y = 99', output: 'x vẫn là 5', explain: 'int là kiểu giá trị nên được sao chép hẳn ra.' },
+      ],
+    },
+    {
+      id: 'b9-5', level: 'Trung bình', title: 'Bảo vệ số dư bằng private',
+      requirement: 'Thiết kế class TaiKhoan có số dư là private, chỉ thay đổi được qua NapTien và RutTien. Nạp số âm thì bỏ qua. Rút quá số dư thì trả về false và giữ nguyên số dư.',
+      signature: 'class TaiKhoan { void NapTien(decimal s); bool RutTien(decimal s); decimal XemSoDu(); }',
+      constraints: ['Không được để lộ field số dư ra ngoài dưới dạng public'],
+      examples: [
+        { input: 'NapTien(500000); RutTien(800000)', output: 'false, XemSoDu() = 500000' },
+        { input: 'NapTien(500000); RutTien(200000)', output: 'true, XemSoDu() = 300000' },
+      ],
+    },
+    {
+      id: 'b9-6', level: 'Trung bình', title: 'Tìm sinh viên điểm cao nhất',
+      requirement: 'Cho một List<SinhVien>. Trả về sinh viên có điểm trung bình cao nhất. Danh sách rỗng thì trả về null.',
+      signature: 'SinhVien? DiemCaoNhat(List<SinhVien> ds)',
+      constraints: ['0 <= ds.Count <= 100000'],
+      examples: [
+        { input: 'ds = [("A", 7.5), ("B", 9.0), ("C", 8.0)]', output: 'Sinh viên B' },
+        { input: 'ds = []', output: 'null' },
+      ],
+    },
+    {
+      id: 'b9-7', level: 'Trung bình', title: 'Quản lý danh sách công việc',
+      requirement: 'Thiết kế class Task gồm tên và trạng thái hoàn thành, kèm chương trình console có menu: 1/ Thêm task, 2/ Hiển thị danh sách, 3/ Đánh dấu hoàn thành theo số thứ tự, 4/ Thoát.',
+      signature: 'class Task { string Ten; bool DaXong; }',
+      constraints: ['Số thứ tự nhập sai phải báo lỗi, không được văng exception'],
+      examples: [
+        { input: 'Thêm "Task abc", rồi chọn 2', output: '1/ Task abc — Pending' },
+        { input: 'Đánh dấu 1 hoàn thành, rồi chọn 2', output: '1/ Task abc — Done' },
+      ],
+    },
+    {
+      id: 'b9-8', level: 'Trung bình', title: 'Quản lý thực đơn quán ăn',
+      requirement: 'Thiết kế class MonAn gồm tên và giá, kèm menu console: 1/ Thêm món, 2/ Hiển thị thực đơn, 3/ Xoá món theo số thứ tự, 4/ Thoát.',
+      signature: 'class MonAn { string Ten; decimal Gia; }',
+      constraints: ['Giá phải là số dương, nhập sai thì từ chối'],
+      examples: [
+        { input: 'Thực đơn [cơm chiên 1000, cá chiên 2000], chọn xoá 2', output: '1/ cơm chiên — 1000' },
+      ],
+    },
+    {
+      id: 'b9-9', level: 'Nâng cao', title: 'Quản lý thông tin nhân viên',
+      requirement: 'Thiết kế class NhanVien gồm mã, tên, lương một giờ và số giờ làm. Xây menu console: thêm, tìm theo tên không dấu, đổi tên theo mã, xoá, hiển thị danh sách kèm lương, thoát. Lương = lương một giờ × số giờ làm.',
+      signature: 'class NhanVien { string Ma, Ten; decimal Luong1h; int SoGioLam; decimal TinhLuong(); }',
+      constraints: ['Tìm kiếm không phân biệt hoa thường và không phân biệt dấu tiếng Việt'],
+      examples: [
+        { input: 'Nhân viên ("NV01", "Trần Bình", 50000, 160), tìm "tran binh"', output: 'NV01 — Trần Bình — 8.000.000 đ' },
+      ],
+      hint: 'Chuẩn hoá chuỗi về không dấu chữ thường trước khi so sánh.',
+    },
+    {
+      id: 'b9-10', level: 'Nâng cao', title: 'Vẽ sơ đồ lớp bằng Mermaid',
+      requirement: 'Viết mã Mermaid mô tả sơ đồ lớp cho bài quản lý nhân viên: đủ thuộc tính, phương thức và ký hiệu phạm vi truy cập (+ public, − private, # protected).',
+      signature: 'classDiagram …',
+      constraints: ['Xem trước tại mermaid.live trước khi nộp'],
+      examples: [
+        { input: 'Class NhanVien với Ma public, luong1h private', output: 'classDiagram\\n  class NhanVien {\\n    +string Ma\\n    -decimal luong1h\\n  }' },
+      ],
+    },
   ],
 }
 

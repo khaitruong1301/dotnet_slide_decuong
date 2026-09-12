@@ -210,15 +210,123 @@ Console.WriteLine($"Tiền điện: {tien:N0} đồng");`,
 
 
   exercises: [
-    { id: 'b3-1', level: 'Cơ bản', title: 'Kiểm tra số chẵn lẻ', requirement: 'Nhập một số nguyên, cho biết số đó chẵn hay lẻ.', io: { input: '7', output: 'Số lẻ' }, hint: 'so % 2 == 0' },
-    { id: 'b3-2', level: 'Cơ bản', title: 'Số âm, dương hay bằng 0', requirement: 'Nhập một số nguyên và cho biết nó âm, dương hay bằng 0.', io: { input: '-5', output: 'Số âm' } },
-    { id: 'b3-3', level: 'Cơ bản', title: 'Phân loại theo tuổi', requirement: 'Nhập tuổi: dưới 18 là Trẻ em, 18–60 là Người lớn, trên 60 là Người cao tuổi.', io: { input: '25', output: 'Người lớn' } },
-    { id: 'b3-4', level: 'Trung bình', title: 'Lương tăng ca', requirement: 'Nhập lương cơ bản theo giờ và số giờ làm việc. Số giờ vượt quá 40 được tính theo tỷ lệ 1.5.', io: { input: '50000 / 45', output: '2375000' } },
-    { id: 'b3-5', level: 'Trung bình', title: 'Xếp loại học lực', requirement: 'Nhập điểm Toán, Lý, Hoá (0–10, nhập sai phải báo lỗi). Tính điểm trung bình và xếp loại Giỏi / Khá / Trung bình / Yếu.', io: { input: '8 7.5 9', output: 'ĐTB 8.17 — Giỏi' } },
-    { id: 'b3-6', level: 'Trung bình', title: 'Tiền điện bậc thang', requirement: '50 kWh đầu 1.678đ/kWh, 50 kWh tiếp theo 1.734đ/kWh, phần còn lại 2.014đ/kWh.', io: { input: '120', output: '211.400 đồng' } },
-    { id: 'b3-7', level: 'Trung bình', title: 'Thuế thu nhập cá nhân', requirement: 'Thu nhập ≤ 5 triệu miễn thuế, ≤ 10 triệu thuế 10%, trên 10 triệu thuế 20%.', io: { input: '12000000', output: 'Thuế: 2400000' } },
-    { id: 'b3-8', level: 'Trung bình', title: 'Tính tiền taxi', requirement: 'Km đầu 10.000đ, từ km 2 đến km 5 giá 8.000đ/km, trên 5 km giá 6.000đ/km.', io: { input: '7', output: '54000' } },
-    { id: 'b3-9', level: 'Nâng cao', title: 'Kiểm tra tam giác', requirement: 'Nhập ba cạnh a, b, c. Kiểm tra có tạo thành tam giác không; nếu có thì cho biết là tam giác đều, cân hay thường.', io: { input: '3 4 5', output: 'Tam giác thường' }, hint: 'Điều kiện tồn tại: tổng hai cạnh bất kỳ lớn hơn cạnh còn lại.' },
+
+    {
+      id: 'b3-1', level: 'Cơ bản', title: 'Kiểm tra số chẵn lẻ',
+      requirement: 'Cho một số nguyên n. Trả về true nếu n là số chẵn, ngược lại trả về false.',
+      signature: 'bool LaSoChan(int n)',
+      constraints: ['-1_000_000 <= n <= 1_000_000'],
+      examples: [
+        { input: 'n = 7', output: 'false' },
+        { input: 'n = 0', output: 'true', explain: '0 chia hết cho 2 nên là số chẵn.' },
+        { input: 'n = -4', output: 'true' },
+      ],
+    },
+    {
+      id: 'b3-2', level: 'Cơ bản', title: 'Số âm, dương hay bằng 0',
+      requirement: 'Cho một số nguyên n. Trả về "Số dương" nếu n > 0, "Số âm" nếu n < 0, và "Bằng 0" nếu n = 0.',
+      signature: 'string PhanLoaiSo(int n)',
+      constraints: ['-1_000_000 <= n <= 1_000_000'],
+      examples: [
+        { input: 'n = -5', output: '"Số âm"' },
+        { input: 'n = 0', output: '"Bằng 0"' },
+      ],
+    },
+    {
+      id: 'b3-3', level: 'Cơ bản', title: 'Phân loại theo tuổi',
+      requirement: 'Cho tuổi của một người. Trả về "Trẻ em" nếu dưới 18, "Người lớn" nếu từ 18 đến 60, "Người cao tuổi" nếu trên 60.',
+      signature: 'string PhanLoaiTuoi(int tuoi)',
+      constraints: ['0 <= tuoi <= 150'],
+      examples: [
+        { input: 'tuoi = 25', output: '"Người lớn"' },
+        { input: 'tuoi = 60', output: '"Người lớn"', explain: 'Mốc 60 vẫn thuộc nhóm người lớn — chú ý dấu bằng.' },
+        { input: 'tuoi = 61', output: '"Người cao tuổi"' },
+      ],
+    },
+    {
+      id: 'b3-4', level: 'Cơ bản', title: 'Tìm số lớn nhất trong ba số',
+      requirement: 'Cho ba số nguyên a, b, c. Trả về số lớn nhất trong ba số đó. Không dùng Math.Max.',
+      signature: 'int LonNhat(int a, int b, int c)',
+      constraints: ['-1_000_000 <= a, b, c <= 1_000_000'],
+      examples: [
+        { input: 'a = 3, b = 9, c = 5', output: '9' },
+        { input: 'a = 7, b = 7, c = 2', output: '7' },
+      ],
+    },
+    {
+      id: 'b3-5', level: 'Trung bình', title: 'Lương tăng ca',
+      requirement: 'Cho lương mỗi giờ và số giờ làm trong tuần. 40 giờ đầu tính lương bình thường, mỗi giờ vượt quá 40 được tính hệ số 1.5. Trả về tổng lương.',
+      signature: 'decimal TinhLuong(decimal luongGio, int soGioLam)',
+      constraints: ['0 < luongGio <= 1_000_000', '0 <= soGioLam <= 168'],
+      examples: [
+        { input: 'luongGio = 50000, soGioLam = 45', output: '2375000', explain: '40 × 50000 = 2.000.000, cộng 5 × 50000 × 1.5 = 375.000.' },
+        { input: 'luongGio = 50000, soGioLam = 40', output: '2000000', explain: 'Đúng 40 giờ thì chưa có tăng ca.' },
+      ],
+    },
+    {
+      id: 'b3-6', level: 'Trung bình', title: 'Xếp loại học lực',
+      requirement: 'Cho điểm ba môn Toán, Lý, Hoá. Tính điểm trung bình rồi trả về xếp loại: "Giỏi" nếu ĐTB >= 8, "Khá" nếu >= 6.5, "Trung bình" nếu >= 5, còn lại "Yếu". Nếu có điểm nằm ngoài khoảng 0–10 thì trả về "Dữ liệu không hợp lệ".',
+      signature: 'string XepLoai(double toan, double ly, double hoa)',
+      constraints: ['Điểm là số thực bất kỳ, phải tự kiểm tra khoảng hợp lệ'],
+      examples: [
+        { input: 'toan = 8, ly = 7.5, hoa = 9', output: '"Giỏi"', explain: 'ĐTB = 8.17.' },
+        { input: 'toan = 5, ly = 5, hoa = 5', output: '"Trung bình"' },
+        { input: 'toan = 11, ly = 5, hoa = 5', output: '"Dữ liệu không hợp lệ"' },
+      ],
+    },
+    {
+      id: 'b3-7', level: 'Trung bình', title: 'Tiền điện bậc thang',
+      requirement: 'Cho số kWh tiêu thụ trong tháng. 50 kWh đầu giá 1.678đ/kWh, 50 kWh tiếp theo giá 1.734đ/kWh, phần vượt quá 100 kWh giá 2.014đ/kWh. Trả về số tiền phải trả.',
+      signature: 'decimal TinhTienDien(int soKwh)',
+      constraints: ['0 <= soKwh <= 10000'],
+      examples: [
+        { input: 'soKwh = 120', output: '211000', explain: '50×1678 + 50×1734 + 20×2014 = 83900 + 86700 + 40280 = 210880, làm tròn 211000.' },
+        { input: 'soKwh = 30', output: '50340', explain: 'Chưa vượt bậc một nên chỉ nhân đơn giá đầu tiên.' },
+      ],
+      hint: 'Mỗi bậc chỉ tính phần vượt qua bậc trước, không nhân toàn bộ số kWh với một giá.',
+    },
+    {
+      id: 'b3-8', level: 'Trung bình', title: 'Thuế thu nhập cá nhân',
+      requirement: 'Cho thu nhập tháng. Thu nhập tới 5 triệu được miễn thuế, tới 10 triệu chịu thuế 10%, trên 10 triệu chịu thuế 20% trên toàn bộ thu nhập. Trả về số thuế phải nộp.',
+      signature: 'decimal TinhThue(decimal thuNhap)',
+      constraints: ['0 <= thuNhap <= 1_000_000_000'],
+      examples: [
+        { input: 'thuNhap = 12000000', output: '2400000' },
+        { input: 'thuNhap = 5000000', output: '0' },
+      ],
+    },
+    {
+      id: 'b3-9', level: 'Trung bình', title: 'Tính tiền taxi',
+      requirement: 'Cho số km đã đi. Km đầu tiên giá 10.000đ, từ km thứ 2 đến km thứ 5 giá 8.000đ/km, từ km thứ 6 trở đi giá 6.000đ/km. Trả về tổng tiền.',
+      signature: 'int TinhTienTaxi(int soKm)',
+      constraints: ['0 < soKm <= 1000'],
+      examples: [
+        { input: 'soKm = 7', output: '54000', explain: '10000 + 4×8000 + 2×6000 = 10000 + 32000 + 12000.' },
+        { input: 'soKm = 1', output: '10000' },
+      ],
+    },
+    {
+      id: 'b3-10', level: 'Nâng cao', title: 'Phân loại tam giác',
+      requirement: 'Cho ba cạnh a, b, c. Trả về "Không phải tam giác" nếu không tạo thành tam giác, ngược lại trả về "Tam giác đều", "Tam giác cân" hoặc "Tam giác thường".',
+      signature: 'string PhanLoaiTamGiac(double a, double b, double c)',
+      constraints: ['0 < a, b, c <= 1000', 'Điều kiện tồn tại: tổng hai cạnh bất kỳ lớn hơn cạnh còn lại'],
+      examples: [
+        { input: 'a = 3, b = 4, c = 5', output: '"Tam giác thường"' },
+        { input: 'a = 2, b = 2, c = 2', output: '"Tam giác đều"' },
+        { input: 'a = 1, b = 2, c = 5', output: '"Không phải tam giác"', explain: '1 + 2 = 3 < 5 nên không tồn tại tam giác.' },
+      ],
+    },
+    {
+      id: 'b3-11', level: 'Nâng cao', title: 'Năm nhuận',
+      requirement: 'Cho một năm. Trả về true nếu là năm nhuận. Năm nhuận là năm chia hết cho 4 nhưng không chia hết cho 100, hoặc chia hết cho 400.',
+      signature: 'bool LaNamNhuan(int nam)',
+      constraints: ['1 <= nam <= 9999'],
+      examples: [
+        { input: 'nam = 2024', output: 'true' },
+        { input: 'nam = 1900', output: 'false', explain: 'Chia hết cho 100 mà không chia hết cho 400.' },
+        { input: 'nam = 2000', output: 'true', explain: 'Chia hết cho 400 nên vẫn là năm nhuận.' },
+      ],
+    },
   ],
 }
 

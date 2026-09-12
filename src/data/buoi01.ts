@@ -182,12 +182,92 @@ Console.WriteLine($"Chào {hoTen}, bạn {tuoi} tuổi.");`,
 
 
   exercises: [
-    { id: 'b1-1', level: 'Cơ bản', title: 'Thông tin cá nhân', requirement: 'Nhập họ tên, email, số điện thoại và hiển thị lại thông tin tương ứng.', io: { input: 'Nguyễn Văn A / a@gmail.com / 0901234567', output: 'Họ tên: Nguyễn Văn A — Email: a@gmail.com — SĐT: 0901234567' } },
-    { id: 'b1-2', level: 'Cơ bản', title: 'Tổng điểm ba môn', requirement: 'Nhập điểm Toán, Lý, Hoá và in ra tổng điểm của ba môn.', io: { input: '8 7 9', output: 'Tổng điểm: 24' } },
-    { id: 'b1-3', level: 'Cơ bản', title: 'Đổi độ C sang độ F', requirement: 'Nhập nhiệt độ độ C, chuyển sang độ F theo công thức F = C × 9/5 + 32.', io: { input: '25', output: '77' }, hint: 'Ép về double trước khi chia để không mất phần thập phân.' },
-    { id: 'b1-4', level: 'Cơ bản', title: 'Chu vi và diện tích hình tròn', requirement: 'Nhập bán kính, tính chu vi P = 2πr và diện tích A = πr².', io: { input: '2', output: 'P = 12.57 ; A = 12.57' }, hint: 'Math.PI' },
-    { id: 'b1-5', level: 'Cơ bản', title: 'Chỉ số BMI', requirement: 'Nhập cân nặng (kg) và chiều cao (m), tính BMI = cân nặng / (chiều cao)².', io: { input: '60 1.7', output: 'BMI = 20.76' } },
-    { id: 'b1-6', level: 'Trung bình', title: 'Đổi phút sang giờ và phút', requirement: 'Nhập số phút, đổi sang dạng giờ và phút lẻ.', io: { input: '130', output: '2 giờ 10 phút' }, hint: 'Dùng phép chia lấy nguyên / và chia lấy dư %.' },
+
+    {
+      id: 'b1-1', level: 'Cơ bản', title: 'Định dạng thông tin cá nhân',
+      requirement: 'Cho họ tên, email và số điện thoại của một người. Trả về chuỗi thông tin đã định dạng, ba trường cách nhau bằng dấu gạch ngang có khoảng trắng hai bên.',
+      signature: 'string DinhDangThongTin(string hoTen, string email, string sdt)',
+      constraints: ['1 <= hoTen.Length <= 100', 'email chứa đúng một ký tự @', 'sdt gồm 10 chữ số'],
+      examples: [
+        { input: 'hoTen = "Nguyễn Văn A", email = "a@gmail.com", sdt = "0901234567"', output: '"Nguyễn Văn A - a@gmail.com - 0901234567"' },
+        { input: 'hoTen = "Trần Bình", email = "binh@edu.vn", sdt = "0987654321"', output: '"Trần Bình - binh@edu.vn - 0987654321"' },
+      ],
+    },
+    {
+      id: 'b1-2', level: 'Cơ bản', title: 'Tổng điểm ba môn',
+      requirement: 'Cho điểm ba môn Toán, Lý, Hoá. Trả về tổng điểm của ba môn.',
+      signature: 'double TongDiem(double toan, double ly, double hoa)',
+      constraints: ['0 <= toan, ly, hoa <= 10'],
+      examples: [
+        { input: 'toan = 8, ly = 7, hoa = 9', output: '24' },
+        { input: 'toan = 5.5, ly = 6, hoa = 7.5', output: '19' },
+      ],
+    },
+    {
+      id: 'b1-3', level: 'Cơ bản', title: 'Đổi độ C sang độ F',
+      requirement: 'Cho nhiệt độ c tính theo độ C. Trả về nhiệt độ tương ứng theo độ F, biết F = C × 9 / 5 + 32.',
+      signature: 'double DoiCSangF(double c)',
+      constraints: ['-273.15 <= c <= 1000'],
+      examples: [
+        { input: 'c = 25', output: '77' },
+        { input: 'c = 37', output: '98.6', explain: 'Phải để phép chia là số thực, vì 9 / 5 trong số nguyên cho ra 1.' },
+        { input: 'c = -40', output: '-40', explain: 'Đây là điểm duy nhất hai thang đo trùng nhau.' },
+      ],
+    },
+    {
+      id: 'b1-4', level: 'Cơ bản', title: 'Chu vi và diện tích hình tròn',
+      requirement: 'Cho bán kính r của một hình tròn. Trả về chu vi và diện tích, cả hai làm tròn 2 chữ số thập phân.',
+      signature: '(double chuVi, double dienTich) TinhHinhTron(double r)',
+      constraints: ['0 < r <= 1000', 'Dùng Math.PI thay vì gõ tay 3.14'],
+      examples: [
+        { input: 'r = 2', output: '(12.57, 12.57)', explain: 'Trùng số là ngẫu nhiên: chu vi 2πr = 12.566, diện tích πr² = 12.566.' },
+        { input: 'r = 5', output: '(31.42, 78.54)' },
+      ],
+    },
+    {
+      id: 'b1-5', level: 'Cơ bản', title: 'Chỉ số BMI',
+      requirement: 'Cho cân nặng (kg) và chiều cao (m) của một người. Trả về chỉ số BMI làm tròn 2 chữ số thập phân, biết BMI = cân nặng / (chiều cao)².',
+      signature: 'double TinhBmi(double canNang, double chieuCao)',
+      constraints: ['1 <= canNang <= 300', '0.5 <= chieuCao <= 2.5'],
+      examples: [
+        { input: 'canNang = 60, chieuCao = 1.7', output: '20.76' },
+        { input: 'canNang = 85, chieuCao = 1.8', output: '26.23' },
+      ],
+    },
+    {
+      id: 'b1-6', level: 'Trung bình', title: 'Đổi phút sang giờ và phút',
+      requirement: 'Cho tổng số phút. Trả về chuỗi mô tả số giờ và số phút lẻ tương ứng theo dạng "H giờ M phút".',
+      signature: 'string DoiPhut(int phut)',
+      constraints: ['0 <= phut <= 100000'],
+      examples: [
+        { input: 'phut = 130', output: '"2 giờ 10 phút"', explain: '130 / 60 = 2 dư 10.' },
+        { input: 'phut = 59', output: '"0 giờ 59 phút"' },
+        { input: 'phut = 120', output: '"2 giờ 0 phút"' },
+      ],
+      hint: 'Phép / lấy phần nguyên, phép % lấy phần dư.',
+    },
+    {
+      id: 'b1-7', level: 'Trung bình', title: 'Tính tiền gửi xe',
+      requirement: 'Một bãi xe tính 5.000đ cho giờ đầu tiên và 3.000đ cho mỗi giờ tiếp theo. Cho số giờ gửi, trả về số tiền phải trả.',
+      signature: 'int TinhTienGuiXe(int soGio)',
+      constraints: ['1 <= soGio <= 24'],
+      examples: [
+        { input: 'soGio = 1', output: '5000' },
+        { input: 'soGio = 4', output: '14000', explain: '5000 cho giờ đầu, cộng 3 giờ sau × 3000 = 9000.' },
+      ],
+    },
+    {
+      id: 'b1-8', level: 'Nâng cao', title: 'Tách giờ phút giây',
+      requirement: 'Cho tổng số giây. Trả về chuỗi định dạng "HH:mm:ss", mỗi phần luôn đủ hai chữ số.',
+      signature: 'string DinhDangThoiGian(int giay)',
+      constraints: ['0 <= giay <= 359999'],
+      examples: [
+        { input: 'giay = 3661', output: '"01:01:01"' },
+        { input: 'giay = 45', output: '"00:00:45"' },
+        { input: 'giay = 86399', output: '"23:59:59"' },
+      ],
+      hint: 'Dùng ToString("D2") để ép đủ hai chữ số.',
+    },
   ],
 }
 

@@ -212,17 +212,133 @@ Console.WriteLine(doiXung ? "Đối xứng" : "Không đối xứng");`,
 
 
   exercises: [
-    { id: 'b6-1', level: 'Cơ bản', title: 'In bảng cửu chương', requirement: 'Nhập một số n, in bảng cửu chương của n từ 1 đến 10.', io: { input: '5', output: '5 x 1 = 5 … 5 x 10 = 50' } },
-    { id: 'b6-2', level: 'Cơ bản', title: 'Vẽ tam giác sao', requirement: 'Nhập n, in tam giác vuông bằng dấu * với n dòng.', io: { input: '4', output: '*\n**\n***\n****' } },
-    { id: 'b6-3', level: 'Trung bình', title: 'Số nguyên tố trong khoảng', requirement: 'Nhập n, tìm và in tất cả số nguyên tố từ 1 đến n.', io: { input: '20', output: '2 3 5 7 11 13 17 19' }, hint: 'Vòng ngoài duyệt số, vòng trong kiểm tra ước số.' },
-    { id: 'b6-4', level: 'Cơ bản', title: 'Đảo ngược chuỗi', requirement: 'Nhập một chuỗi, dùng vòng lặp duyệt ngược để tạo chuỗi đảo.', io: { input: 'Cybersoft', output: 'tfosrebyC' } },
-    { id: 'b6-5', level: 'Cơ bản', title: 'Đếm nguyên âm', requirement: 'Nhập một chuỗi, đếm số nguyên âm (a, e, i, o, u) trong chuỗi đó.', io: { input: 'Hello World', output: '3' } },
-    { id: 'b6-6', level: 'Trung bình', title: 'Kiểm tra chuỗi đối xứng', requirement: 'Nhập một chuỗi, kiểm tra xem đọc xuôi và đọc ngược có giống nhau không.', io: { input: 'radar', output: 'Đối xứng' }, hint: 'Hai con trỏ chạy ngược chiều.' },
-    { id: 'b6-7', level: 'Trung bình', title: 'Đếm số từ trong câu', requirement: 'Nhập một câu, đếm xem có bao nhiêu từ (bỏ qua khoảng trắng thừa).', io: { input: '  Tôi   học C#  ', output: '3' }, hint: 'Split với StringSplitOptions.RemoveEmptyEntries.' },
-    { id: 'b6-8', level: 'Trung bình', title: 'Tìm từ dài nhất', requirement: 'Nhập một câu, in ra từ dài nhất; nhiều từ dài bằng nhau thì lấy từ đầu tiên.', io: { input: 'I love programming', output: 'programming' } },
-    { id: 'b6-9', level: 'Trung bình', title: 'Chuẩn hoá tên', requirement: 'Nhập họ tên có khoảng trắng thừa và hoa thường lộn xộn, chuẩn hoá thành dạng viết hoa chữ đầu mỗi từ.', io: { input: '   nguyỄn   vĂn a  ', output: 'Nguyễn Văn A' } },
-    { id: 'b6-10', level: 'Nâng cao', title: 'Loại bỏ ký tự đặc biệt', requirement: 'Nhập chuỗi có lẫn ký tự đặc biệt, trả về chuỗi chỉ còn chữ, số và khoảng trắng.', io: { input: 'he@llo! worl#d', output: 'hello world' }, hint: 'char.IsLetterOrDigit(c) hoặc char.IsWhiteSpace(c).' },
-    { id: 'b6-11', level: 'Nâng cao', title: 'Từ dài nhất có chứa số', requirement: 'Cho một chuỗi các từ cách nhau bởi khoảng trắng, trả về từ dài nhất có chứa ít nhất một chữ số. Không có thì trả về chuỗi rỗng.', io: { input: 'abc123 def45 ghi6789', output: 'ghi6789' } },
+
+    {
+      id: 'b6-1', level: 'Cơ bản', title: 'Bảng cửu chương',
+      requirement: 'Cho số nguyên n. Trả về mảng chuỗi gồm 10 dòng bảng cửu chương của n, dòng thứ i có dạng "n x i = tích".',
+      signature: 'string[] BangCuuChuong(int n)',
+      constraints: ['1 <= n <= 100'],
+      examples: [
+        { input: 'n = 5', output: '["5 x 1 = 5", "5 x 2 = 10", …, "5 x 10 = 50"]' },
+        { input: 'n = 2', output: '["2 x 1 = 2", "2 x 2 = 4", …, "2 x 10 = 20"]' },
+      ],
+    },
+    {
+      id: 'b6-2', level: 'Cơ bản', title: 'Tam giác sao',
+      requirement: 'Cho số nguyên dương n. Trả về chuỗi vẽ tam giác vuông bằng dấu *, dòng thứ i có i dấu sao, các dòng cách nhau bằng ký tự xuống dòng.',
+      signature: 'string TamGiacSao(int n)',
+      constraints: ['1 <= n <= 100'],
+      examples: [
+        { input: 'n = 4', output: '"*\\n**\\n***\\n****"' },
+        { input: 'n = 1', output: '"*"' },
+      ],
+      hint: 'Điều kiện vòng lặp trong phụ thuộc vào biến của vòng lặp ngoài.',
+    },
+    {
+      id: 'b6-3', level: 'Cơ bản', title: 'Đếm nguyên âm',
+      requirement: 'Cho một chuỗi s. Trả về số lượng nguyên âm (a, e, i, o, u) xuất hiện trong chuỗi, không phân biệt hoa thường.',
+      signature: 'int DemNguyenAm(string s)',
+      constraints: ['0 <= s.Length <= 10000'],
+      examples: [
+        { input: 's = "Hello World"', output: '3', explain: 'Các nguyên âm là e, o, o.' },
+        { input: 's = "xyz"', output: '0' },
+      ],
+    },
+    {
+      id: 'b6-4', level: 'Cơ bản', title: 'Đảo ngược chuỗi',
+      requirement: 'Cho một chuỗi s. Trả về chuỗi đảo ngược thứ tự các ký tự. Không dùng hàm Reverse có sẵn.',
+      signature: 'string DaoChuoi(string s)',
+      constraints: ['0 <= s.Length <= 10000'],
+      examples: [
+        { input: 's = "Cybersoft"', output: '"tfosrebyC"' },
+        { input: 's = ""', output: '""' },
+      ],
+    },
+    {
+      id: 'b6-5', level: 'Trung bình', title: 'Số nguyên tố trong khoảng',
+      requirement: 'Cho số nguyên dương n. Trả về mảng tất cả số nguyên tố nằm trong đoạn từ 2 đến n, theo thứ tự tăng dần.',
+      signature: 'int[] SoNguyenToToiN(int n)',
+      constraints: ['1 <= n <= 100000'],
+      examples: [
+        { input: 'n = 20', output: '[2, 3, 5, 7, 11, 13, 17, 19]' },
+        { input: 'n = 1', output: '[]', explain: 'Không có số nguyên tố nào nhỏ hơn 2.' },
+      ],
+      hint: 'Vòng ngoài duyệt số, vòng trong kiểm tra ước — đây chính là vòng lặp lồng nhau.',
+    },
+    {
+      id: 'b6-6', level: 'Trung bình', title: 'Chuỗi đối xứng',
+      requirement: 'Cho một chuỗi s. Trả về true nếu đọc xuôi và đọc ngược giống nhau.',
+      signature: 'bool LaDoiXung(string s)',
+      constraints: ['0 <= s.Length <= 10000', 'Phân biệt hoa thường'],
+      examples: [
+        { input: 's = "radar"', output: 'true' },
+        { input: 's = "abca"', output: 'false' },
+        { input: 's = "a"', output: 'true', explain: 'Chuỗi một ký tự luôn đối xứng.' },
+      ],
+      hint: 'Hai con trỏ chạy ngược chiều, chỉ cần duyệt nửa chuỗi.',
+    },
+    {
+      id: 'b6-7', level: 'Trung bình', title: 'Đếm số từ trong câu',
+      requirement: 'Cho một câu s có thể chứa nhiều khoảng trắng thừa ở đầu, cuối và giữa các từ. Trả về số từ thực sự có trong câu.',
+      signature: 'int DemTu(string s)',
+      constraints: ['0 <= s.Length <= 10000'],
+      examples: [
+        { input: 's = "  Tôi   học C#  "', output: '3' },
+        { input: 's = "   "', output: '0' },
+      ],
+      hint: 'Split kèm StringSplitOptions.RemoveEmptyEntries.',
+    },
+    {
+      id: 'b6-8', level: 'Trung bình', title: 'Từ dài nhất',
+      requirement: 'Cho một câu s gồm các từ cách nhau bởi khoảng trắng. Trả về từ dài nhất. Nếu có nhiều từ cùng độ dài lớn nhất thì trả về từ xuất hiện đầu tiên.',
+      signature: 'string TuDaiNhat(string s)',
+      constraints: ['0 <= s.Length <= 10000'],
+      examples: [
+        { input: 's = "I love programming"', output: '"programming"' },
+        { input: 's = "abc def ghi"', output: '"abc"', explain: 'Ba từ cùng dài 3, lấy từ đầu tiên.' },
+      ],
+    },
+    {
+      id: 'b6-9', level: 'Trung bình', title: 'Chuẩn hoá tên',
+      requirement: 'Cho một họ tên có khoảng trắng thừa và chữ hoa thường lộn xộn. Trả về chuỗi đã chuẩn hoá: mỗi từ viết hoa chữ cái đầu, các chữ còn lại viết thường, giữa các từ đúng một khoảng trắng.',
+      signature: 'string ChuanHoaTen(string s)',
+      constraints: ['0 <= s.Length <= 1000'],
+      examples: [
+        { input: 's = "   nguyỄn   vĂn a  "', output: '"Nguyễn Văn A"' },
+        { input: 's = "TRAN BINH"', output: '"Tran Binh"' },
+      ],
+    },
+    {
+      id: 'b6-10', level: 'Nâng cao', title: 'Loại bỏ ký tự đặc biệt',
+      requirement: 'Cho một chuỗi s chứa lẫn ký tự đặc biệt. Trả về chuỗi chỉ còn chữ cái, chữ số và khoảng trắng, giữ nguyên thứ tự.',
+      signature: 'string LamSach(string s)',
+      constraints: ['0 <= s.Length <= 10000'],
+      examples: [
+        { input: 's = "he@llo! worl#d"', output: '"hello world"' },
+        { input: 's = "abc123"', output: '"abc123"' },
+      ],
+      hint: 'char.IsLetterOrDigit và char.IsWhiteSpace.',
+    },
+    {
+      id: 'b6-11', level: 'Nâng cao', title: 'Từ dài nhất có chứa số',
+      requirement: 'Cho một chuỗi s gồm các từ cách nhau bởi khoảng trắng. Trả về từ dài nhất có chứa ít nhất một chữ số. Không có từ nào thoả thì trả về chuỗi rỗng.',
+      signature: 'string TuDaiNhatCoSo(string s)',
+      constraints: ['0 <= s.Length <= 10000'],
+      examples: [
+        { input: 's = "abc123 def45 ghi6789"', output: '"ghi6789"' },
+        { input: 's = "abc def"', output: '""' },
+      ],
+    },
+    {
+      id: 'b6-12', level: 'Nâng cao', title: 'Nén chuỗi',
+      requirement: 'Cho một chuỗi s chỉ gồm chữ cái. Nén chuỗi bằng cách thay mỗi nhóm ký tự giống nhau liên tiếp bằng ký tự đó kèm số lần lặp. Nếu chuỗi nén không ngắn hơn chuỗi gốc thì trả về chuỗi gốc.',
+      signature: 'string NenChuoi(string s)',
+      constraints: ['0 <= s.Length <= 10000'],
+      examples: [
+        { input: 's = "aaabbc"', output: '"a3b2c1"' },
+        { input: 's = "abc"', output: '"abc"', explain: 'Chuỗi nén "a1b1c1" dài hơn nên giữ nguyên bản gốc.' },
+      ],
+    },
   ],
 }
 

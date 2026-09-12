@@ -452,18 +452,125 @@ order.Checkout(250_000m);`,
   ],
 
   exercises: [
-    { id: 'b15-1', level: 'Cơ bản', title: 'Nhận diện 4 tính chất', requirement: 'Lấy bài quản lý nhân viên đã viết ở buổi 11, chỉ ra chính xác dòng code nào thể hiện đóng gói, kế thừa, đa hình và trừu tượng.', hint: 'Viết thành comment ngay trên dòng code tương ứng.' },
-    { id: 'b15-2', level: 'Cơ bản', title: 'Đóng gói đúng cách', requirement: 'Cho một class có toàn bộ field là public. Sửa lại thành private kèm property có kiểm tra, không làm hỏng nơi đang dùng.', hint: 'Giữ nguyên tên property viết hoa chữ đầu.' },
-    { id: 'b15-3', level: 'Cơ bản', title: 'Phân biệt trừu tượng và đóng gói', requirement: 'Viết một ví dụ ngắn thể hiện rõ: đóng gói là giấu dữ liệu, trừu tượng là giấu cách làm.' },
-    { id: 'b15-4', level: 'Trung bình', title: 'Áp dụng SRP', requirement: 'Cho class QuanLySinhVien đang vừa lưu danh sách, vừa tính điểm trung bình, vừa ghi file. Tách thành ba class theo đúng SRP.', hint: 'SinhVienRepository, DiemService, và lớp dữ liệu SinhVien.' },
-    { id: 'b15-5', level: 'Trung bình', title: 'Facade Pattern', requirement: 'Sau khi tách theo SRP ở bài trên, viết một lớp Facade gom các service lại để bên ngoài chỉ cần gọi một cửa.' },
-    { id: 'b15-6', level: 'Trung bình', title: 'Khử chuỗi if/else bằng OCP', requirement: 'Cho hàm tính phí ship dùng if/else theo loại vận chuyển (thường, nhanh, hoả tốc). Chuyển sang interface IPhiShip để thêm loại mới không phải sửa code cũ.', io: { input: 'Thêm loại "quốc tế"', output: 'Chỉ viết thêm một class, không sửa file nào' } },
-    { id: 'b15-7', level: 'Trung bình', title: 'Tìm lỗi vi phạm LSP', requirement: 'Cho class HinhChuNhat và HinhVuong kế thừa nó (đặt chiều dài thì chiều rộng đổi theo). Chỉ ra chỗ vi phạm LSP và đề xuất cách sửa.', hint: 'Hàm nào giả định đặt dài rồi rộng vẫn giữ nguyên sẽ sai với hình vuông.' },
-    { id: 'b15-8', level: 'Trung bình', title: 'Tách interface theo ISP', requirement: 'Interface IMayVanPhong gồm In, Scan, Fax. Tách nhỏ để máy in thường không phải cài đặt Scan và Fax.', hint: 'IMayIn, IMayScan, IMayFax.' },
-    { id: 'b15-9', level: 'Nâng cao', title: 'Dependency Injection thủ công', requirement: 'Viết OrderService nhận IPaymentService qua constructor. Cài ba bản: tiền mặt, thẻ tín dụng, ví điện tử. Cho người dùng chọn phương thức lúc chạy.', io: { input: 'Chọn: 2 (thẻ tín dụng)', output: 'Quẹt thẻ: 250.000 đ' } },
-    { id: 'b15-10', level: 'Nâng cao', title: 'Tự xây DI container mini', requirement: 'Viết class DIContainer có Register<TInterface, TImplement>() lưu vào Dictionary và Resolve<T>() dùng Activator.CreateInstance để tạo đối tượng, xử lý được cả trường hợp constructor cần tiêm tiếp phụ thuộc khác.', hint: 'Activator.CreateInstance(type, args) và Type.GetConstructors() để đọc danh sách tham số.' },
-    { id: 'b15-11', level: 'Nâng cao', title: 'Dùng DI container của .NET', requirement: 'Cài Microsoft.Extensions.DependencyInjection, đăng ký các service rồi lấy đối tượng qua GetRequiredService. So sánh AddSingleton, AddTransient và AddScoped bằng cách in ra HashCode của đối tượng.', io: { input: 'Lấy service 2 lần', output: 'Singleton: cùng HashCode. Transient: khác HashCode' } },
-    { id: 'b15-12', level: 'Nâng cao', title: 'Bài tổng hợp — hệ thống thanh toán đơn hàng', requirement: 'Xây hệ thống quản lý thanh toán đơn hàng áp dụng đủ 5 nguyên tắc SOLID: thêm sản phẩm vào đơn, tính tổng giá trị, chọn phương thức thanh toán (tiền mặt / thẻ / ví điện tử) và thực hiện thanh toán. Thêm phương thức thanh toán mới không được sửa mã nguồn cũ.', io: { input: '3 sản phẩm, chọn ví điện tử', output: 'Tổng đơn: 850.000 đ\nThanh toán qua ví điện tử: 850.000 đ' }, hint: 'Order chỉ quản lý sản phẩm (SRP), IPaymentMethod cho phép mở rộng (OCP), PaymentProcessor nhận interface qua constructor (DIP).' },
+
+    {
+      id: 'b15-1', level: 'Cơ bản', title: 'Nhận diện 4 tính chất OOP',
+      requirement: 'Lấy bài quản lý nhân viên đã viết ở buổi 13. Chỉ ra chính xác dòng code nào thể hiện đóng gói, kế thừa, đa hình và trừu tượng, mỗi tính chất một ví dụ.',
+      signature: '// Đóng gói: … / Kế thừa: … / Đa hình: … / Trừu tượng: …',
+      constraints: ['Phải trích đúng dòng code trong bài của mình, không viết lý thuyết chung'],
+      examples: [
+        { input: 'private decimal soDu;', output: 'Đóng gói' },
+        { input: 'foreach (NhanVien nv in ds) nv.TinhLuong();', output: 'Đa hình' },
+      ],
+    },
+    {
+      id: 'b15-2', level: 'Cơ bản', title: 'Sửa class để đóng gói đúng',
+      requirement: 'Cho một class có toàn bộ field là public. Sửa thành private kèm property có kiểm tra, không được làm hỏng nơi đang sử dụng.',
+      signature: 'public double Diem { get; set; }',
+      constraints: ['Giữ nguyên tên thuộc tính viết hoa chữ đầu'],
+      examples: [
+        { input: 'sv.Diem = 11', output: 'Bị từ chối, giá trị cũ giữ nguyên' },
+        { input: 'sv.Diem = 8', output: '8' },
+      ],
+    },
+    {
+      id: 'b15-3', level: 'Cơ bản', title: 'Trừu tượng khác đóng gói',
+      requirement: 'Viết một ví dụ ngắn thể hiện rõ: đóng gói là giấu dữ liệu, còn trừu tượng là giấu cách làm.',
+      signature: '// Encapsulation vs Abstraction',
+      constraints: ['Ví dụ phải nằm trong cùng một class để thấy rõ hai khái niệm khác nhau'],
+      examples: [
+        { input: 'private decimal soDu;', output: 'Đóng gói — bên ngoài không đọc thẳng được dữ liệu' },
+        { input: 'interface ITinhLuong { decimal Tinh(); }', output: 'Trừu tượng — bên ngoài không cần biết công thức bên trong' },
+      ],
+    },
+    {
+      id: 'b15-4', level: 'Trung bình', title: 'Áp dụng SRP',
+      requirement: 'Cho class QuanLySinhVien đang vừa lưu danh sách, vừa tính điểm trung bình, vừa ghi file. Tách thành ba class theo đúng nguyên tắc trách nhiệm đơn lẻ.',
+      signature: 'class SinhVien / class DiemService / class SinhVienRepository',
+      constraints: ['Mỗi class chỉ được có đúng một lý do để thay đổi'],
+      examples: [
+        { input: 'Đổi định dạng file lưu trữ', output: 'Chỉ sửa SinhVienRepository' },
+        { input: 'Đổi công thức tính điểm', output: 'Chỉ sửa DiemService' },
+      ],
+    },
+    {
+      id: 'b15-5', level: 'Trung bình', title: 'Facade Pattern',
+      requirement: 'Sau khi tách theo SRP, viết một lớp Facade gom các service lại để bên ngoài chỉ cần gọi một cửa duy nhất.',
+      signature: 'class SinhVienFacade { void ChotHocKy(List<SinhVien> ds); }',
+      constraints: ['Bên ngoài không được gọi trực tiếp vào từng service nhỏ'],
+      examples: [
+        { input: 'new SinhVienFacade().ChotHocKy(ds)', output: 'Tính điểm, ghi file và gửi thông báo trong một lệnh' },
+      ],
+    },
+    {
+      id: 'b15-6', level: 'Trung bình', title: 'Khử chuỗi if bằng OCP',
+      requirement: 'Cho hàm tính phí ship dùng chuỗi if/else theo loại vận chuyển (thường, nhanh, hoả tốc). Chuyển sang interface IPhiShip sao cho thêm loại mới không phải sửa code cũ.',
+      signature: 'interface IPhiShip { decimal Tinh(double kg); }',
+      constraints: ['Không còn chuỗi if/else theo loại vận chuyển'],
+      examples: [
+        { input: 'Thêm loại "quốc tế"', output: 'Chỉ viết thêm một class, không sửa file nào đang có' },
+        { input: 'PhiNhanh().Tinh(2)', output: '60000' },
+      ],
+    },
+    {
+      id: 'b15-7', level: 'Trung bình', title: 'Tìm lỗi vi phạm LSP',
+      requirement: 'Cho class HinhChuNhat và HinhVuong kế thừa nó, trong đó đặt chiều dài thì chiều rộng đổi theo. Chỉ ra hàm nào bị sai khi thay hình chữ nhật bằng hình vuông và đề xuất cách sửa.',
+      signature: 'class HinhVuong : HinhChuNhat',
+      constraints: ['Phải viết được một hàm chạy đúng với lớp cha nhưng sai với lớp con'],
+      examples: [
+        { input: 'h.Dai = 5; h.Rong = 4; h.TinhDienTich()', output: '20 với HinhChuNhat, 16 với HinhVuong', explain: 'Lớp con phá vỡ giả định của lớp cha nên vi phạm LSP.' },
+      ],
+    },
+    {
+      id: 'b15-8', level: 'Trung bình', title: 'Tách interface theo ISP',
+      requirement: 'Cho interface IMayVanPhong gồm In, Scan, Fax. Tách nhỏ để máy in thường không phải cài đặt Scan và Fax.',
+      signature: 'interface IMayIn / IMayScan / IMayFax',
+      constraints: ['Không class nào phải cài đặt phương thức mình không dùng'],
+      examples: [
+        { input: 'class MayInThuong', output: 'Chỉ cài IMayIn' },
+        { input: 'class MayDaNang', output: 'Cài IMayIn, IMayScan' },
+      ],
+    },
+    {
+      id: 'b15-9', level: 'Nâng cao', title: 'Dependency Injection thủ công',
+      requirement: 'Viết OrderService nhận IPaymentService qua constructor. Cài ba bản: tiền mặt, thẻ tín dụng, ví điện tử. Cho người dùng chọn phương thức lúc chạy.',
+      signature: 'class OrderService { OrderService(IPaymentService payment); void Checkout(decimal tien); }',
+      constraints: ['OrderService không được chứa từ khoá new cho bất kỳ phương thức thanh toán nào'],
+      examples: [
+        { input: 'new OrderService(new ThanhToanTheTinDung()).Checkout(250000)', output: '"Quẹt thẻ: 250.000 đ"' },
+        { input: 'new OrderService(new ThanhToanTienMat()).Checkout(250000)', output: '"Nhận tiền mặt: 250.000 đ"' },
+      ],
+    },
+    {
+      id: 'b15-10', level: 'Nâng cao', title: 'Tự xây DI container mini',
+      requirement: 'Viết class DIContainer có Register<TInterface, TImplement>() lưu vào Dictionary và Resolve<T>() dùng Activator để tạo đối tượng, xử lý được cả trường hợp constructor của implement lại cần tiêm tiếp phụ thuộc khác.',
+      signature: 'class DIContainer { void Register<TI, TImp>(); T Resolve<T>(); }',
+      constraints: ['Phải tự giải đệ quy các phụ thuộc lồng nhau'],
+      examples: [
+        { input: 'Register<IPayment, TheTinDung>(); Resolve<OrderService>()', output: 'OrderService đã được tiêm sẵn TheTinDung' },
+      ],
+      hint: 'Type.GetConstructors() để đọc danh sách tham số rồi Resolve từng cái.',
+    },
+    {
+      id: 'b15-11', level: 'Nâng cao', title: 'Vòng đời service trong DI container .NET',
+      requirement: 'Cài Microsoft.Extensions.DependencyInjection, đăng ký cùng một service theo ba vòng đời rồi lấy ra hai lần mỗi loại. So sánh HashCode để chỉ ra khác biệt.',
+      signature: 'services.AddSingleton / AddTransient / AddScoped',
+      constraints: ['Phải in HashCode của đối tượng để chứng minh'],
+      examples: [
+        { input: 'AddSingleton, lấy 2 lần', output: 'Hai lần cùng HashCode' },
+        { input: 'AddTransient, lấy 2 lần', output: 'Hai lần khác HashCode' },
+      ],
+    },
+    {
+      id: 'b15-12', level: 'Nâng cao', title: 'Hệ thống thanh toán đơn hàng — bài tổng hợp',
+      requirement: 'Xây hệ thống quản lý thanh toán đơn hàng áp dụng đủ 5 nguyên tắc SOLID: thêm sản phẩm vào đơn, tính tổng giá trị, chọn phương thức thanh toán (tiền mặt, thẻ, ví điện tử) và thực hiện thanh toán. Thêm phương thức thanh toán mới không được sửa mã nguồn cũ.',
+      signature: 'class Order / interface IPaymentMethod / class PaymentProcessor',
+      constraints: ['Order chỉ quản lý sản phẩm', 'PaymentProcessor chỉ phụ thuộc vào interface', 'Thêm phương thức mới chỉ được thêm file mới'],
+      examples: [
+        { input: '3 sản phẩm tổng 850.000, chọn ví điện tử', output: '"Tổng đơn: 850.000 đ"\\n"Thanh toán qua ví điện tử: 850.000 đ"' },
+        { input: 'Thêm phương thức "trả góp"', output: 'Chỉ viết thêm một class cài IPaymentMethod' },
+      ],
+    },
   ],
 }
 

@@ -13,19 +13,20 @@ const LEVEL_TONE = {
  */
 function autoVisual(ex: Exercise): V | undefined {
   if (ex.visual) return ex.visual
-  if (!ex.io) return undefined
+  const tc = ex.examples?.[0]
+  if (!tc) return undefined
   return {
     kind: 'ipo',
-    input: [ex.io.input],
+    input: [tc.input],
     process: [ex.hint ?? 'Xử lý theo yêu cầu của đề bài'],
-    output: [ex.io.output],
+    output: [tc.output],
   }
 }
 
 export default function ExerciseSlide({ buoi, ex, index }: { buoi: Buoi; ex: Exercise; index: number }) {
   const v = autoVisual(ex)
   // Sơ đồ IPO tự dựng đã hiển thị sẵn input/output nên bỏ hai ô bên dưới cho khỏi lặp
-  const showIoBoxes = ex.io && !!ex.visual
+  const showIoBoxes = ex.examples && !!ex.visual
 
   return (
     <section className="print-slide relative flex flex-col">
@@ -47,23 +48,45 @@ export default function ExerciseSlide({ buoi, ex, index }: { buoi: Buoi; ex: Exe
 
         <p className="mt-3 max-w-4xl text-[15.5px] leading-relaxed text-ink/75">{ex.requirement}</p>
 
+        {ex.signature && (
+          <pre className="mt-2.5 w-fit rounded-lg border border-ink/12 bg-ink/5 px-3 py-1.5 font-mono text-[13px] text-accent-400">
+            {ex.signature}
+          </pre>
+        )}
+
         {v && (
           <div data-auto={String(!ex.visual)} className="slide-figure mt-4 rounded-xl border border-ink/12 px-4 py-5 text-[13.5px]">
             <Visual v={v} />
           </div>
         )}
 
-        {showIoBoxes && ex.io && (
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border border-accent-400/35 bg-accent-400/8 p-3.5">
-              <div className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-accent-400">Input — dữ liệu vào</div>
-              <pre className="whitespace-pre-wrap font-mono text-[13px] text-ink/80">{ex.io.input}</pre>
-            </div>
-            <div className="rounded-xl border border-mint-400/35 bg-mint-400/8 p-3.5">
-              <div className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-mint-400">Output — kết quả mong đợi</div>
-              <pre className="whitespace-pre-wrap font-mono text-[13px] text-ink/80">{ex.io.output}</pre>
-            </div>
+        {showIoBoxes && ex.examples && (
+          <div className="mt-4 space-y-2.5">
+            {ex.examples.map((tc, i) => (
+              <div key={i} className="grid gap-3 sm:grid-cols-2">
+                <div className="rounded-xl border border-accent-400/35 bg-accent-400/8 p-3.5">
+                  <div className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-accent-400">
+                    Input {ex.examples!.length > 1 ? i + 1 : ''}
+                  </div>
+                  <pre className="whitespace-pre-wrap font-mono text-[13px] text-ink/80">{tc.input}</pre>
+                </div>
+                <div className="rounded-xl border border-mint-400/35 bg-mint-400/8 p-3.5">
+                  <div className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-mint-400">
+                    Output {ex.examples!.length > 1 ? i + 1 : ''}
+                  </div>
+                  <pre className="whitespace-pre-wrap font-mono text-[13px] text-ink/80">{tc.output}</pre>
+                </div>
+              </div>
+            ))}
           </div>
+        )}
+
+        {ex.constraints && ex.constraints.length > 0 && (
+          <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
+            {ex.constraints.map((c, i) => (
+              <li key={i} className="font-mono text-[12px] text-ink/50">· {c}</li>
+            ))}
+          </ul>
         )}
 
         {ex.hint && (

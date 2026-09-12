@@ -203,15 +203,96 @@ var c = Activator.CreateInstance<HinhChuNhat>();`,
   ],
 
   exercises: [
-    { id: 'b14-1', level: 'Trung bình', title: 'Abstract class', requirement: 'Chuyển bài DongVat sang abstract class: GioiThieu() cài đặt sẵn, KeuNhuThe() để abstract. Thử tạo đối tượng trực tiếp từ lớp abstract và đọc lỗi biên dịch.', hint: 'Phương thức abstract không có thân hàm.' },
-    { id: 'b14-2', level: 'Nâng cao', title: 'Class generic Kho<T>', requirement: 'Viết class Kho<T> có Them, Xoa, Lay theo vị trí, SoLuong. Dùng thử với Kho<string> và Kho<SanPham>.', hint: 'Bên trong bọc một List<T>.' },
-    { id: 'b14-3', level: 'Nâng cao', title: 'Phương thức generic có ràng buộc', requirement: 'Viết phương thức LayLonNhat<T>(T a, T b) với ràng buộc where T : IComparable<T>. Thử với int, string và một class tự viết.', io: { input: 'LayLonNhat("an","binh")', output: 'binh' } },
-    { id: 'b14-4', level: 'Cơ bản', title: 'Abstract class HinhHoc', requirement: 'Chuyển IHinhHoc thành abstract class HinhHoc: TinhChuVi và TinhDienTich để abstract, còn MoTa() cài đặt sẵn dùng chung.', hint: 'Phương thức abstract không có thân hàm.' },
-    { id: 'b14-5', level: 'Trung bình', title: 'So sánh interface và abstract class', requirement: 'Viết cùng một bài toán theo hai cách — một lần bằng interface, một lần bằng abstract class. Liệt kê ưu nhược điểm của từng cách trong chính bài đó.' },
-    { id: 'b14-6', level: 'Trung bình', title: 'Abstract class có constructor', requirement: 'Abstract class NhanVien có constructor nhận mã và tên. Các lớp con gọi base(...). Chứng minh abstract class vẫn có constructor dù không tạo đối tượng trực tiếp được.' },
-    { id: 'b14-7', level: 'Trung bình', title: 'Generic Stack<T>', requirement: 'Tự viết class NganXep<T> với Push, Pop, Peek, IsEmpty. Dùng thử với NganXep<int> và NganXep<string>.', hint: 'Bên trong dùng List<T>, lấy và xoá phần tử cuối.' },
-    { id: 'b14-8', level: 'Nâng cao', title: 'Generic có nhiều ràng buộc', requirement: 'Viết class Repository<T> where T : class, new() với các phương thức Them, Xoa, TimTheoDieuKien(Func<T,bool>). Giải thích ý nghĩa của từng ràng buộc.' },
-    { id: 'b14-9', level: 'Nâng cao', title: 'Tạo đối tượng bằng Activator', requirement: 'Đọc tên class từ chuỗi người dùng nhập ("HinhTron" hoặc "HinhChuNhat"), dùng Type.GetType và Activator.CreateInstance để tạo đối tượng tương ứng rồi gọi TinhDienTich().', hint: 'Nhớ kèm namespace khi gọi Type.GetType.' },
+
+    {
+      id: 'b14-1', level: 'Cơ bản', title: 'Abstract class DongVat',
+      requirement: 'Chuyển DongVat thành abstract class: GioiThieu() cài đặt sẵn dùng chung, KeuNhuThe() để abstract buộc lớp con cài đặt. Thử tạo đối tượng trực tiếp từ lớp abstract và ghi lại lỗi.',
+      signature: 'abstract class DongVat { void GioiThieu(); abstract string KeuNhuThe(); }',
+      constraints: ['Phương thức abstract không có thân hàm'],
+      examples: [
+        { input: 'new Cho("Mực").KeuNhuThe()', output: '"Gâu gâu"' },
+        { input: 'new DongVat("X")', output: 'Lỗi CS0144: không tạo được đối tượng từ lớp abstract' },
+      ],
+    },
+    {
+      id: 'b14-2', level: 'Cơ bản', title: 'Abstract class HinhHoc',
+      requirement: 'Chuyển IHinhHoc thành abstract class HinhHoc: TinhChuVi và TinhDienTich để abstract, MoTa() cài đặt sẵn dùng chung cho mọi lớp con.',
+      signature: 'abstract class HinhHoc { abstract double TinhChuVi(); string MoTa(); }',
+      constraints: ['MoTa() chỉ được viết một lần ở lớp cha'],
+      examples: [
+        { input: 'new HinhTron(5).MoTa()', output: '"Hình HinhTron: chu vi 31.42, diện tích 78.54"' },
+      ],
+    },
+    {
+      id: 'b14-3', level: 'Trung bình', title: 'Abstract class có constructor',
+      requirement: 'Abstract class NhanVien có constructor nhận mã và tên. Các lớp con gọi base(...). Chứng minh abstract class vẫn có constructor dù không tạo đối tượng trực tiếp được.',
+      signature: 'abstract class NhanVien { protected NhanVien(string ma, string ten) }',
+      constraints: ['Lớp con bắt buộc phải gọi base(...)'],
+      examples: [
+        { input: 'new NhanVienVanPhong("NV01", "An", 12tr).HienThi()', output: '"NV01 — An — 12.000.000 đ"' },
+      ],
+    },
+    {
+      id: 'b14-4', level: 'Trung bình', title: 'So sánh interface và abstract class',
+      requirement: 'Giải cùng một bài toán hai lần: một lần bằng interface, một lần bằng abstract class. Liệt kê ưu nhược điểm của từng cách trong chính bài đó.',
+      signature: 'interface IHinhHoc / abstract class HinhHoc',
+      constraints: ['Phải chỉ ra ít nhất hai điểm khác biệt cụ thể trong code'],
+      examples: [
+        { input: 'Cần chia sẻ field dùng chung', output: 'Abstract class thắng — interface không chứa được field' },
+        { input: 'Một lớp cần thuộc nhiều nhóm hành vi', output: 'Interface thắng — chỉ kế thừa được một class' },
+      ],
+    },
+    {
+      id: 'b14-5', level: 'Trung bình', title: 'Class generic Kho<T>',
+      requirement: 'Viết class Kho<T> có Them, Xoa, Lay theo vị trí và SoLuong. Dùng thử với Kho<string> và Kho<SanPham>.',
+      signature: 'class Kho<T> { void Them(T item); T Lay(int viTri); int SoLuong { get; } }',
+      constraints: ['Không được dùng object rồi ép kiểu'],
+      examples: [
+        { input: 'var k = new Kho<string>(); k.Them("Clean Code"); k.Lay(0)', output: '"Clean Code"' },
+        { input: 'var k = new Kho<int>(); k.Them("abc")', output: 'Lỗi biên dịch', explain: 'Generic giữ đúng kiểu nên sai kiểu là báo ngay lúc biên dịch.' },
+      ],
+    },
+    {
+      id: 'b14-6', level: 'Trung bình', title: 'Generic Stack<T>',
+      requirement: 'Tự viết class NganXep<T> với Push, Pop, Peek, IsEmpty theo nguyên tắc vào sau ra trước. Pop trên ngăn xếp rỗng thì ném InvalidOperationException.',
+      signature: 'class NganXep<T> { void Push(T); T Pop(); T Peek(); bool IsEmpty { get; } }',
+      constraints: ['Bên trong dùng List<T>, thao tác ở cuối danh sách'],
+      examples: [
+        { input: 'Push(1); Push(2); Pop()', output: '2' },
+        { input: 'NganXep rỗng, gọi Pop()', output: 'InvalidOperationException' },
+      ],
+    },
+    {
+      id: 'b14-7', level: 'Nâng cao', title: 'Phương thức generic có ràng buộc',
+      requirement: 'Viết phương thức LayLonNhat<T> trả về giá trị lớn hơn trong hai tham số, với ràng buộc T phải so sánh được. Thử với int, string và một class tự viết.',
+      signature: 'T LayLonNhat<T>(T a, T b) where T : IComparable<T>',
+      constraints: ['Không được viết ba phiên bản riêng cho ba kiểu'],
+      examples: [
+        { input: 'LayLonNhat(3, 7)', output: '7' },
+        { input: 'LayLonNhat("an", "binh")', output: '"binh"' },
+      ],
+    },
+    {
+      id: 'b14-8', level: 'Nâng cao', title: 'Generic có nhiều ràng buộc',
+      requirement: 'Viết class Repository<T> where T : class, new() với Them, Xoa, TimTheoDieuKien. Giải thích ý nghĩa của từng ràng buộc trong khai báo.',
+      signature: 'class Repository<T> where T : class, new()',
+      constraints: ['Phải giải thích được vì sao cần new() khi muốn tự tạo đối tượng T'],
+      examples: [
+        { input: 'repo.TimTheoDieuKien(x => x.Gia > 100000)', output: 'Danh sách sản phẩm thoả điều kiện' },
+        { input: 'Repository<int>', output: 'Lỗi biên dịch', explain: 'int là kiểu giá trị, vi phạm ràng buộc where T : class.' },
+      ],
+    },
+    {
+      id: 'b14-9', level: 'Nâng cao', title: 'Tạo đối tượng bằng Activator',
+      requirement: 'Đọc tên class từ chuỗi người dùng nhập, dùng Type.GetType và Activator.CreateInstance để tạo đối tượng tương ứng rồi gọi TinhDienTich(). Tên không hợp lệ thì báo lỗi thân thiện thay vì để văng exception.',
+      signature: 'double TaoVaTinh(string tenClass, params object[] thamSo)',
+      constraints: ['Phải kèm namespace khi gọi Type.GetType', 'Không được để chương trình văng exception'],
+      examples: [
+        { input: 'tenClass = "HinhTron", thamSo = [5]', output: '78.54' },
+        { input: 'tenClass = "HinhAo"', output: '-1', explain: 'Không tìm thấy kiểu thì trả về -1 thay vì ném lỗi.' },
+      ],
+      hint: 'Đây chính là cơ chế phía sau một DI container.',
+    },
   ],
 }
 

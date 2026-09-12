@@ -81,17 +81,42 @@ rời — dùng khi mô tả class độc lập.
 
 ## Bài tập
 
+Đề bài viết theo **lối LeetCode**, không viết kiểu câu mệnh lệnh "hãy viết chương trình…":
+
 ```ts
-{ id: 'b3-4', level: 'Trung bình', title, requirement,
-  io: { input: '...', output: '...' },   // tuỳ chọn, nhưng nên có
-  hint: '...' }                          // tuỳ chọn
+{
+  id: 'b8-e41', level: 'Nâng cao', title: 'Two Sum',
+  requirement: 'Cho một mảng số nguyên nums và một số target. Trả về chỉ số của hai phần tử…',
+  signature: 'int[] TwoSum(int[] nums, int target)',
+  constraints: ['2 <= nums.Length <= 10000', 'Lời giải nên chạy trong O(n)'],
+  examples: [
+    { input: 'nums = [2, 7, 11, 15], target = 9', output: '[0, 1]', explain: 'nums[0] + nums[1] = 9.' },
+    { input: 'nums = [3, 2, 4], target = 6', output: '[1, 2]' },
+  ],
+  hint: '…',
+}
 ```
+
+| Trường | Bắt buộc | Ghi chú |
+|---|---|---|
+| `requirement` | Có | Mô tả bài toán ở thể trần thuật: "Cho… Trả về…" |
+| `signature` | Nên có | Chữ ký hàm hoặc API của class cần cài đặt |
+| `constraints` | Nên có | Giới hạn kích thước, miền giá trị, yêu cầu độ phức tạp |
+| `examples` | Có | Ít nhất 2 test case từ mức Trung bình trở lên; `explain` cho ca dễ hiểu nhầm |
+| `hint` | Tuỳ | Gợi ý hướng đi, không giải hộ |
+
+Ưu tiên thêm một ca biên vào `examples`: mảng rỗng, giá trị trùng mốc điều kiện,
+trường hợp không có đáp án.
 
 `level` chỉ nhận đúng ba giá trị: `'Cơ bản'` | `'Trung bình'` | `'Nâng cao'`.
 `id` theo quy ước `b<số buổi>-<số thứ tự>`.
 
 Trang bài học **tự nhóm bài tập theo cấp độ** và đánh số lại trong từng nhóm, nên
 không cần tự sắp xếp thứ tự dễ-khó trong mảng.
+
+Nút *Bốc đề 10 bài* lấy ngẫu nhiên theo tỷ lệ 2 Cơ bản · 6 Trung bình · 2 Nâng cao.
+Buổi nào không đủ bài ở một mức thì phần thiếu được bù bằng bài bất kỳ còn lại, và
+buổi có dưới 10 bài thì chọn hết.
 
 Buổi 8 có 60 bài nên tách riêng ra `src/data/buoi08-baitap.ts` (ba mảng `coBan`,
 `trungBinh`, `nangCao` gộp lại thành `BAI_TAP_COLLECTION`). Buổi nào vượt khoảng

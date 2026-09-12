@@ -239,16 +239,118 @@ XuLyDanhSach(mang, x => Console.WriteLine(x * x));   // 1 4 9`,
 
 
   exercises: [
-    { id: 'b7-1', level: 'Cơ bản', title: 'Hàm tính diện tích', requirement: 'Viết hàm TinhDienTichHinhChuNhat(dai, rong) trả về diện tích, gọi từ Main.', io: { input: '5, 3', output: '15' } },
-    { id: 'b7-2', level: 'Cơ bản', title: 'Hàm kiểm tra số nguyên tố', requirement: 'Viết hàm LaSoNguyenTo(int n) trả về bool, dùng lại cho bài in số nguyên tố trong khoảng.', io: { input: '7', output: 'true' } },
-    { id: 'b7-3', level: 'Cơ bản', title: 'Hàm tính giai thừa', requirement: 'Viết hàm GiaiThua(int n) trả về long, xử lý cả trường hợp n = 0.', io: { input: '5', output: '120' } },
-    { id: 'b7-4', level: 'Cơ bản', title: 'Hàm đảo chuỗi', requirement: 'Viết hàm DaoChuoi(string s) trả về chuỗi đảo ngược.', io: { input: 'Cybersoft', output: 'tfosrebyC' } },
-    { id: 'b7-5', level: 'Trung bình', title: 'Hàm nhập có kiểm tra', requirement: 'Viết hàm NhapDiem(string monHoc) bắt người dùng nhập lại tới khi được số hợp lệ trong khoảng 0–10, rồi trả về giá trị đó.', hint: 'do…while kết hợp double.TryParse.' },
-    { id: 'b7-6', level: 'Trung bình', title: 'Refactor bài xếp loại học lực', requirement: 'Tách bài buổi 3 thành NhapDiem, TinhTrungBinh, XepLoai. Main chỉ còn phần điều phối.' },
-    { id: 'b7-7', level: 'Trung bình', title: 'Tìm từ dài nhất', requirement: 'Viết hàm TuDaiNhat(string s) trả về từ dài nhất trong chuỗi; nhiều từ dài bằng nhau thì lấy từ đầu tiên.', io: { input: 'I love programming', output: 'programming' } },
-    { id: 'b7-8', level: 'Trung bình', title: 'Loại bỏ ký tự đặc biệt', requirement: 'Viết hàm LamSach(string s) trả về chuỗi chỉ còn chữ, số và khoảng trắng.', io: { input: 'he@llo! worl#d', output: 'hello world' } },
-    { id: 'b7-9', level: 'Nâng cao', title: 'Từ dài nhất có chứa số', requirement: 'Viết hàm trả về từ dài nhất có chứa ít nhất một chữ số; không có thì trả về chuỗi rỗng.', io: { input: 'abc123 def45 ghi6789', output: 'ghi6789' } },
-    { id: 'b7-10', level: 'Nâng cao', title: 'Hàm nhận callback', requirement: 'Viết hàm XuLyMang(int[] mang, Func<int, int> bienDoi) trả về mảng mới sau khi áp dụng phép biến đổi cho từng phần tử. Gọi thử với hai lambda khác nhau.', io: { input: '[1,2,3] với x => x*2', output: '[2,4,6]' } },
+
+    {
+      id: 'b7-1', level: 'Cơ bản', title: 'Diện tích hình chữ nhật',
+      requirement: 'Cho chiều dài và chiều rộng. Trả về diện tích hình chữ nhật.',
+      signature: 'double TinhDienTich(double dai, double rong)',
+      constraints: ['0 < dai, rong <= 10000'],
+      examples: [
+        { input: 'dai = 5, rong = 3', output: '15' },
+        { input: 'dai = 2.5, rong = 4', output: '10' },
+      ],
+    },
+    {
+      id: 'b7-2', level: 'Cơ bản', title: 'Hàm kiểm tra số nguyên tố',
+      requirement: 'Viết hàm trả về true nếu n là số nguyên tố. Hàm này sẽ được dùng lại ở các bài sau nên phải tách riêng, không viết lẫn vào Main.',
+      signature: 'static bool LaSoNguyenTo(int n)',
+      constraints: ['-1000 <= n <= 1_000_000'],
+      examples: [
+        { input: 'n = 7', output: 'true' },
+        { input: 'n = 1', output: 'false' },
+      ],
+    },
+    {
+      id: 'b7-3', level: 'Cơ bản', title: 'Hàm tính giai thừa',
+      requirement: 'Viết hàm trả về n giai thừa, xử lý được cả trường hợp n = 0.',
+      signature: 'static long GiaiThua(int n)',
+      constraints: ['0 <= n <= 20'],
+      examples: [
+        { input: 'n = 5', output: '120' },
+        { input: 'n = 0', output: '1' },
+      ],
+    },
+    {
+      id: 'b7-4', level: 'Cơ bản', title: 'Hàm đảo chuỗi',
+      requirement: 'Viết hàm trả về chuỗi đảo ngược của s.',
+      signature: 'static string DaoChuoi(string s)',
+      constraints: ['0 <= s.Length <= 10000'],
+      examples: [
+        { input: 's = "Cybersoft"', output: '"tfosrebyC"' },
+        { input: 's = "ab"', output: '"ba"' },
+      ],
+    },
+    {
+      id: 'b7-5', level: 'Trung bình', title: 'Hàm nhập có kiểm tra',
+      requirement: 'Viết hàm hiển thị lời nhắc kèm tên môn học, bắt người dùng nhập lại tới khi được một số thực trong khoảng 0–10, rồi trả về giá trị đó.',
+      signature: 'static double NhapDiem(string monHoc)',
+      constraints: ['Không được ném exception khi người dùng gõ chữ'],
+      examples: [
+        { input: 'monHoc = "Toán", người dùng gõ: abc rồi 8.5', output: '8.5' },
+      ],
+      hint: 'do…while kết hợp double.TryParse.',
+    },
+    {
+      id: 'b7-6', level: 'Trung bình', title: 'Tách hàm cho bài xếp loại',
+      requirement: 'Refactor bài xếp loại học lực của buổi 3 thành ba hàm: NhapDiem, TinhTrungBinh, XepLoai. Main chỉ còn phần điều phối, không chứa logic tính toán.',
+      signature: 'static string XepLoai(double dtb)',
+      constraints: ['Main tối đa 6 dòng'],
+      examples: [
+        { input: 'dtb = 8.17', output: '"Giỏi"' },
+        { input: 'dtb = 4.9', output: '"Yếu"' },
+      ],
+    },
+    {
+      id: 'b7-7', level: 'Trung bình', title: 'Hàm tìm từ dài nhất',
+      requirement: 'Viết hàm trả về từ dài nhất trong chuỗi s. Nhiều từ cùng độ dài thì lấy từ đầu tiên.',
+      signature: 'static string TuDaiNhat(string s)',
+      constraints: ['0 <= s.Length <= 10000'],
+      examples: [
+        { input: 's = "I love programming"', output: '"programming"' },
+        { input: 's = ""', output: '""' },
+      ],
+    },
+    {
+      id: 'b7-8', level: 'Trung bình', title: 'Hàm làm sạch chuỗi',
+      requirement: 'Viết hàm trả về chuỗi chỉ còn chữ cái, chữ số và khoảng trắng.',
+      signature: 'static string LamSach(string s)',
+      constraints: ['0 <= s.Length <= 10000'],
+      examples: [
+        { input: 's = "he@llo! worl#d"', output: '"hello world"' },
+        { input: 's = "!!!"', output: '""' },
+      ],
+    },
+    {
+      id: 'b7-9', level: 'Nâng cao', title: 'Hàm nhận lambda làm tham số',
+      requirement: 'Viết hàm nhận một mảng số và một phép biến đổi, trả về mảng mới sau khi áp dụng phép biến đổi cho từng phần tử. Không sửa mảng gốc.',
+      signature: 'static int[] XuLyMang(int[] mang, Func<int, int> bienDoi)',
+      constraints: ['0 <= mang.Length <= 100000'],
+      examples: [
+        { input: 'mang = [1, 2, 3], bienDoi = x => x * 2', output: '[2, 4, 6]' },
+        { input: 'mang = [1, 2, 3], bienDoi = x => x * x', output: '[1, 4, 9]' },
+      ],
+    },
+    {
+      id: 'b7-10', level: 'Nâng cao', title: 'Hàm lọc theo điều kiện',
+      requirement: 'Viết hàm nhận một mảng số và một điều kiện, trả về mảng chỉ gồm các phần tử thoả điều kiện, giữ nguyên thứ tự.',
+      signature: 'static int[] Loc(int[] mang, Func<int, bool> dieuKien)',
+      constraints: ['0 <= mang.Length <= 100000'],
+      examples: [
+        { input: 'mang = [1, 2, 3, 4, 5, 6], dieuKien = x => x % 2 == 0', output: '[2, 4, 6]' },
+        { input: 'mang = [1, 3, 5], dieuKien = x => x > 10', output: '[]' },
+      ],
+      hint: 'Đây chính là cách LINQ Where hoạt động bên trong.',
+    },
+    {
+      id: 'b7-11', level: 'Nâng cao', title: 'Hàm callback báo tiến độ',
+      requirement: 'Viết hàm chạy một công việc n bước, sau mỗi bước gọi callback báo phần trăm hoàn thành. Trả về tổng số lần callback được gọi.',
+      signature: 'static int ChayCongViec(int soBuoc, Action<int> baoTienDo)',
+      constraints: ['1 <= soBuoc <= 1000'],
+      examples: [
+        { input: 'soBuoc = 4, baoTienDo = p => Console.WriteLine($"{p}%")', output: '4', explain: 'In lần lượt 25%, 50%, 75%, 100%.' },
+      ],
+      hint: 'Action dùng cho callback không cần trả về giá trị.',
+    },
   ],
 }
 

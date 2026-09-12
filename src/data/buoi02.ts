@@ -215,17 +215,131 @@ Console.WriteLine(t ?? "không phải chuỗi");`,
 
 
   exercises: [
-    { id: 'b2-1', level: 'Cơ bản', title: 'Số tuần và ngày lẻ', requirement: 'Nhập số ngày, tính xem được bao nhiêu tuần và còn dư mấy ngày.', io: { input: '10', output: '1 tuần 3 ngày' }, hint: 'Kết hợp / và %.' },
-    { id: 'b2-2', level: 'Cơ bản', title: 'Tổng đơn hàng sau giảm giá', requirement: 'Nhập giá trị đơn hàng và phần trăm giảm giá, tính số tiền giảm và tổng phải thanh toán.', io: { input: '1000000 / 15', output: 'Giảm 150000, thanh toán 850000' }, hint: 'Dùng decimal cho tiền.' },
-    { id: 'b2-3', level: 'Cơ bản', title: 'Đổi phút sang giờ và phút', requirement: 'Nhập số phút, chuyển thành giờ và phút lẻ.', io: { input: '130', output: '2 giờ 10 phút' } },
-    { id: 'b2-4', level: 'Cơ bản', title: 'Tính tiền sau thuế VAT', requirement: 'Nhập số tiền gốc và tỷ lệ VAT, in ra tổng tiền sau thuế.', io: { input: '500000 / 10', output: '550000' } },
-    { id: 'b2-5', level: 'Cơ bản', title: 'Đổi USD sang VND', requirement: 'Nhập số tiền USD và tỷ giá, in ra số tiền tương ứng bằng VND.', io: { input: '100 / 25400', output: '2540000' } },
-    { id: 'b2-6', level: 'Cơ bản', title: 'Số dư sau khi rút tiền', requirement: 'Nhập số dư hiện tại và số tiền muốn rút, in ra số dư còn lại (chưa cần kiểm tra âm).', io: { input: '5000000 / 1200000', output: '3800000' } },
-    { id: 'b2-7', level: 'Cơ bản', title: 'Tốc độ trung bình', requirement: 'Nhập quãng đường (km) và thời gian (giờ), tính tốc độ trung bình km/h.', io: { input: '120 / 2.5', output: '48 km/h' } },
-    { id: 'b2-8', level: 'Cơ bản', title: 'Tỷ lệ phần trăm', requirement: 'Nhập một số và một tổng số, tính tỷ lệ phần trăm của số đó trong tổng.', io: { input: '30 / 200', output: '15%' }, hint: 'Nhớ ép về double trước khi chia.' },
-    { id: 'b2-9', level: 'Cơ bản', title: 'Đổi km/h sang m/s', requirement: 'Nhập vận tốc km/h, đổi sang m/s theo công thức m/s = km/h ÷ 3.6.', io: { input: '72', output: '20' } },
-    { id: 'b2-10', level: 'Trung bình', title: 'Lượng calo tiêu thụ', requirement: 'Nhập số phút tập và loại hình tập (chạy, đạp xe, bơi). Tính calo tiêu thụ dựa trên hệ số giả định cho từng loại hình.', io: { input: '30 / chạy', output: '≈ 300 kcal' }, hint: 'Khai báo hằng số hệ số calo cho mỗi loại hình.' },
-    { id: 'b2-11', level: 'Trung bình', title: 'Đọc input an toàn', requirement: 'Viết lại bài "tổng điểm ba môn" nhưng dùng TryParse: nếu người dùng nhập sai định dạng thì báo lỗi thay vì để chương trình văng exception.', hint: 'double.TryParse(...)' },
+
+    {
+      id: 'b2-1', level: 'Cơ bản', title: 'Số tuần và ngày lẻ',
+      requirement: 'Cho tổng số ngày. Trả về chuỗi cho biết bằng bao nhiêu tuần và dư mấy ngày.',
+      signature: 'string DoiSangTuan(int soNgay)',
+      constraints: ['0 <= soNgay <= 100000'],
+      examples: [
+        { input: 'soNgay = 10', output: '"1 tuần 3 ngày"' },
+        { input: 'soNgay = 7', output: '"1 tuần 0 ngày"' },
+      ],
+    },
+    {
+      id: 'b2-2', level: 'Cơ bản', title: 'Tổng đơn hàng sau giảm giá',
+      requirement: 'Cho giá trị đơn hàng và phần trăm giảm giá. Trả về số tiền phải thanh toán sau khi giảm.',
+      signature: 'decimal TinhSauGiam(decimal giaTri, double phanTramGiam)',
+      constraints: ['0 <= giaTri <= 1_000_000_000', '0 <= phanTramGiam <= 100', 'Dùng decimal cho tiền tệ'],
+      examples: [
+        { input: 'giaTri = 1000000, phanTramGiam = 15', output: '850000', explain: 'Giảm 150.000, còn phải trả 850.000.' },
+        { input: 'giaTri = 250000, phanTramGiam = 0', output: '250000' },
+      ],
+    },
+    {
+      id: 'b2-3', level: 'Cơ bản', title: 'Tính tiền sau thuế VAT',
+      requirement: 'Cho số tiền gốc và tỷ lệ thuế VAT theo phần trăm. Trả về tổng tiền sau khi cộng thuế.',
+      signature: 'decimal TinhSauVat(decimal tienGoc, double vat)',
+      constraints: ['0 <= tienGoc <= 1_000_000_000', '0 <= vat <= 100'],
+      examples: [
+        { input: 'tienGoc = 500000, vat = 10', output: '550000' },
+        { input: 'tienGoc = 1200000, vat = 8', output: '1296000' },
+      ],
+    },
+    {
+      id: 'b2-4', level: 'Cơ bản', title: 'Đổi USD sang VND',
+      requirement: 'Cho số tiền tính bằng USD và tỷ giá quy đổi. Trả về số tiền tương ứng bằng VND.',
+      signature: 'decimal DoiSangVnd(decimal usd, decimal tyGia)',
+      constraints: ['0 <= usd <= 1_000_000', '1000 <= tyGia <= 100000'],
+      examples: [
+        { input: 'usd = 100, tyGia = 25400', output: '2540000' },
+        { input: 'usd = 0, tyGia = 25400', output: '0' },
+      ],
+    },
+    {
+      id: 'b2-5', level: 'Cơ bản', title: 'Số dư sau khi rút tiền',
+      requirement: 'Cho số dư hiện tại và số tiền muốn rút. Trả về số dư còn lại, chưa cần kiểm tra rút quá số dư.',
+      signature: 'decimal SoDuConLai(decimal soDu, decimal soTienRut)',
+      constraints: ['0 <= soDu <= 1_000_000_000', '0 <= soTienRut <= 1_000_000_000'],
+      examples: [
+        { input: 'soDu = 5000000, soTienRut = 1200000', output: '3800000' },
+        { input: 'soDu = 100000, soTienRut = 150000', output: '-50000', explain: 'Bài này chưa chặn âm — buổi 3 sẽ bổ sung điều kiện.' },
+      ],
+    },
+    {
+      id: 'b2-6', level: 'Cơ bản', title: 'Tốc độ trung bình',
+      requirement: 'Cho quãng đường đã đi (km) và thời gian đã đi (giờ). Trả về tốc độ trung bình theo km/h, làm tròn 2 chữ số thập phân.',
+      signature: 'double TocDoTrungBinh(double quangDuong, double thoiGian)',
+      constraints: ['0 <= quangDuong <= 100000', '0 < thoiGian <= 1000'],
+      examples: [
+        { input: 'quangDuong = 120, thoiGian = 2.5', output: '48' },
+        { input: 'quangDuong = 100, thoiGian = 3', output: '33.33' },
+      ],
+    },
+    {
+      id: 'b2-7', level: 'Cơ bản', title: 'Tỷ lệ phần trăm',
+      requirement: 'Cho một số và một tổng số. Trả về tỷ lệ phần trăm của số đó trong tổng, làm tròn 2 chữ số thập phân.',
+      signature: 'double TinhPhanTram(int so, int tongSo)',
+      constraints: ['0 <= so <= tongSo', '0 < tongSo <= 1_000_000'],
+      examples: [
+        { input: 'so = 30, tongSo = 200', output: '15' },
+        { input: 'so = 1, tongSo = 3', output: '33.33', explain: 'Phải ép về double trước khi chia, không thì 1 / 3 ra 0.' },
+      ],
+    },
+    {
+      id: 'b2-8', level: 'Cơ bản', title: 'Đổi km/h sang m/s',
+      requirement: 'Cho vận tốc tính bằng km/h. Trả về vận tốc tương ứng theo m/s, biết m/s = km/h ÷ 3.6.',
+      signature: 'double DoiSangMoiGiay(double kmh)',
+      constraints: ['0 <= kmh <= 100000'],
+      examples: [
+        { input: 'kmh = 72', output: '20' },
+        { input: 'kmh = 100', output: '27.78' },
+      ],
+    },
+    {
+      id: 'b2-9', level: 'Trung bình', title: 'Lượng calo tiêu thụ',
+      requirement: 'Cho số phút tập và loại hình tập ("chay", "dapxe", "boi"). Mỗi loại có hệ số calo mỗi phút lần lượt là 10, 8 và 12. Trả về lượng calo tiêu thụ.',
+      signature: 'int TinhCalo(int soPhut, string loaiHinh)',
+      constraints: ['0 <= soPhut <= 600', 'loaiHinh là một trong ba giá trị đã nêu'],
+      examples: [
+        { input: 'soPhut = 30, loaiHinh = "chay"', output: '300' },
+        { input: 'soPhut = 45, loaiHinh = "boi"', output: '540' },
+      ],
+      hint: 'Khai báo hệ số dưới dạng hằng số để đọc code dễ hơn số ma thuật.',
+    },
+    {
+      id: 'b2-10', level: 'Trung bình', title: 'Đọc số an toàn',
+      requirement: 'Cho một chuỗi người dùng nhập. Nếu chuỗi là số nguyên hợp lệ thì trả về chính số đó, ngược lại trả về -1 thay vì để chương trình văng lỗi.',
+      signature: 'int DocSoAnToan(string nhap)',
+      constraints: ['nhap có thể là chuỗi rỗng hoặc chứa ký tự bất kỳ'],
+      examples: [
+        { input: 'nhap = "42"', output: '42' },
+        { input: 'nhap = "abc"', output: '-1' },
+        { input: 'nhap = ""', output: '-1' },
+      ],
+      hint: 'int.TryParse trả về false thay vì ném exception như Convert.ToInt32.',
+    },
+    {
+      id: 'b2-11', level: 'Trung bình', title: 'Làm tròn tiền về nghìn',
+      requirement: 'Cho một số tiền. Trả về số tiền đã làm tròn lên bội số gần nhất của 1000.',
+      signature: 'decimal LamTronNghin(decimal tien)',
+      constraints: ['0 <= tien <= 1_000_000_000'],
+      examples: [
+        { input: 'tien = 12345', output: '13000' },
+        { input: 'tien = 12000', output: '12000', explain: 'Đã là bội của 1000 thì giữ nguyên.' },
+      ],
+    },
+    {
+      id: 'b2-12', level: 'Nâng cao', title: 'Đổi tiền ra mệnh giá',
+      requirement: 'Cho một số tiền và các mệnh giá 500000, 200000, 100000, 50000, 20000, 10000. Trả về số tờ mỗi loại sao cho dùng ít tờ nhất, xếp theo thứ tự mệnh giá giảm dần.',
+      signature: 'int[] DoiMenhGia(int soTien)',
+      constraints: ['0 <= soTien <= 100_000_000', 'soTien chia hết cho 10000'],
+      examples: [
+        { input: 'soTien = 780000', output: '[1, 1, 0, 1, 1, 1]', explain: '500k + 200k + 50k + 20k + 10k = 780k.' },
+        { input: 'soTien = 100000', output: '[0, 0, 1, 0, 0, 0]' },
+      ],
+      hint: 'Duyệt mệnh giá từ lớn xuống nhỏ, mỗi bước lấy phần nguyên rồi giữ lại phần dư.',
+    },
   ],
 }
 

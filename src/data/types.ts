@@ -60,12 +60,26 @@ export interface Section {
   blocks: Block[]
 }
 
+/** Một test case mẫu của đề bài, viết theo lối LeetCode. */
+export interface TestCase {
+  input: string
+  output: string
+  /** Giải thích vì sao ra kết quả đó — phần "Giải thích" quen thuộc của LeetCode. */
+  explain?: string
+}
+
 export interface Exercise {
   id: string
   title: string
   level: 'Cơ bản' | 'Trung bình' | 'Nâng cao'
+  /** Đề bài: mô tả bài toán, không phải câu mệnh lệnh "hãy viết chương trình…". */
   requirement: string
-  io?: { input: string; output: string }
+  /** Chữ ký hàm cần cài đặt, ví dụ: int[] TwoSum(int[] nums, int target) */
+  signature?: string
+  /** Ràng buộc đầu vào — giới hạn kích thước, miền giá trị, điều kiện đảm bảo. */
+  constraints?: string[]
+  /** Các test case mẫu. Ít nhất 2 cái cho bài từ Trung bình trở lên. */
+  examples?: TestCase[]
   hint?: string
   /**
    * Hình minh hoạ cho slide bài tập. Bỏ trống thì slide tự dựng sơ đồ IPO

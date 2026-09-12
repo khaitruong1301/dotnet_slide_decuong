@@ -200,14 +200,126 @@ Console.WriteLine(diem?.ToString() ?? "chưa có điểm");`,
 
 
   exercises: [
-    { id: 'b4-1', level: 'Cơ bản', title: 'Ngày trong tuần', requirement: 'Nhập số nguyên 1–7, in ra tên ngày trong tuần tương ứng (1 = Sunday … 7 = Saturday).', io: { input: '3', output: 'Tuesday' } },
-    { id: 'b4-2', level: 'Cơ bản', title: 'Xếp loại điểm chữ', requirement: 'Nhập điểm 0–100, dùng switch để xác định xếp loại A / B / C / D / F.', io: { input: '85', output: 'B' } },
-    { id: 'b4-3', level: 'Cơ bản', title: 'Xác định mùa trong năm', requirement: 'Nhập số tháng 1–12, dùng switch expression để in ra mùa Xuân / Hạ / Thu / Đông.', io: { input: '7', output: 'Mùa Hạ' } },
-    { id: 'b4-4', level: 'Cơ bản', title: 'Nguyên âm hay phụ âm', requirement: 'Nhập một ký tự, dùng switch expression cho biết đó là nguyên âm (a, e, i, o, u) hay phụ âm.', io: { input: 'e', output: 'Nguyên âm' } },
-    { id: 'b4-5', level: 'Trung bình', title: 'Hạng vé xem phim', requirement: 'Nhập hạng vé (Standard / Premium / VIP), in ra tiện ích tương ứng của hạng vé đó.', io: { input: 'VIP', output: 'Ghế hạng sang, đồ uống và bỏng ngô miễn phí' } },
-    { id: 'b4-6', level: 'Trung bình', title: 'Loại vé máy bay', requirement: 'Nhập loại vé (Economy / Business / First Class) và in ra tiện ích tương ứng.', io: { input: 'Business', output: 'Ghế rộng' } },
-    { id: 'b4-7', level: 'Trung bình', title: 'Máy tính bỏ túi', requirement: 'Nhập hai số và một phép toán (+ − * /). Dùng switch expression để tính, xử lý trường hợp chia cho 0.', io: { input: '10 / 0', output: 'Không thể chia cho 0' }, hint: 'Dùng mẫu when để bắt trường hợp mẫu số bằng 0.' },
-    { id: 'b4-8', level: 'Nâng cao', title: 'Menu quản lý sản phẩm', requirement: 'Hiển thị menu 1. Thêm, 2. Sửa, 3. Xoá, 0. Thoát. Dùng switch để điều hướng theo lựa chọn của người dùng.', hint: 'Buổi 5 sẽ bọc menu này trong vòng lặp do…while.' },
+
+    {
+      id: 'b4-1', level: 'Cơ bản', title: 'Tên ngày trong tuần',
+      requirement: 'Cho một số nguyên thu từ 1 đến 7, với 1 là Sunday. Trả về tên ngày trong tuần tương ứng, số ngoài khoảng trả về "Invalid".',
+      signature: 'string TenThu(int thu)',
+      constraints: ['-100 <= thu <= 100'],
+      examples: [
+        { input: 'thu = 3', output: '"Tuesday"' },
+        { input: 'thu = 7', output: '"Saturday"' },
+        { input: 'thu = 9', output: '"Invalid"' },
+      ],
+    },
+    {
+      id: 'b4-2', level: 'Cơ bản', title: 'Xếp loại điểm chữ',
+      requirement: 'Cho điểm số từ 0 đến 100. Trả về ký tự xếp loại: A (90–100), B (80–89), C (70–79), D (60–69), F (dưới 60). Dùng switch expression.',
+      signature: "char XepLoaiChu(int diem)",
+      constraints: ['0 <= diem <= 100'],
+      examples: [
+        { input: 'diem = 85', output: "'B'" },
+        { input: 'diem = 90', output: "'A'", explain: 'Mốc 90 thuộc về A — mẫu phải viết >= 90 trước >= 80.' },
+        { input: 'diem = 59', output: "'F'" },
+      ],
+    },
+    {
+      id: 'b4-3', level: 'Cơ bản', title: 'Mùa trong năm',
+      requirement: 'Cho số tháng từ 1 đến 12. Trả về mùa tương ứng: tháng 12, 1, 2 là "Đông"; 3, 4, 5 là "Xuân"; 6, 7, 8 là "Hạ"; 9, 10, 11 là "Thu".',
+      signature: 'string TenMua(int thang)',
+      constraints: ['1 <= thang <= 12'],
+      examples: [
+        { input: 'thang = 7', output: '"Hạ"' },
+        { input: 'thang = 12', output: '"Đông"', explain: 'Tháng 12 gộp chung nhóm với tháng 1 và 2.' },
+      ],
+      hint: 'Gộp nhiều case cùng một kết quả, hoặc dùng mẫu khoảng trong switch expression.',
+    },
+    {
+      id: 'b4-4', level: 'Cơ bản', title: 'Nguyên âm hay phụ âm',
+      requirement: 'Cho một ký tự chữ cái tiếng Anh. Trả về "Nguyên âm" nếu là a, e, i, o, u (không phân biệt hoa thường), ngược lại trả về "Phụ âm".',
+      signature: 'string LoaiKyTu(char c)',
+      constraints: ["c là chữ cái từ 'a' đến 'z' hoặc 'A' đến 'Z'"],
+      examples: [
+        { input: "c = 'e'", output: '"Nguyên âm"' },
+        { input: "c = 'K'", output: '"Phụ âm"' },
+      ],
+    },
+    {
+      id: 'b4-5', level: 'Trung bình', title: 'Tiện ích hạng vé xem phim',
+      requirement: 'Cho hạng vé "Standard", "Premium" hoặc "VIP". Trả về mô tả tiện ích tương ứng. Hạng không hợp lệ trả về "Không có hạng vé này".',
+      signature: 'string TienIchVe(string hangVe)',
+      constraints: ['So sánh không phân biệt hoa thường'],
+      examples: [
+        { input: 'hangVe = "VIP"', output: '"Ghế hạng sang, đồ uống và bỏng ngô miễn phí"' },
+        { input: 'hangVe = "standard"', output: '"Ghế ngồi thường, không có đồ uống"' },
+      ],
+    },
+    {
+      id: 'b4-6', level: 'Trung bình', title: 'Tiện ích loại vé máy bay',
+      requirement: 'Cho loại vé "Economy", "Business" hoặc "First Class". Trả về tiện ích tương ứng: ghế thường, ghế rộng, ghế sang trọng.',
+      signature: 'string TienIchVeMayBay(string loaiVe)',
+      constraints: ['loaiVe là một trong ba giá trị nêu trên'],
+      examples: [
+        { input: 'loaiVe = "Business"', output: '"Ghế rộng"' },
+        { input: 'loaiVe = "First Class"', output: '"Ghế sang trọng"' },
+      ],
+    },
+    {
+      id: 'b4-7', level: 'Trung bình', title: 'Máy tính bỏ túi',
+      requirement: 'Cho hai số a, b và một ký tự phép toán trong các phép + − * /. Trả về kết quả phép tính. Nếu chia cho 0 thì trả về double.NaN.',
+      signature: 'double TinhToan(double a, double b, char phepToan)',
+      constraints: ["phepToan thuộc { '+', '-', '*', '/' }", 'Phép chia cho 0 phải được xử lý riêng'],
+      examples: [
+        { input: "a = 10, b = 4, phepToan = '*'", output: '40' },
+        { input: "a = 10, b = 0, phepToan = '/'", output: 'NaN', explain: 'Không ném exception, trả về NaN để nơi gọi tự quyết định.' },
+      ],
+      hint: 'Kết hợp switch expression với mẫu when để bắt trường hợp mẫu số bằng 0.',
+    },
+    {
+      id: 'b4-8', level: 'Trung bình', title: 'Số ngày trong tháng',
+      requirement: 'Cho số tháng và số năm. Trả về số ngày của tháng đó, có tính năm nhuận cho tháng 2.',
+      signature: 'int SoNgayTrongThang(int thang, int nam)',
+      constraints: ['1 <= thang <= 12', '1 <= nam <= 9999'],
+      examples: [
+        { input: 'thang = 2, nam = 2024', output: '29', explain: '2024 là năm nhuận.' },
+        { input: 'thang = 2, nam = 2023', output: '28' },
+        { input: 'thang = 4, nam = 2024', output: '30' },
+      ],
+    },
+    {
+      id: 'b4-9', level: 'Nâng cao', title: 'Rút gọn chuỗi if bằng ternary',
+      requirement: 'Cho một số nguyên n. Trả về "fizz" nếu chia hết cho 3, "buzz" nếu chia hết cho 5, "fizzbuzz" nếu chia hết cho cả hai, ngược lại trả về chính n dạng chuỗi. Viết thân hàm trong đúng một biểu thức.',
+      signature: 'string FizzBuzz(int n)',
+      constraints: ['1 <= n <= 1_000_000'],
+      examples: [
+        { input: 'n = 15', output: '"fizzbuzz"' },
+        { input: 'n = 9', output: '"fizz"' },
+        { input: 'n = 7', output: '"7"' },
+      ],
+      hint: 'switch expression với mẫu when đọc dễ hơn ternary lồng ba tầng.',
+    },
+    {
+      id: 'b4-10', level: 'Nâng cao', title: 'Giá trị mặc định khi null',
+      requirement: 'Cho tên người dùng có thể null hoặc rỗng. Trả về chính tên đó nếu có nội dung, ngược lại trả về "Khách".',
+      signature: 'string TenHienThi(string? ten)',
+      constraints: ['ten có thể là null, chuỗi rỗng hoặc chuỗi toàn khoảng trắng'],
+      examples: [
+        { input: 'ten = "An"', output: '"An"' },
+        { input: 'ten = null', output: '"Khách"' },
+        { input: 'ten = "   "', output: '"Khách"', explain: '?? chỉ bắt null, còn chuỗi toàn khoảng trắng phải dùng thêm IsNullOrWhiteSpace.' },
+      ],
+    },
+    {
+      id: 'b4-11', level: 'Nâng cao', title: 'Menu điều hướng',
+      requirement: 'Cho lựa chọn menu từ 0 đến 3. Trả về tên chức năng: 1 "Thêm", 2 "Sửa", 3 "Xoá", 0 "Thoát", khác trả về "Lựa chọn không hợp lệ".',
+      signature: 'string XuLyMenu(int chon)',
+      constraints: ['-100 <= chon <= 100'],
+      examples: [
+        { input: 'chon = 2', output: '"Sửa"' },
+        { input: 'chon = 5', output: '"Lựa chọn không hợp lệ"' },
+      ],
+      hint: 'Buổi 5 sẽ bọc hàm này trong vòng lặp do…while để làm menu chạy liên tục.',
+    },
   ],
 }
 

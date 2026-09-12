@@ -205,15 +205,96 @@ var nv = new NhanVien("NV01", "Bình") { SoGioLam = 160 };`,
   ],
 
   exercises: [
-    { id: 'b10-1', level: 'Cơ bản', title: 'Constructor cho SinhVien', requirement: 'Thêm constructor nhận mã, tên, điểm cho class SinhVien. Tạo 3 đối tượng chỉ bằng một dòng mỗi đối tượng.', io: { input: '—', output: 'SV001 — Nguyễn Văn A — 8.5' } },
-    { id: 'b10-2', level: 'Cơ bản', title: 'Constructor có kiểm tra', requirement: 'Trong constructor của SinhVien, nếu điểm nằm ngoài 0–10 thì gán về 0 và in cảnh báo.', io: { input: 'điểm = 15', output: 'Điểm không hợp lệ, đặt về 0' } },
-    { id: 'b10-3', level: 'Cơ bản', title: 'Nạp chồng constructor', requirement: 'Viết ba constructor cho class HinhChuNhat: không tham số (1×1), một tham số (hình vuông), hai tham số (dài × rộng).', hint: 'Dùng : this(...) để dồn về constructor đầy đủ.' },
-    { id: 'b10-4', level: 'Cơ bản', title: 'Nạp chồng phương thức', requirement: 'Viết ba phiên bản của phương thức TinhTong: hai số nguyên, ba số nguyên, và hai số thực.', io: { input: 'TinhTong(1,2) / TinhTong(1,2,3) / TinhTong(1.5,2.5)', output: '3 / 6 / 4' } },
-    { id: 'b10-5', level: 'Trung bình', title: 'Object initializer', requirement: 'Ngoài constructor, C# còn cho khởi tạo bằng cú pháp new SinhVien { Ten = "A", Diem = 8 }. Viết thử và giải thích khi nào nên dùng cách này thay cho constructor.', hint: 'Cú pháp này cần một constructor không tham số.' },
-    { id: 'b10-6', level: 'Trung bình', title: 'Constructor gọi constructor', requirement: 'Class TaiKhoan có ba constructor: rỗng, chỉ tên chủ thẻ, và đầy đủ. Hai bản đầu phải dồn về bản đầy đủ bằng : this(...), luật kiểm tra chỉ viết một lần.', hint: 'Constructor đầy đủ là nơi duy nhất gán dữ liệu.' },
-    { id: 'b10-7', level: 'Trung bình', title: 'Mất constructor rỗng', requirement: 'Viết một class chỉ có constructor có tham số, rồi thử gọi new TenClass(). Đọc lỗi biên dịch và giải thích vì sao xảy ra, sau đó sửa lại cho chạy được.' },
-    { id: 'b10-8', level: 'Nâng cao', title: 'Nạp chồng không hợp lệ', requirement: 'Thử viết int Tinh(int a) và double Tinh(int a) trong cùng một class. Đọc lỗi biên dịch và giải thích vì sao C# không phân biệt được hai hàm này.' },
-    { id: 'b10-9', level: 'Nâng cao', title: 'Class HocSinh hoàn chỉnh', requirement: 'Viết class HocSinh với ba constructor (rỗng, tên, đầy đủ), phương thức Nhap() nạp chồng ba kiểu (từ bàn phím, từ tham số, từ một HocSinh khác) và HienThi().', hint: 'Bản Nhap(HocSinh khac) là kỹ thuật sao chép đối tượng.' },
+
+    {
+      id: 'b10-1', level: 'Cơ bản', title: 'Constructor cho SinhVien',
+      requirement: 'Bổ sung constructor nhận mã, tên và điểm cho class SinhVien, sao cho tạo một sinh viên chỉ cần đúng một dòng lệnh.',
+      signature: 'SinhVien(string ma, string ten, double diem)',
+      constraints: ['Không được để lại cách gán từng thuộc tính sau khi new'],
+      examples: [
+        { input: 'new SinhVien("SV001", "Nguyễn Văn A", 8.5)', output: '"SV001 — Nguyễn Văn A — 8.5"' },
+      ],
+    },
+    {
+      id: 'b10-2', level: 'Cơ bản', title: 'Constructor có kiểm tra',
+      requirement: 'Trong constructor của SinhVien, nếu điểm nằm ngoài khoảng 0–10 thì gán về 0. Trả về điểm thực tế được lưu.',
+      signature: 'SinhVien(string ma, string ten, double diem)',
+      constraints: ['Điểm truyền vào có thể là số thực bất kỳ'],
+      examples: [
+        { input: 'diem = 15', output: '0', explain: 'Ngoài khoảng hợp lệ nên bị đưa về 0.' },
+        { input: 'diem = 8.5', output: '8.5' },
+        { input: 'diem = -2', output: '0' },
+      ],
+    },
+    {
+      id: 'b10-3', level: 'Cơ bản', title: 'Nạp chồng constructor',
+      requirement: 'Viết ba constructor cho class HinhChuNhat: không tham số tạo hình 1×1, một tham số tạo hình vuông, hai tham số tạo hình chữ nhật. Trả về diện tích để kiểm chứng.',
+      signature: 'HinhChuNhat() / HinhChuNhat(double canh) / HinhChuNhat(double dai, double rong)',
+      constraints: ['Hai constructor đầu phải dồn về constructor đầy đủ bằng : this(...)'],
+      examples: [
+        { input: 'new HinhChuNhat()', output: '1' },
+        { input: 'new HinhChuNhat(4)', output: '16' },
+        { input: 'new HinhChuNhat(4, 6)', output: '24' },
+      ],
+    },
+    {
+      id: 'b10-4', level: 'Cơ bản', title: 'Nạp chồng phương thức',
+      requirement: 'Viết ba phiên bản của phương thức TinhTong: hai số nguyên, ba số nguyên, và hai số thực.',
+      signature: 'int TinhTong(int a, int b) / int TinhTong(int a, int b, int c) / double TinhTong(double a, double b)',
+      constraints: ['Không được đặt tên khác nhau cho ba phiên bản'],
+      examples: [
+        { input: 'TinhTong(1, 2)', output: '3' },
+        { input: 'TinhTong(1, 2, 3)', output: '6' },
+        { input: 'TinhTong(1.5, 2.5)', output: '4' },
+      ],
+    },
+    {
+      id: 'b10-5', level: 'Trung bình', title: 'Object initializer',
+      requirement: 'Tạo đối tượng SinhVien bằng cú pháp object initializer thay vì constructor. Chỉ ra thứ tự thực thi giữa constructor và initializer.',
+      signature: 'new SinhVien { Ten = "A", Diem = 8 }',
+      constraints: ['Class phải có constructor không tham số'],
+      examples: [
+        { input: 'new SinhVien { Ten = "A", Diem = 8 }', output: 'Ten = "A", Diem = 8' },
+        { input: 'new SinhVien("SV01", "B", 0) { Diem = 9 }', output: 'Diem = 9', explain: 'Initializer chạy sau constructor nên ghi đè giá trị constructor đã gán.' },
+      ],
+    },
+    {
+      id: 'b10-6', level: 'Trung bình', title: 'Constructor gọi constructor',
+      requirement: 'Class TaiKhoan có ba constructor: rỗng, chỉ tên chủ thẻ, và đầy đủ. Hai bản đầu phải dồn về bản đầy đủ bằng : this(...), luật kiểm tra chỉ được viết đúng một lần.',
+      signature: 'TaiKhoan() / TaiKhoan(string ten) / TaiKhoan(string ma, string ten, decimal soDu)',
+      constraints: ['Luật kiểm tra chỉ xuất hiện ở đúng một constructor'],
+      examples: [
+        { input: 'new TaiKhoan()', output: 'Ma = "TK000", Ten = "Chưa đặt tên", SoDu = 0' },
+        { input: 'new TaiKhoan("An")', output: 'Ma = "TK000", Ten = "An", SoDu = 0' },
+      ],
+    },
+    {
+      id: 'b10-7', level: 'Trung bình', title: 'Mất constructor rỗng',
+      requirement: 'Viết một class chỉ có constructor có tham số rồi thử gọi new TenClass(). Ghi lại thông báo lỗi biên dịch nhận được và sửa để cả hai cách tạo đều chạy.',
+      signature: 'class A { public A(int x) { } }',
+      constraints: ['Phải giải thích được vì sao lỗi xảy ra'],
+      examples: [
+        { input: 'new A()', output: 'Lỗi CS7036: thiếu tham số bắt buộc x', explain: 'Vừa khai báo một constructor là constructor rỗng mặc định biến mất.' },
+      ],
+    },
+    {
+      id: 'b10-8', level: 'Nâng cao', title: 'Nạp chồng không hợp lệ',
+      requirement: 'Thử viết int Tinh(int a) và double Tinh(int a) trong cùng một class. Ghi lại lỗi biên dịch và giải thích vì sao C# không phân biệt được hai hàm này.',
+      signature: 'int Tinh(int a) / double Tinh(int a)',
+      constraints: ['Chỉ khác kiểu trả về, danh sách tham số giống hệt'],
+      examples: [
+        { input: 'Khai báo cả hai hàm', output: 'Lỗi CS0111: đã có thành viên cùng tên và cùng danh sách tham số', explain: 'C# chỉ phân biệt qua tham số, không phân biệt qua kiểu trả về.' },
+      ],
+    },
+    {
+      id: 'b10-9', level: 'Nâng cao', title: 'Class HocSinh với constructor sao chép',
+      requirement: 'Viết class HocSinh có ba constructor (rỗng, tên, đầy đủ) và một constructor sao chép nhận vào một HocSinh khác để tạo bản sao độc lập.',
+      signature: 'HocSinh(HocSinh khac)',
+      constraints: ['Bản sao phải độc lập: sửa bản sao không làm đổi bản gốc'],
+      examples: [
+        { input: 'var b = new HocSinh(a); b.Ten = "X"', output: 'a.Ten giữ nguyên', explain: 'Constructor sao chép chép từng giá trị chứ không chép tham chiếu.' },
+      ],
+    },
   ],
 }
 

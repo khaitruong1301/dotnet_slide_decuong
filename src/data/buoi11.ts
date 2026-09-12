@@ -252,14 +252,87 @@ const buoi11: Buoi = {
   ],
 
   exercises: [
-    { id: 'b11-5', level: 'Cơ bản', title: 'Auto-property', requirement: 'Chuyển toàn bộ field public của class SinhVien sang auto-property, riêng Ma dùng get; private set;.', hint: 'Ma chỉ được gán trong constructor.' },
-    { id: 'b11-6', level: 'Trung bình', title: 'Property có kiểm tra', requirement: 'Property Diem của SinhVien chỉ nhận giá trị 0–10, ngoài khoảng thì ném ArgumentException. Viết chương trình bắt lỗi bằng try-catch.', io: { input: 'sv.Diem = 11', output: 'Điểm phải từ 0 đến 10' } },
-    { id: 'b11-7', level: 'Trung bình', title: 'Property tính toán', requirement: 'Thêm property XepLoai (chỉ có get) trả về Giỏi / Khá / Trung bình / Yếu dựa trên Diem, không lưu thêm field nào.', hint: 'public string XepLoai => Diem switch { … };' },
-    { id: 'b11-8', level: 'Trung bình', title: 'Sinh mã tự động bằng static', requirement: 'Class SanPham tự sinh mã SP001, SP002… bằng một biến đếm static tăng dần trong constructor.', io: { input: 'Tạo 3 sản phẩm', output: 'SP001, SP002, SP003' } },
-    { id: 'b11-9', level: 'Trung bình', title: 'Lớp tiện ích static', requirement: 'Viết class MathHelper chỉ chứa phương thức static: LaSoNguyenTo, GiaiThua, DaoChuoi. Gọi trực tiếp qua tên class.', hint: 'Bài này chính là bài buổi 7 tổ chức lại theo hướng đối tượng.' },
-    { id: 'b11-10', level: 'Trung bình', title: 'Tài khoản ngân hàng đóng gói đầy đủ', requirement: 'Class TaiKhoan: SoTaiKhoan sinh tự động bằng static, TenChuThe get/set, soDu private chỉ đổi qua NapTien/RutTien, maPin private hoàn toàn. Rút quá số dư thì từ chối.', io: { input: 'Nạp 500.000 rồi rút 800.000', output: 'Số dư không đủ. Số dư hiện tại: 500.000' } },
-    { id: 'b11-11', level: 'Nâng cao', title: 'Giỏ hàng', requirement: 'Class SanPham (mã tự sinh, tên, giá) và class GioHang chứa List<SanPham>. GioHang có property TongTien chỉ có get, tự cộng giá các sản phẩm. Cho thêm, xoá theo mã và in hoá đơn.', hint: 'TongTien là property tính toán, không phải field.' },
-    { id: 'b11-12', level: 'Nâng cao', title: 'Quản lý nhân viên hoàn chỉnh', requirement: 'Nâng cấp bài quản lý nhân viên buổi 9: mã sinh tự động bằng static, mọi thuộc tính dùng property có kiểm tra, thêm property Luong tính từ Luong1h × SoGioLam.', hint: 'Luong là property chỉ có get.' },
+
+    {
+      id: 'b11-1', level: 'Cơ bản', title: 'Chuyển field sang auto-property',
+      requirement: 'Chuyển toàn bộ field public của class SinhVien sang auto-property. Riêng Ma chỉ được gán bên trong class, bên ngoài chỉ đọc được.',
+      signature: 'public string Ma { get; private set; }',
+      constraints: ['Không đổi tên thuộc tính, nơi đang dùng vẫn phải chạy'],
+      examples: [
+        { input: 'sv.Ma', output: 'Đọc được' },
+        { input: 'sv.Ma = "SV999"', output: 'Lỗi biên dịch', explain: 'set là private nên chỉ constructor và phương thức trong class mới gán được.' },
+      ],
+    },
+    {
+      id: 'b11-2', level: 'Cơ bản', title: 'Property có kiểm tra',
+      requirement: 'Property Diem của SinhVien chỉ nhận giá trị trong khoảng 0–10, ngoài khoảng thì ném ArgumentException. Viết chương trình bắt lỗi bằng try-catch.',
+      signature: 'public double Diem { get; set; }',
+      constraints: ['Giá trị cũ phải được giữ nguyên khi phép gán bị từ chối'],
+      examples: [
+        { input: 'sv.Diem = 8.5', output: '8.5' },
+        { input: 'sv.Diem = 11', output: 'ArgumentException: Điểm phải từ 0 đến 10' },
+      ],
+    },
+    {
+      id: 'b11-3', level: 'Cơ bản', title: 'Property tính toán',
+      requirement: 'Thêm property XepLoai chỉ có get, trả về Giỏi / Khá / Trung bình / Yếu dựa trên Diem. Không được lưu thêm field nào.',
+      signature: 'public string XepLoai { get; }',
+      constraints: ['Không được thêm field lưu trữ xếp loại'],
+      examples: [
+        { input: 'Diem = 8.5', output: '"Giỏi"' },
+        { input: 'Diem = 4', output: '"Yếu"' },
+      ],
+      hint: 'public string XepLoai => Diem switch { … };',
+    },
+    {
+      id: 'b11-4', level: 'Trung bình', title: 'Sinh mã tự động bằng static',
+      requirement: 'Class SanPham tự sinh mã theo dạng SP001, SP002… bằng một biến đếm static tăng dần trong constructor.',
+      signature: 'private static int demSanPham;',
+      constraints: ['Biến đếm dùng chung cho cả class, không thuộc về từng đối tượng'],
+      examples: [
+        { input: 'Tạo lần lượt 3 sản phẩm', output: 'SP001, SP002, SP003' },
+      ],
+    },
+    {
+      id: 'b11-5', level: 'Trung bình', title: 'Lớp tiện ích static',
+      requirement: 'Viết class MathHelper chỉ chứa phương thức static: LaSoNguyenTo, GiaiThua, DaoChuoi. Gọi trực tiếp qua tên class, không cần tạo đối tượng.',
+      signature: 'static class MathHelper { static bool LaSoNguyenTo(int n); … }',
+      constraints: ['Không được tạo đối tượng MathHelper'],
+      examples: [
+        { input: 'MathHelper.LaSoNguyenTo(7)', output: 'true' },
+        { input: 'MathHelper.GiaiThua(5)', output: '120' },
+      ],
+    },
+    {
+      id: 'b11-6', level: 'Trung bình', title: 'Đếm số đối tượng đã tạo',
+      requirement: 'Class TaiKhoan đếm tổng số tài khoản đã được tạo bằng biến static, và cung cấp một phương thức static để đọc con số đó.',
+      signature: 'static int DemTaiKhoan()',
+      constraints: ['Phải gọi được khi chưa tạo đối tượng nào'],
+      examples: [
+        { input: 'Chưa tạo đối tượng nào, gọi TaiKhoan.DemTaiKhoan()', output: '0' },
+        { input: 'Tạo 2 tài khoản rồi gọi lại', output: '2' },
+      ],
+    },
+    {
+      id: 'b11-7', level: 'Nâng cao', title: 'Tài khoản ngân hàng đóng gói đầy đủ',
+      requirement: 'Thiết kế class TaiKhoan: số tài khoản sinh tự động bằng static và readonly, tên chủ thẻ get/set, số dư private chỉ đổi qua NapTien và RutTien, mã PIN private hoàn toàn. Rút quá số dư thì từ chối.',
+      signature: 'class TaiKhoan { string SoTaiKhoan { get; } void NapTien(decimal); bool RutTien(decimal); }',
+      constraints: ['Số tài khoản không được đổi sau khi tạo', 'Mã PIN không được lộ ra ngoài dưới bất kỳ dạng nào'],
+      examples: [
+        { input: 'NapTien(500000); RutTien(800000)', output: 'false — Số dư không đủ, số dư vẫn là 500.000' },
+        { input: 'tk.SoTaiKhoan = "TK999"', output: 'Lỗi biên dịch' },
+      ],
+    },
+    {
+      id: 'b11-8', level: 'Nâng cao', title: 'Giỏ hàng với property tính toán',
+      requirement: 'Thiết kế class SanPham (mã tự sinh, tên, giá) và class GioHang chứa danh sách sản phẩm. GioHang có property TongTien chỉ có get, tự cộng giá các sản phẩm. Hỗ trợ thêm, xoá theo mã và in hoá đơn.',
+      signature: 'class GioHang { decimal TongTien { get; } void Them(SanPham); bool Xoa(string ma); }',
+      constraints: ['TongTien phải là property tính toán, không được là field lưu sẵn'],
+      examples: [
+        { input: 'Thêm 3 sản phẩm giá 100k, 250k, 500k', output: 'TongTien = 850000' },
+        { input: 'Xoá sản phẩm 250k rồi đọc TongTien', output: '600000', explain: 'Property tính lại mỗi lần đọc nên luôn đúng.' },
+      ],
+    },
   ],
 }
 
