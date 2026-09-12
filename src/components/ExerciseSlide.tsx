@@ -1,4 +1,4 @@
-import type { Buoi, Exercise, Visual as V } from '../data/types'
+import type { Buoi, Exercise } from '../data/types'
 import Visual from './Visual'
 
 const LEVEL_TONE = {
@@ -7,26 +7,10 @@ const LEVEL_TONE = {
   'Nâng cao': 'border-rose-400/45 bg-rose-400/12 text-rose-400',
 }
 
-/**
- * Không khai báo visual thì dựng tạm sơ đồ IPO từ chính đề bài,
- * để slide nào cũng có hình chứ không chỉ toàn chữ.
- */
-function autoVisual(ex: Exercise): V | undefined {
-  if (ex.visual) return ex.visual
-  const tc = ex.examples?.[0]
-  if (!tc) return undefined
-  return {
-    kind: 'ipo',
-    input: [tc.input],
-    process: [ex.hint ?? 'Xử lý theo yêu cầu của đề bài'],
-    output: [tc.output],
-  }
-}
-
 export default function ExerciseSlide({ buoi, ex, index }: { buoi: Buoi; ex: Exercise; index: number }) {
-  const v = autoVisual(ex)
-  // Sơ đồ IPO tự dựng đã hiển thị sẵn input/output nên bỏ hai ô bên dưới cho khỏi lặp
-  const showIoBoxes = ex.examples && !!ex.visual
+  const soViDu = ex.examples?.length ?? 0
+  // Bài có lưu đồ soạn riêng thì xếp ví dụ thành nhiều cột cho vừa một trang in
+  const soCot = ex.visual ? (soViDu >= 3 ? 3 : soViDu) : 1
 
   return (
     <section className="print-slide relative flex flex-col">
@@ -46,51 +30,65 @@ export default function ExerciseSlide({ buoi, ex, index }: { buoi: Buoi; ex: Exe
 
         <h2 className="slide-title">{ex.title}</h2>
 
-        <p className="mt-3 max-w-4xl text-[15.5px] leading-relaxed text-ink/75">{ex.requirement}</p>
+        <p className="mt-3 max-w-5xl text-[15.5px] leading-relaxed text-ink/75">{ex.requirement}</p>
 
         {ex.signature && (
-          <pre className="mt-2.5 w-fit rounded-lg border border-ink/12 bg-ink/5 px-3 py-1.5 font-mono text-[13px] text-accent-400">
+          <pre className="mt-2.5 w-fit max-w-full overflow-x-auto rounded-lg border border-ink/12 bg-ink/5 px-3 py-1.5 font-mono text-[13px] text-accent-400">
             {ex.signature}
           </pre>
         )}
 
-        {v && (
-          <div data-auto={String(!ex.visual)} className="slide-figure mt-4 rounded-xl border border-ink/12 px-4 py-5 text-[13.5px]">
-            <Visual v={v} />
+        {ex.visual && (
+          <div className="slide-figure mt-3.5 rounded-xl border border-ink/12 px-4 py-4 text-[13px]">
+            <Visual v={ex.visual} />
           </div>
         )}
 
-        {showIoBoxes && ex.examples && (
-          <div className="mt-4 space-y-2.5">
+        {/* Test case — trình bày đúng như trên web */}
+        {ex.examples && soViDu > 0 && (
+          <div
+            className={soCot > 1 ? 'mt-3.5 grid gap-2.5' : 'mt-3.5 space-y-2.5'}
+            style={soCot > 1 ? { gridTemplateColumns: `repeat(${soCot}, minmax(0, 1fr))` } : undefined}
+          >
             {ex.examples.map((tc, i) => (
-              <div key={i} className="grid gap-3 sm:grid-cols-2">
-                <div className="rounded-xl border border-accent-400/35 bg-accent-400/8 p-3.5">
-                  <div className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-accent-400">
-                    Input {ex.examples!.length > 1 ? i + 1 : ''}
-                  </div>
-                  <pre className="whitespace-pre-wrap font-mono text-[13px] text-ink/80">{tc.input}</pre>
+              <div key={i} className="rounded-xl border border-ink/12 bg-ink/4 px-3.5 py-2.5">
+                <div className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-ink/40">
+                  Ví dụ {soViDu > 1 ? i + 1 : ''}
                 </div>
-                <div className="rounded-xl border border-mint-400/35 bg-mint-400/8 p-3.5">
-                  <div className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-mint-400">
-                    Output {ex.examples!.length > 1 ? i + 1 : ''}
+                <dl className="space-y-1 font-mono text-[13px]">
+                  <div className="flex gap-2">
+                    <dt className="shrink-0 font-semibold text-accent-400">Input:</dt>
+                    <dd className="whitespace-pre-wrap text-ink/85">{tc.input}</dd>
                   </div>
-                  <pre className="whitespace-pre-wrap font-mono text-[13px] text-ink/80">{tc.output}</pre>
-                </div>
+                  <div className="flex gap-2">
+                    <dt className="shrink-0 font-semibold text-mint-400">Output:</dt>
+                    <dd className="whitespace-pre-wrap text-ink/85">{tc.output}</dd>
+                  </div>
+                </dl>
+                {tc.explain && (
+                  <p className="mt-1.5 text-[12.5px] leading-relaxed text-ink/55">
+                    <span className="font-semibold text-ink/70">Giải thích: </span>
+                    {tc.explain}
+                  </p>
+                )}
               </div>
             ))}
           </div>
         )}
 
         {ex.constraints && ex.constraints.length > 0 && (
-          <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
-            {ex.constraints.map((c, i) => (
-              <li key={i} className="font-mono text-[12px] text-ink/50">· {c}</li>
-            ))}
-          </ul>
+          <div className="mt-3">
+            <div className="mb-1 text-[10px] font-bold uppercase tracking-widest text-ink/40">Ràng buộc</div>
+            <ul className="flex flex-wrap gap-x-5 gap-y-0.5">
+              {ex.constraints.map((c, i) => (
+                <li key={i} className="font-mono text-[12.5px] text-ink/55">· {c}</li>
+              ))}
+            </ul>
+          </div>
         )}
 
         {ex.hint && (
-          <p className="mt-4 rounded-lg border-l-2 border-amber-400/60 bg-amber-400/8 px-3.5 py-2 text-[13.5px] text-ink/70">
+          <p className="mt-3 rounded-lg border-l-2 border-amber-400/60 bg-amber-400/8 px-3.5 py-2 text-[13px] text-ink/70">
             <span className="font-semibold text-amber-300">Gợi ý: </span>
             {ex.hint}
           </p>

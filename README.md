@@ -27,8 +27,11 @@ chính, diễn đạt ngắn, và bổ sung lưu đồ / sơ đồ trực quan c
 | 14 | Abstract class & Generic — ràng buộc `where`, `Activator` |
 | 15 | 4 tính chất OOP & SOLID — SRP, OCP, LSP, ISP, DIP và Dependency Injection |
 
-205 bài tập, chia ba mức Cơ bản / Trung bình / Nâng cao. Đề bài viết theo lối LeetCode:
-mô tả bài toán, chữ ký hàm cần cài đặt, ràng buộc đầu vào và các test case mẫu kèm giải thích. Riêng buổi 8 (Collection) có
+395 bài tập, chia ba mức Cơ bản / Trung bình / Nâng cao. Đề bài viết theo lối LeetCode:
+mô tả bài toán, chữ ký hàm cần cài đặt, ràng buộc đầu vào và các test case mẫu kèm giải thích.
+
+Riêng buổi 8 (Collection) có **250 bài** — 50 Cơ bản, 100 Trung bình, 100 Nâng cao — nằm
+trong `src/data/baitap-collection/`, tách theo cấp độ thành ba file. Riêng buổi 8 (Collection) có
 bộ 60 bài — 20 bài mỗi mức — nằm trong `src/data/buoi08-baitap.ts`.
 
 ## Truy cập
@@ -54,9 +57,10 @@ Muốn bảo vệ thật thì phải kiểm tra ở phía máy chủ.
   - *Tải PDF đầy đủ* — toàn bộ lý thuyết và cả 3 cấp độ bài tập, bất kể đang xem tab nào.
   - *Tải PDF tab đang xem* — chỉ đúng phần đang mở (ví dụ chỉ 20 bài Nâng cao), có bìa
     tên buổi, không kèm menu hay khối mục tiêu. Dùng để làm slide đem upload.
-  - *Xuất slide N bài* — tick chọn từng bài tập rồi xuất, **mỗi bài một trang** theo bố
-    cục slide: huy hiệu *Bài N* · tiêu đề cỡ lớn màu cam · mô tả · hình minh hoạ ·
-    Input/Output · gợi ý, kèm logo Cybersoft chìm ở nền.
+  - *Xuất slide N bài* — tick chọn từng bài tập rồi xuất, **mỗi bài một trang** với đủ
+    nội dung như trên web: huy hiệu *Bài N* · tiêu đề cỡ lớn màu cam · đề bài · chữ ký
+    hàm · lưu đồ (nếu có) · các test case Input/Output kèm giải thích · ràng buộc ·
+    gợi ý, kèm logo Cybersoft chìm ở nền.
 
   Mọi trang in đều có chân trang *"Được biên soạn bởi Trương Tấn Khải — cybersoft.edu.vn"*.
 

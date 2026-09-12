@@ -118,9 +118,13 @@ Nút *Bốc đề 10 bài* lấy ngẫu nhiên theo tỷ lệ 2 Cơ bản · 6 T
 Buổi nào không đủ bài ở một mức thì phần thiếu được bù bằng bài bất kỳ còn lại, và
 buổi có dưới 10 bài thì chọn hết.
 
-Buổi 8 có 60 bài nên tách riêng ra `src/data/buoi08-baitap.ts` (ba mảng `coBan`,
-`trungBinh`, `nangCao` gộp lại thành `BAI_TAP_COLLECTION`). Buổi nào vượt khoảng
-20 bài thì nên tách file tương tự.
+Buổi 8 có 250 bài nên tách hẳn ra thư mục `src/data/baitap-collection/` gồm ba file
+`coban.ts` (50), `trungbinh.ts` (100), `nangcao.ts` (100); `buoi08-baitap.ts` chỉ còn
+việc gộp chúng lại. Buổi nào vượt khoảng 20 bài thì nên tách file tương tự.
+
+**Quy ước id:** `b<số buổi>-<chữ cái cấp độ><số thứ tự 3 chữ số>` — `c` cho Cơ bản,
+`m` cho Trung bình, `h` cho Nâng cao. Ví dụ `b8-c001`, `b8-m042`, `b8-h100`. Tiền tố
+khác nhau theo cấp độ để id không đụng nhau khi bổ sung bài vào từng file riêng.
 
 ## Quy ước viết nội dung
 
@@ -197,6 +201,10 @@ dùng `position: fixed` nên tự lặp trên mọi trang in, ở cả ba chế 
 
 Ngắt trang dùng `break-before` chứ không dùng `break-after` — `break-after` trên phần
 tử cuối cũng sinh thêm một trang trắng.
+
+Slide in ra phải có **đủ nội dung như trên web**: đề bài, chữ ký hàm, lưu đồ, các test
+case Input/Output kèm giải thích, ràng buộc và gợi ý. Bài nào có lưu đồ thì các ví dụ tự
+xếp thành 2–3 cột cho vừa trang.
 
 Mỗi slide phải gọn trong đúng một trang A4 ngang. Sơ đồ dùng đơn vị `em` nên co giãn
 theo `font-size` của khối `.slide-figure`; nếu thêm bài có lưu đồ dài mà bị tràn trang,
