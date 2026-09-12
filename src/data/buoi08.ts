@@ -42,8 +42,60 @@ const buoi08: Buoi = {
     },
 
     {
+      id: 'bien-va-o-nho',
+      title: '2. Collection nằm ở đâu trong bộ nhớ',
+      blocks: [
+        {
+          type: 'text',
+          text: 'List, Dictionary, HashSet và mảng đều là kiểu tham chiếu. Biến bạn khai báo không chứa dữ liệu, nó chỉ chứa địa chỉ của vùng nhớ thật. Nắm chỗ này thì về sau khỏi ngạc nhiên khi truyền list vào hàm rồi list gốc bị đổi theo.',
+        },
+        {
+          type: 'table',
+          head: ['Biến', 'Địa chỉ', 'Giá trị thật'],
+          rows: [
+            ['int a', '(không có)', '10 — nằm thẳng trên stack'],
+            ['List<int> lst', '0x100', '[10, 20, 30] — nằm trên heap'],
+            ['List<int> lst2 = lst', '0x100', 'cùng địa chỉ, cùng một vùng nhớ'],
+            ['Dictionary<string,int> d', '0x200', '{toan: 8} — nằm trên heap'],
+          ],
+        },
+        {
+          type: 'code',
+          sample: {
+            title: 'Hai biến, một vùng nhớ',
+            code: `List<int> lst = new List<int> { 10, 20, 30 };
+List<int> lst2 = lst;          // KHÔNG sao chép dữ liệu, chỉ sao chép địa chỉ
+
+lst2.Add(40);                  // thêm qua lst2
+Console.WriteLine(lst.Count);  // 4 — lst cũng thấy!
+
+List<int> banSao = new List<int>(lst);  // muốn bản riêng thì phải tạo mới
+banSao.Add(50);
+Console.WriteLine(lst.Count);  // vẫn 4 — lần này không ảnh hưởng`,
+            note: 'Truyền list vào hàm cũng là truyền địa chỉ — hàm sửa list là bên ngoài thấy ngay.',
+            trace: [
+              { line: 1, vars: { lst: '→ 0x100' }, refs: { lst: '0x100' }, heap: { '0x100': '[10, 20, 30]' }, note: 'new cấp một vùng nhớ trên heap, biến lst giữ địa chỉ của nó.' },
+              { line: 2, vars: { lst: '→ 0x100', lst2: '→ 0x100' }, refs: { lst: '0x100', lst2: '0x100' }, heap: { '0x100': '[10, 20, 30]' }, note: 'Phép gán chỉ chép ĐỊA CHỈ. Không có vùng nhớ thứ hai nào được tạo ra — để ý nhãn đỏ.' },
+              { line: 4, vars: { lst: '→ 0x100', lst2: '→ 0x100' }, refs: { lst: '0x100', lst2: '0x100' }, heap: { '0x100': '[10, 20, 30, 40]' }, focus: { '0x100': [3] }, note: 'Thêm qua lst2 là thêm thẳng vào ô 0x100.' },
+              { line: 5, vars: { lst: '→ 0x100', lst2: '→ 0x100' }, refs: { lst: '0x100', lst2: '0x100' }, heap: { '0x100': '[10, 20, 30, 40]' }, output: ['4'], note: 'lst cũng thành 4 phần tử vì nó vốn trỏ về đúng chỗ đó.' },
+              { line: 7, vars: { lst: '→ 0x100', lst2: '→ 0x100', banSao: '→ 0x110' }, refs: { lst: '0x100', lst2: '0x100', banSao: '0x110' }, heap: { '0x100': '[10, 20, 30, 40]', '0x110': '[10, 20, 30, 40]' }, note: 'new List<int>(lst) mới thật sự tạo vùng nhớ THỨ HAI và chép nội dung sang.' },
+              { line: 8, vars: { lst: '→ 0x100', banSao: '→ 0x110' }, refs: { lst: '0x100', lst2: '0x100', banSao: '0x110' }, heap: { '0x100': '[10, 20, 30, 40]', '0x110': '[10, 20, 30, 40, 50]' }, focus: { '0x110': [4] }, note: 'Thêm 50 vào bản sao — ô 0x100 không hề hấn gì.' },
+              { line: 9, vars: { lst: '→ 0x100', banSao: '→ 0x110' }, refs: { lst: '0x100', lst2: '0x100', banSao: '0x110' }, heap: { '0x100': '[10, 20, 30, 40]', '0x110': '[10, 20, 30, 40, 50]' }, output: ['4', '4'], note: 'Đây là cách duy nhất để có một bản độc lập thật sự.' },
+            ],
+          },
+        },
+        {
+          type: 'callout',
+          tone: 'warn',
+          title: 'Bản sao nông',
+          text: 'new List<int>(lst) chép được các số vì int là kiểu giá trị. Nhưng với List<SanPham> thì nó chỉ chép địa chỉ của từng sản phẩm — sửa một sản phẩm qua bản sao là bản gốc cũng đổi theo. Muốn độc lập hoàn toàn thì phải tự tạo lại từng đối tượng.',
+        },
+      ],
+    },
+
+    {
       id: 'list',
-      title: '2. List — CRUD đầy đủ',
+      title: '3. List — CRUD đầy đủ',
       blocks: [
         {
           type: 'visual',
@@ -171,8 +223,206 @@ numbers.Clear();                 // xoá sạch, list vẫn tồn tại`,
     },
 
     {
+      id: 'linq',
+      title: '4. LINQ — truy vấn trên mọi collection',
+      blocks: [
+        {
+          type: 'text',
+          text: 'List có sẵn Find, FindAll, Exists — nhưng chỉ List mới có, và cũng chỉ làm được vài việc. LINQ là bộ hàm dùng chung cho MỌI collection: List, Dictionary, HashSet, mảng, thậm chí kết quả truy vấn database. Viết một lần, dùng khắp nơi.',
+        },
+        {
+          type: 'callout',
+          tone: 'info',
+          title: 'Nhớ thêm using',
+          text: 'LINQ nằm trong System.Linq. Từ .NET 6 các project mới đã tự thêm sẵn dòng using này nên thường không phải gõ. Thiếu nó thì trình biên dịch báo "không tìm thấy phương thức Where".',
+        },
+        {
+          type: 'visual',
+          visual: {
+            kind: 'timeline',
+            caption: 'LINQ là một dây chuyền: dữ liệu chảy qua từng khâu, mỗi khâu trả ra một tập mới',
+            items: [
+              { label: 'Nguồn — List<SanPham>', text: 'Toàn bộ 100 sản phẩm trong kho' },
+              { label: 'Where — lọc', text: 'Giữ lại sản phẩm còn hàng, còn 60 món' },
+              { label: 'OrderBy — sắp xếp', text: 'Xếp theo giá tăng dần' },
+              { label: 'Select — chiếu', text: 'Chỉ lấy ra tên, bỏ các thông tin khác' },
+              { label: 'Take — cắt', text: 'Lấy 10 món đầu' },
+              { label: 'ToList — chốt', text: 'Chạy thật và đổ ra một List mới' },
+            ],
+          },
+        },
+        {
+          type: 'table',
+          head: ['Nhóm', 'Hàm', 'Làm gì'],
+          rows: [
+            ['Lọc', 'Where(x => …)', 'Giữ lại phần tử thoả điều kiện'],
+            ['Chiếu', 'Select(x => …)', 'Biến đổi từng phần tử thành thứ khác'],
+            ['Chiếu', 'SelectMany(x => …)', 'Trải phẳng danh sách lồng trong danh sách'],
+            ['Sắp xếp', 'OrderBy / OrderByDescending', 'Sắp theo một khoá'],
+            ['Sắp xếp', 'ThenBy / ThenByDescending', 'Tiêu chí phụ khi khoá chính bằng nhau'],
+            ['Tổng hợp', 'Sum / Average / Max / Min / Count', 'Trả về một con số duy nhất'],
+            ['Kiểm tra', 'Any(x => …) / All(x => …)', 'Có phần tử nào thoả / mọi phần tử đều thoả'],
+            ['Lấy một', 'First / FirstOrDefault / Last / Single', 'Lấy đúng một phần tử'],
+            ['Phân trang', 'Take(n) / Skip(n)', 'Lấy n phần tử đầu / bỏ n phần tử đầu'],
+            ['Tập hợp', 'Distinct / Union / Intersect / Except', 'Loại trùng và các phép toán tập hợp'],
+            ['Nhóm', 'GroupBy(x => …)', 'Gom phần tử theo khoá'],
+            ['Chốt', 'ToList / ToArray / ToDictionary', 'Chạy thật và đổ ra collection mới'],
+          ],
+        },
+        {
+          type: 'code',
+          sample: {
+            title: 'Ghép chuỗi Where → OrderBy → Select',
+            code: `List<int> so = new List<int> { 20, 81, 97, 63, 72, 11 };
+
+var ketQua = so.Where(x => x > 50)        // lọc: giữ số lớn hơn 50
+                .OrderBy(x => x)          // sắp xếp tăng dần
+                .Select(x => x * 2)       // nhân đôi từng số
+                .ToList();                // chốt lại thành List
+
+Console.WriteLine(string.Join(", ", ketQua));`,
+            note: 'Mỗi khâu trả ra một tập mới, List gốc không hề bị đụng tới.',
+            trace: [
+              { line: 1, vars: { so: '[20, 81, 97, 63, 72, 11]' }, note: 'List gốc 6 phần tử.' },
+              { line: 3, vars: { so: '[20, 81, 97, 63, 72, 11]', 'sau Where': '[81, 97, 63, 72]' }, focus: { so: [1, 2, 3, 4] }, note: 'Where giữ lại 4 số lớn hơn 50. Số 20 và 11 bị loại.' },
+              { line: 4, vars: { so: '[20, 81, 97, 63, 72, 11]', 'sau OrderBy': '[63, 72, 81, 97]' }, note: 'Sắp xếp tăng dần. Chú ý: OrderBy tạo tập MỚI chứ không sắp xếp tại chỗ như List.Sort().' },
+              { line: 5, vars: { so: '[20, 81, 97, 63, 72, 11]', 'sau Select': '[126, 144, 162, 194]' }, note: 'Select biến đổi TỪNG phần tử. Số lượng phần tử không đổi, chỉ giá trị đổi.' },
+              { line: 6, vars: { so: '[20, 81, 97, 63, 72, 11]', ketQua: '[126, 144, 162, 194]' }, note: 'ToList chốt lại. Tới lúc này dây chuyền mới thật sự chạy — xem phần hoãn thực thi bên dưới.' },
+              { line: 8, vars: { so: '[20, 81, 97, 63, 72, 11]', ketQua: '[126, 144, 162, 194]' }, output: ['126, 144, 162, 194'], note: 'List gốc vẫn nguyên vẹn 6 phần tử ban đầu.' },
+            ],
+          },
+        },
+        {
+          type: 'code',
+          sample: {
+            title: 'Nhóm hàm tổng hợp — trả về một con số',
+            code: `List<int> so = new List<int> { 20, 81, 97, 63, 72, 11 };
+
+int tong      = so.Sum();
+double trungBinh = so.Average();
+int lonNhat   = so.Max();
+int nhoNhat   = so.Min();
+int demLon    = so.Count(x => x > 50);       // đếm có điều kiện
+int tongLon   = so.Where(x => x > 50).Sum(); // lọc rồi mới cộng`,
+            note: 'Các hàm này chạy NGAY lập tức vì phải duyệt hết mới ra được kết quả.',
+            trace: [
+              { line: 3, vars: { so: '[20, 81, 97, 63, 72, 11]', tong: '344' }, note: 'Sum cộng hết mọi phần tử — thay cho cả một vòng foreach.' },
+              { line: 4, vars: { so: '[20, 81, 97, 63, 72, 11]', tong: '344', trungBinh: '57.33' }, note: 'Average tự trả về double nên không dính bẫy chia số nguyên.' },
+              { line: 5, vars: { tong: '344', trungBinh: '57.33', lonNhat: '97' }, focus: { so: [2] } },
+              { line: 6, vars: { tong: '344', trungBinh: '57.33', lonNhat: '97', nhoNhat: '11' }, focus: { so: [5] } },
+              { line: 7, vars: { lonNhat: '97', nhoNhat: '11', demLon: '4' }, focus: { so: [1, 2, 3, 4] }, note: 'Count nhận được cả điều kiện — gọn hơn Where(...).Count().' },
+              { line: 8, vars: { demLon: '4', tongLon: '313' }, focus: { so: [1, 2, 3, 4] }, note: 'Lọc trước rồi cộng: 81 + 97 + 63 + 72 = 313. Ghép hai hàm là ra ngay thứ mình cần.' },
+            ],
+          },
+        },
+        {
+          type: 'code',
+          sample: {
+            title: 'Kiểm tra và lấy một phần tử',
+            code: `List<int> so = new List<int> { 20, 81, 97, 63 };
+
+bool coSoLon = so.Any(x => x > 90);      // True
+bool deuDuong = so.All(x => x > 0);      // True
+
+int dauTien = so.First(x => x > 50);     // 81
+int khongCo = so.FirstOrDefault(x => x > 999);   // 0 — không ném lỗi
+// int loi  = so.First(x => x > 999);    // 💥 InvalidOperationException`,
+            note: 'Khi không chắc có kết quả, luôn dùng FirstOrDefault thay cho First.',
+            trace: [
+              { line: 3, vars: { so: '[20, 81, 97, 63]', coSoLon: 'true' }, focus: { so: [2] }, note: 'Any dừng NGAY khi gặp phần tử đầu tiên thoả — không cần duyệt hết.' },
+              { line: 4, vars: { so: '[20, 81, 97, 63]', coSoLon: 'true', deuDuong: 'true' }, note: 'All thì ngược lại: dừng ngay khi gặp phần tử đầu tiên KHÔNG thoả.' },
+              { line: 6, vars: { so: '[20, 81, 97, 63]', dauTien: '81' }, focus: { so: [1] }, note: 'First lấy phần tử đầu tiên thoả điều kiện.' },
+              { line: 7, vars: { so: '[20, 81, 97, 63]', dauTien: '81', khongCo: '0' }, note: 'Không có số nào lớn hơn 999. FirstOrDefault trả về giá trị mặc định của kiểu: 0 với int, null với string và class.' },
+              { line: 8, vars: { dauTien: '81', khongCo: '0' }, note: 'Dòng này nếu bỏ comment sẽ VĂNG LỖI lúc chạy. Đây là bẫy hay gặp nhất khi mới dùng LINQ: First đòi phải có kết quả, không có là ném InvalidOperationException.' },
+            ],
+          },
+        },
+        {
+          type: 'callout',
+          tone: 'warn',
+          title: 'Hoãn thực thi — LINQ không chạy ngay khi bạn viết',
+          text: 'Where, Select, OrderBy chỉ MÔ TẢ việc cần làm chứ chưa làm. Chúng chỉ thật sự chạy khi bạn duyệt kết quả bằng foreach hoặc gọi ToList, ToArray, Count, Sum. Đó là lý do sửa dữ liệu nguồn sau khi viết truy vấn vẫn ảnh hưởng tới kết quả.',
+        },
+        {
+          type: 'code',
+          sample: {
+            title: 'Thấy rõ chuyện hoãn thực thi',
+            code: `List<int> so = new List<int> { 1, 2, 3 };
+
+var truyVan = so.Where(x => x > 1);   // mới chỉ MÔ TẢ, chưa chạy
+
+so.Add(10);                            // sửa nguồn SAU khi viết truy vấn
+
+foreach (int x in truyVan)             // tới đây mới thật sự chạy
+    Console.Write(x + " ");            // 2 3 10  — có cả số 10!
+
+var chot = so.Where(x => x > 1).ToList();  // ToList chạy ngay, chốt kết quả
+so.Add(20);
+Console.WriteLine(chot.Count);         // 3 — không có số 20`,
+            note: 'Muốn kết quả đứng yên thì gọi ToList ngay, đừng để truy vấn lơ lửng.',
+            trace: [
+              { line: 1, vars: { so: '[1, 2, 3]' } },
+              { line: 3, vars: { so: '[1, 2, 3]', truyVan: 'chưa chạy' }, note: 'Dòng này KHÔNG duyệt phần tử nào cả. Nó chỉ ghi lại "sẽ lọc x > 1 trên biến so".' },
+              { line: 5, vars: { so: '[1, 2, 3, 10]', truyVan: 'chưa chạy' }, focus: { so: [3] }, note: 'Thêm 10 vào nguồn. Truy vấn vẫn chưa chạy nên nó chưa biết gì.' },
+              { line: 7, vars: { so: '[1, 2, 3, 10]', truyVan: 'đang chạy' }, note: 'foreach kích hoạt truy vấn. Lúc này nó mới nhìn vào so — và so giờ đã có 4 phần tử.' },
+              { line: 8, vars: { so: '[1, 2, 3, 10]', x: '2' }, output: ['2 '], focus: { so: [1] } },
+              { line: 8, vars: { so: '[1, 2, 3, 10]', x: '3' }, output: ['2 3 '], focus: { so: [2] } },
+              { line: 8, vars: { so: '[1, 2, 3, 10]', x: '10' }, output: ['2 3 10 '], focus: { so: [3] }, note: 'Số 10 lọt vào kết quả dù lúc viết truy vấn nó chưa tồn tại — đây chính là hoãn thực thi.' },
+              { line: 10, vars: { so: '[1, 2, 3, 10]', chot: '[2, 3, 10]' }, output: ['2 3 10 '], note: 'ToList chạy NGAY và sao chép kết quả ra một List riêng.' },
+              { line: 11, vars: { so: '[1, 2, 3, 10, 20]', chot: '[2, 3, 10]' }, output: ['2 3 10 '], focus: { so: [4] }, note: 'Thêm 20 vào nguồn.' },
+              { line: 12, vars: { so: '[1, 2, 3, 10, 20]', chot: '[2, 3, 10]' }, output: ['2 3 10 ', '3'], note: 'chot vẫn là 3 phần tử — nó đã được chốt từ trước, không còn dính líu gì tới so nữa.' },
+            ],
+          },
+        },
+        {
+          type: 'code',
+          sample: {
+            title: 'GroupBy — gom nhóm rồi thống kê',
+            code: `var donHang = new List<(string khach, decimal tien)>
+{
+    ("An", 100), ("Bình", 250), ("An", 300), ("Cường", 50), ("Bình", 120)
+};
+
+var thongKe = donHang.GroupBy(d => d.khach)
+                     .Select(g => new { Khach = g.Key, Tong = g.Sum(d => d.tien) })
+                     .OrderByDescending(x => x.Tong)
+                     .ToList();
+
+foreach (var x in thongKe)
+    Console.WriteLine($"{x.Khach}: {x.Tong}");`,
+            note: 'Bốn dòng LINQ thay cho cả một Dictionary đếm thủ công và vòng lặp sắp xếp.',
+            trace: [
+              { line: 4, vars: { donHang: '[An-100, Bình-250, An-300, Cường-50, Bình-120]' }, note: '5 đơn hàng của 3 khách.' },
+              { line: 6, vars: { 'sau GroupBy': '{An: [100, 300], Bình: [250, 120], Cường: [50]}' }, note: 'GroupBy gom các đơn cùng khách vào một nhóm. Mỗi nhóm có Key là tên khách và bên trong là danh sách đơn.' },
+              { line: 7, vars: { 'sau Select': '[An-400, Bình-370, Cường-50]' }, note: 'Với mỗi nhóm, g.Sum cộng tiền trong nhóm đó. new { } tạo một kiểu nặc danh gồm hai trường.' },
+              { line: 8, vars: { 'sau OrderByDescending': '[An-400, Bình-370, Cường-50]' }, note: 'Sắp giảm dần theo tổng tiền.' },
+              { line: 9, vars: { thongKe: '[An-400, Bình-370, Cường-50]' }, note: 'Chốt thành List.' },
+              { line: 13, vars: { thongKe: '[An-400, Bình-370, Cường-50]' }, output: ['An: 400', 'Bình: 370', 'Cường: 50'], note: 'Viết tay bằng Dictionary và vòng lặp thì mất khoảng 15 dòng, LINQ gói lại còn 4.' },
+            ],
+          },
+        },
+        {
+          type: 'table',
+          head: ['Muốn làm gì', 'Cách của List', 'Cách LINQ', 'Nên dùng'],
+          rows: [
+            ['Tìm một phần tử', 'Find(x => …)', 'FirstOrDefault(x => …)', 'LINQ — dùng được cho mọi collection'],
+            ['Tìm tất cả', 'FindAll(x => …)', 'Where(x => …).ToList()', 'Tuỳ, kết quả như nhau'],
+            ['Kiểm tra tồn tại', 'Exists(x => …)', 'Any(x => …)', 'LINQ'],
+            ['Sắp xếp', 'Sort() — sửa tại chỗ', 'OrderBy() — trả tập mới', 'OrderBy khi không muốn đụng bản gốc'],
+            ['Xoá theo điều kiện', 'RemoveAll(x => …)', 'không có', 'RemoveAll — LINQ không sửa dữ liệu'],
+          ],
+        },
+        {
+          type: 'callout',
+          tone: 'tip',
+          title: 'LINQ chỉ đọc, không sửa',
+          text: 'Mọi hàm LINQ đều trả về tập MỚI, không bao giờ đụng vào collection gốc. Muốn thêm hay xoá thật thì vẫn phải dùng Add, Remove, RemoveAll của List.',
+        },
+      ],
+    },
+    {
       id: 'dictionary',
-      title: '3. Dictionary — tra cứu theo khoá',
+      title: '5. Dictionary — tra cứu theo khoá',
       blocks: [
         {
           type: 'visual',
@@ -237,7 +487,7 @@ data.Remove("ly");`,
 
     {
       id: 'hashset-array',
-      title: '4. HashSet và Array',
+      title: '6. HashSet và Array',
       blocks: [
         {
           type: 'code',
@@ -308,7 +558,7 @@ List<KeyValuePair<string, int>> pairs = data.ToList();`,
 
     {
       id: 'thuat-toan',
-      title: '5. Chọn đúng cấu trúc để tối ưu thuật toán',
+      title: '7. Chọn đúng cấu trúc để tối ưu thuật toán',
       blocks: [
         {
           type: 'text',
@@ -418,7 +668,7 @@ Console.WriteLine(daiNhat);   // 4 — chuỗi [1, 2, 3, 4]`,
 
     {
       id: 'var-object-dynamic',
-      title: '6. var, object và dynamic',
+      title: '8. var, object và dynamic',
       blocks: [
         {
           type: 'visual',

@@ -921,4 +921,98 @@ export const trungBinh: Exercise[] = [
     examples: [
       { input: "banGhi = [\"An:co\", \"Binh:vang\", \"An:co\"]", output: "{\"An\": 2, \"Binh\": 0}" },
     ], },
+
+  { id: 'b8-m101', level: 'Trung bình', title: "LINQ — lọc và biến đổi",
+    requirement: "Cho một mảng số nguyên nums. Dùng LINQ trả về mảng các số chẵn đã được nhân đôi, sắp xếp tăng dần.",
+    signature: "int[] ChanNhanDoi(int[] nums)",
+    constraints: ["0 <= nums.Length <= 100000", "Bắt buộc dùng Where, Select, OrderBy"],
+    examples: [
+      { input: "nums = [5, 2, 8, 1, 4]", output: "[4, 8, 16]", explain: "Lọc còn [2, 8, 4], nhân đôi thành [4, 16, 8], sắp xếp ra [4, 8, 16]." },
+      { input: "nums = [1, 3]", output: "[]" },
+    ],
+    hint: "Ghép chuỗi .Where(...).OrderBy(...).Select(...).ToArray()", },
+
+  { id: 'b8-m102', level: 'Trung bình', title: "LINQ — nhóm hàm tổng hợp",
+    requirement: "Cho một mảng điểm số. Trả về chuỗi thống kê dạng \"Tổng: x, TB: y, Cao nhất: z, Thấp nhất: t\" với TB làm tròn 2 chữ số. Mảng rỗng trả về \"Không có dữ liệu\".",
+    signature: "string ThongKe(double[] diem)",
+    constraints: ["0 <= diem.Length <= 100000", "Dùng Sum, Average, Max, Min"],
+    examples: [
+      { input: "diem = [8, 6, 10, 7]", output: "\"Tổng: 31, TB: 7.75, Cao nhất: 10, Thấp nhất: 6\"" },
+      { input: "diem = []", output: "\"Không có dữ liệu\"", explain: "Gọi Average trên mảng rỗng sẽ ném InvalidOperationException — phải chặn trước." },
+    ], },
+
+  { id: 'b8-m103', level: 'Trung bình', title: "LINQ — Any và All",
+    requirement: "Cho một mảng số nguyên. Trả về true nếu mảng có ít nhất một số âm VÀ mọi số đều nhỏ hơn 1000.",
+    signature: "bool KiemTra(int[] nums)",
+    constraints: ["0 <= nums.Length <= 100000", "Dùng Any và All"],
+    examples: [
+      { input: "nums = [-5, 100, 999]", output: "true" },
+      { input: "nums = [1, 2, 3]", output: "false", explain: "Không có số âm nào." },
+      { input: "nums = []", output: "false", explain: "Mảng rỗng thì Any luôn false còn All luôn true." },
+    ], },
+
+  { id: 'b8-m104', level: 'Trung bình', title: "LINQ — First và FirstOrDefault",
+    requirement: "Cho một mảng chuỗi và một ký tự đầu. Trả về chuỗi đầu tiên bắt đầu bằng ký tự đó, không có thì trả về chuỗi rỗng. Không được để chương trình ném exception.",
+    signature: "string TimDauTien(string[] arr, char kyTu)",
+    constraints: ["0 <= arr.Length <= 10000"],
+    examples: [
+      { input: "arr = [\"apple\",\"banana\",\"mango\"], kyTu = 'm'", output: "\"mango\"" },
+      { input: "arr = [\"apple\"], kyTu = 'z'", output: "\"\"", explain: "Dùng First ở đây sẽ văng InvalidOperationException." },
+    ],
+    hint: "FirstOrDefault trả về null với string — nhớ đổi thành chuỗi rỗng.", },
+
+  { id: 'b8-m105', level: 'Trung bình', title: "LINQ — phân trang",
+    requirement: "Cho một mảng, kích thước trang và số trang (đánh số từ 1). Dùng Skip và Take trả về các phần tử của trang đó.",
+    signature: "int[] LayTrang(int[] nums, int kichThuoc, int soTrang)",
+    constraints: ["1 <= kichThuoc <= 1000", "1 <= soTrang"],
+    examples: [
+      { input: "nums = [1,2,3,4,5,6,7], kichThuoc = 3, soTrang = 2", output: "[4, 5, 6]" },
+      { input: "nums = [1,2], kichThuoc = 5, soTrang = 3", output: "[]", explain: "Vượt quá số trang thì Skip trả về tập rỗng chứ không lỗi." },
+    ],
+    hint: "Skip((soTrang - 1) * kichThuoc).Take(kichThuoc)", },
+
+  { id: 'b8-m106', level: 'Trung bình', title: "LINQ — GroupBy thống kê",
+    requirement: "Cho một mảng bản ghi dạng \"ten:diem\". Trả về danh sách cặp (tên, điểm trung bình) sắp xếp theo điểm giảm dần.",
+    signature: "List<(string, double)> DiemTrungBinh(string[] banGhi)",
+    constraints: ["0 <= banGhi.Length <= 100000"],
+    examples: [
+      { input: "banGhi = [\"An:8\", \"Binh:6\", \"An:10\"]", output: "[(\"An\", 9), (\"Binh\", 6)]" },
+    ],
+    hint: "GroupBy theo tên rồi Select với g.Average().", },
+
+  { id: 'b8-m107', level: 'Trung bình', title: "LINQ — Distinct và phép toán tập hợp",
+    requirement: "Cho hai mảng số nguyên. Trả về ba mảng: hợp, giao và hiệu của chúng, mỗi mảng đã loại trùng và sắp xếp tăng dần.",
+    signature: "(int[] hop, int[] giao, int[] hieu) PhepToanTapHop(int[] a, int[] b)",
+    constraints: ["0 <= a.Length, b.Length <= 100000", "Dùng Union, Intersect, Except"],
+    examples: [
+      { input: "a = [1,2,2,3], b = [3,4]", output: "([1,2,3,4], [3], [1,2])" },
+    ], },
+
+  { id: 'b8-m108', level: 'Trung bình', title: "LINQ — sắp xếp nhiều tiêu chí",
+    requirement: "Cho một mảng bản ghi dạng \"ten:tuoi\". Sắp xếp theo tuổi tăng dần, cùng tuổi thì theo tên A-Z. Trả về mảng tên đã sắp.",
+    signature: "string[] SapXep(string[] banGhi)",
+    constraints: ["0 <= banGhi.Length <= 10000"],
+    examples: [
+      { input: "banGhi = [\"Cuong:20\", \"An:25\", \"Binh:20\"]", output: "[\"Binh\", \"Cuong\", \"An\"]", explain: "Bình và Cường cùng 20 tuổi nên xếp theo tên." },
+    ],
+    hint: "OrderBy(...).ThenBy(...)", },
+
+  { id: 'b8-m109', level: 'Trung bình', title: "LINQ — SelectMany trải phẳng",
+    requirement: "Cho một danh sách các lớp, mỗi lớp là một mảng tên học sinh. Trả về mảng gồm tất cả học sinh của mọi lớp, loại trùng và sắp xếp.",
+    signature: "string[] TatCaHocSinh(List<string[]> cacLop)",
+    constraints: ["0 <= số lớp <= 1000"],
+    examples: [
+      { input: "cacLop = [[\"An\",\"Binh\"], [\"Binh\",\"Cuong\"]]", output: "[\"An\", \"Binh\", \"Cuong\"]" },
+    ],
+    hint: "SelectMany trải danh sách lồng trong danh sách thành một danh sách phẳng.", },
+
+  { id: 'b8-m110', level: 'Trung bình', title: "LINQ — hoãn thực thi",
+    requirement: "Tạo một List, viết truy vấn Where nhưng CHƯA gọi ToList. Thêm phần tử vào List rồi mới duyệt truy vấn. Trả về số phần tử duyệt được và giải thích vì sao khác với lúc gọi ToList ngay.",
+    signature: "int DemSauKhiThem()",
+    constraints: ["Phải chỉ ra được sự khác biệt giữa hai cách"],
+    examples: [
+      { input: "List [1,2,3], truy vấn x > 1, thêm 10 rồi duyệt", output: "3", explain: "Kết quả là [2, 3, 10] — số 10 lọt vào dù lúc viết truy vấn nó chưa tồn tại." },
+      { input: "Cùng dữ liệu nhưng gọi ToList trước khi thêm", output: "2", explain: "Kết quả đã chốt là [2, 3], thêm gì sau đó cũng không ảnh hưởng." },
+    ],
+    hint: "Where chỉ mô tả việc cần làm, ToList mới thật sự chạy.", },
 ]

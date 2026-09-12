@@ -18,7 +18,7 @@ chính, diễn đạt ngắn, và bổ sung lưu đồ / sơ đồ trực quan c
 | 5 | Vòng lặp `while`, `do…while` & `for` — `break`, `continue` |
 | 6 | Vòng lặp lồng nhau & xử lý chuỗi |
 | 7 | Hàm — tham số, `return`, `void`, `static`, lambda, `Func` / `Action`, callback |
-| 8 | Collection & kiểu dữ liệu động — `List`, `Dictionary`, `HashSet`, `Array` |
+| 8 | Collection & kiểu dữ liệu động — bộ nhớ tham chiếu, `List`, **LINQ**, `Dictionary`, `HashSet`, `Array` |
 | 9 | Nhập môn OOP & Class — object, access modifier, class diagram |
 | 10 | Constructor & nạp chồng — `this`, object initializer |
 | 11 | Property, đóng gói & thành phần tĩnh — `get/set`, `static`, `readonly` |
@@ -27,10 +27,10 @@ chính, diễn đạt ngắn, và bổ sung lưu đồ / sơ đồ trực quan c
 | 14 | Abstract class & Generic — ràng buộc `where`, `Activator` |
 | 15 | 4 tính chất OOP & SOLID — SRP, OCP, LSP, ISP, DIP và Dependency Injection |
 
-395 bài tập, chia ba mức Cơ bản / Trung bình / Nâng cao. Đề bài viết theo lối LeetCode:
+405 bài tập, chia ba mức Cơ bản / Trung bình / Nâng cao. Đề bài viết theo lối LeetCode:
 mô tả bài toán, chữ ký hàm cần cài đặt, ràng buộc đầu vào và các test case mẫu kèm giải thích.
 
-Riêng buổi 8 (Collection) có **250 bài** — 50 Cơ bản, 100 Trung bình, 100 Nâng cao — nằm
+Riêng buổi 8 (Collection) có **260 bài** — 50 Cơ bản, 110 Trung bình, 100 Nâng cao — nằm
 trong `src/data/baitap-collection/`, tách theo cấp độ thành ba file. Riêng buổi 8 (Collection) có
 bộ 60 bài — 20 bài mỗi mức — nằm trong `src/data/buoi08-baitap.ts`.
 
@@ -51,7 +51,7 @@ với dòng đang chạy được tô sáng, phải là bảng biến trong bộ
 Bên dưới có nút Đầu / Lùi / Tiến / Tự chạy để xem chương trình chạy từng bước như một
 debugger — giá trị biến đổi tới đâu thấy tới đó, mảng được vẽ thành ô kèm chỉ số.
 
-**Toàn bộ 77 đoạn code C# trong phần lý thuyết đều chạy thử được** — chỉ hai đoạn lệnh
+**Toàn bộ 83 đoạn code C# trong phần lý thuyết đều chạy thử được** — chỉ hai đoạn lệnh
 terminal và một đoạn Mermaid là không, vì chúng không phải code thực thi.
 
 Ngoài bảng biến trên stack, các đoạn liên quan tới đối tượng và collection còn có thêm
