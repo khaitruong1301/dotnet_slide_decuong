@@ -67,7 +67,23 @@ while (i < 5)              // 2. kiểm tra điều kiện
     i++;                   // 4. bước nhảy
 }
 // In ra: 0 1 2 3 4`,
-          },
+          
+            trace: [
+              { line: 1, vars: { i: '0' }, note: 'Bước khởi tạo, chỉ chạy đúng một lần.' },
+              { line: 2, vars: { i: '0' }, note: 'Kiểm tra 0 < 5 — đúng, nên vào thân vòng lặp.' },
+              { line: 4, vars: { i: '0' }, output: ['0'] },
+              { line: 5, vars: { i: '1' }, output: ['0'], note: 'i++ đưa i lên 1 rồi quay lại dòng điều kiện.' },
+              { line: 2, vars: { i: '1' }, note: '1 < 5 — vẫn đúng.' },
+              { line: 4, vars: { i: '1' }, output: ['0', '1'] },
+              { line: 5, vars: { i: '2' }, output: ['0', '1'] },
+              { line: 4, vars: { i: '2' }, output: ['0', '1', '2'] },
+              { line: 5, vars: { i: '3' }, output: ['0', '1', '2'] },
+              { line: 4, vars: { i: '3' }, output: ['0', '1', '2', '3'] },
+              { line: 5, vars: { i: '4' }, output: ['0', '1', '2', '3'] },
+              { line: 4, vars: { i: '4' }, output: ['0', '1', '2', '3', '4'] },
+              { line: 5, vars: { i: '5' }, output: ['0', '1', '2', '3', '4'] },
+              { line: 2, vars: { i: '5' }, output: ['0', '1', '2', '3', '4'], note: '5 < 5 là SAI — thoát vòng lặp. Đây là lý do in ra 0 tới 4 chứ không tới 5.' },
+            ],},
         },
         {
           type: 'code',
@@ -179,7 +195,18 @@ for (int i = n; i >= 1; i--) gt *= i;`,
     Console.Write(i + " ");
 }
 // In ra: 2 4 6 8`,
-          },
+          
+            trace: [
+              { line: 1, vars: { i: '1' } },
+              { line: 3, vars: { i: '1' }, note: '1 lẻ nên continue — bỏ qua phần còn lại của lượt này, nhảy thẳng sang i = 2.' },
+              { line: 1, vars: { i: '2' } },
+              { line: 4, vars: { i: '2' }, note: '2 chẵn nên đi tiếp. 2 > 8 sai nên không break.' },
+              { line: 5, vars: { i: '2' }, output: ['2 '] },
+              { line: 5, vars: { i: '4' }, output: ['2 4 '] },
+              { line: 5, vars: { i: '6' }, output: ['2 4 6 '] },
+              { line: 5, vars: { i: '8' }, output: ['2 4 6 8 '] },
+              { line: 4, vars: { i: '10' }, output: ['2 4 6 8 '], note: '10 chẵn nên qua được continue, nhưng 10 > 8 nên break — thoát hẳn vòng lặp.' },
+            ],},
         },
         {
           type: 'visual',
@@ -206,7 +233,15 @@ for (int i = 2; i <= Math.Sqrt(n); i++)
 }
 Console.WriteLine(laNguyenTo ? $"{n} là số nguyên tố" : $"{n} không phải số nguyên tố");`,
             note: 'Chỉ cần xét ước số tới căn bậc hai của n — nhanh hơn hẳn duyệt tới n.',
-          },
+          
+            trace: [
+              { line: 1, vars: { n: '10', laNguyenTo: 'true' }, note: 'Xét n = 10. Ban đầu tạm coi là số nguyên tố.' },
+              { line: 2, vars: { n: '10', laNguyenTo: 'true', i: '2' }, note: 'Chỉ cần duyệt i tới căn bậc hai của 10, tức khoảng 3.16.' },
+              { line: 4, vars: { n: '10', laNguyenTo: 'true', i: '2' }, note: '10 % 2 = 0 — tìm thấy ước số!' },
+              { line: 6, vars: { n: '10', laNguyenTo: 'false', i: '2' } },
+              { line: 7, vars: { n: '10', laNguyenTo: 'false', i: '2' }, note: 'break thoát ngay, không cần xét i = 3 nữa vì đã đủ kết luận.' },
+              { line: 10, vars: { n: '10', laNguyenTo: 'false', i: '2' }, output: ['10 không phải số nguyên tố'] },
+            ],},
         },
       ],
     },

@@ -213,6 +213,11 @@ body {
 
   .no-print { display: none !important; }
 
+  /* Khối chạy thử từng dòng: bản in chỉ giữ code, bỏ bảng biến vì nó chỉ phản ánh
+     đúng một bước người đọc dừng lại, in ra sẽ gây hiểu nhầm. */
+  [data-runner] { grid-template-columns: 1fr; }
+  [data-runner-state] { display: none; }
+
   /* Nút "Tải PDF đầy đủ" bật cờ full -> mở hết mọi tab đang ẩn.
      Nút "Tải PDF tab đang xem" giữ nguyên trạng thái ẩn/hiện của tab. */
   html[data-print='full'] [data-panel][data-open='false'] { display: block; }

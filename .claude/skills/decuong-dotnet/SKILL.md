@@ -40,7 +40,7 @@ const buoi0X: Buoi = {
 |---|---|
 | `text` | Đoạn văn giải thích. Viết thành câu hoàn chỉnh, không viết gạch đầu dòng cụt. |
 | `list` | Liệt kê ngang hàng. `ordered: true` cho quy trình có thứ tự. |
-| `code` | Ví dụ C#. Luôn kèm `title`, thêm `note` để chỉ ra cái bẫy hoặc điểm mấu chốt. |
+| `code` | Ví dụ C#. Luôn kèm `title`, thêm `note` để chỉ ra cái bẫy hoặc điểm mấu chốt. Thêm `trace` để biến nó thành khối chạy thử từng dòng — xem bên dưới. |
 | `table` | So sánh nhiều cột. Cột đầu tiên tự động hiển thị dạng monospace. |
 | `callout` | `info` = ghi nhớ, `warn` = cái bẫy hay sai, `tip` = mẹo thực chiến. |
 | `visual` | Sơ đồ minh hoạ — xem phần dưới. |
@@ -139,6 +139,43 @@ Nội dung hiện tại được viết lại từ slide gốc theo mấy nguyê
   đúng như quy ước dạy trong buổi 2.
 - **Chỉ ra cái bẫy.** Chia số nguyên `9/5`, `=` với `==`, chuỗi bất biến, đọc khoá
   không tồn tại trong Dictionary — dùng `callout` tone `warn`.
+
+## Khối chạy thử từng dòng (`trace`)
+
+Thêm trường `trace` vào một `CodeSample` là khối code tự chuyển sang bố cục hai cột:
+trái là code với dòng đang chạy được tô sáng, phải là bảng biến và màn hình console,
+bên dưới có nút Đầu / Lùi / Tiến / Tự chạy như một debugger.
+
+```ts
+{
+  type: 'code',
+  sample: {
+    title: 'while — kiểm tra trước, chạy sau',
+    code: `int i = 0;\nwhile (i < 5)\n{ ... }`,
+    trace: [
+      { line: 1, vars: { i: '0' }, note: 'Bước khởi tạo, chỉ chạy một lần.' },
+      { line: 2, vars: { i: '0' }, note: '0 < 5 đúng nên vào thân vòng lặp.' },
+      { line: 4, vars: { i: '0' }, output: ['0'] },
+      { line: 5, vars: { i: '1' }, output: ['0'] },
+    ],
+  },
+}
+```
+
+Quy tắc khi soạn `trace`:
+
+- `line` đánh số **từ 1** theo đúng chuỗi trong `code`. Đếm cả dòng trống và dòng comment.
+- `vars` phải liệt kê **đủ mọi biến đang sống** ở bước đó, không chỉ biến vừa đổi —
+  giao diện tự so với bước trước để tô sáng cái nào thay đổi.
+- Giá trị nào viết dạng `'[1, 2, 3]'` sẽ tự được vẽ thành các ô kèm chỉ số, rất hợp
+  cho mảng và List.
+- `output` là **toàn bộ** nội dung đã in tính tới bước đó, không phải phần in thêm.
+- `note` viết một câu, tập trung vào chỗ người học hay hiểu sai. Không lặp lại đề bài.
+- Với vòng lặp dài, gộp các lượt giữa lại — chỉ giữ lượt đầu, một lượt giữa và lượt
+  cuối, vì bấm Tiến hai chục lần không ai đọc nổi.
+
+Bản in chỉ giữ cột code, bảng biến và nút bấm bị ẩn — vì bảng biến chỉ phản ánh đúng
+một bước người đọc dừng lại, in ra sẽ gây hiểu nhầm.
 
 ## Theme sáng / tối
 

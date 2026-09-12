@@ -38,11 +38,28 @@ export type Visual =
       relation?: 'inherit' | 'implement'
     }
 
+/** Một bước trong mô phỏng chạy code từng dòng. */
+export interface TraceStep {
+  /** Dòng code đang chạy, đánh số từ 1. */
+  line: number
+  /** Giá trị các biến SAU khi dòng này chạy xong. Giữ đủ mọi biến đang sống. */
+  vars?: Record<string, string>
+  /** Toàn bộ nội dung đã in ra màn hình tính tới bước này. */
+  output?: string[]
+  /** Một câu giải thích chuyện gì vừa xảy ra ở bước này. */
+  note?: string
+}
+
 export interface CodeSample {
   lang?: string
   title?: string
   code: string
   note?: string
+  /**
+   * Có trace thì khối code hiển thị dạng hai cột: trái là code, phải là bảng
+   * biến và màn hình console chạy theo từng bước, kèm nút điều khiển như debugger.
+   */
+  trace?: TraceStep[]
 }
 
 /** Một khối nội dung trong phần lý thuyết của bài học. */

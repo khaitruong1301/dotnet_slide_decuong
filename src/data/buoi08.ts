@@ -254,7 +254,19 @@ for (int i = 0; i < nums.Length; i++)
     daGap[nums[i]] = i;
 }`,
             note: 'Mẹo: thay vì đi tìm cặp, hãy ghi nhớ những gì đã đi qua rồi hỏi "số bù còn thiếu đã gặp chưa".',
-          },
+          
+            trace: [
+              { line: 1, vars: { nums: '[2, 7, 11, 15]', target: '9' } },
+              { line: 6, vars: { nums: '[2, 7, 11, 15]', target: '9', daGap: '{}' }, note: 'Dictionary rỗng, sẽ dùng để nhớ những số đã đi qua.' },
+              { line: 8, vars: { nums: '[2, 7, 11, 15]', target: '9', daGap: '{}', i: '0' } },
+              { line: 10, vars: { nums: '[2, 7, 11, 15]', target: '9', daGap: '{}', i: '0', can: '7' }, note: 'Đang đứng ở số 2, cần thêm 9 − 2 = 7 nữa mới đủ target.' },
+              { line: 11, vars: { nums: '[2, 7, 11, 15]', target: '9', daGap: '{}', i: '0', can: '7' }, note: 'daGap chưa có số 7 nào — chưa tìm thấy cặp.' },
+              { line: 16, vars: { nums: '[2, 7, 11, 15]', target: '9', daGap: '{2: 0}', i: '0', can: '7' }, note: 'Ghi nhớ: giá trị 2 nằm ở chỉ số 0.' },
+              { line: 8, vars: { nums: '[2, 7, 11, 15]', target: '9', daGap: '{2: 0}', i: '1' } },
+              { line: 10, vars: { nums: '[2, 7, 11, 15]', target: '9', daGap: '{2: 0}', i: '1', can: '2' }, note: 'Đang đứng ở số 7, cần thêm 9 − 7 = 2.' },
+              { line: 11, vars: { nums: '[2, 7, 11, 15]', target: '9', daGap: '{2: 0}', i: '1', can: '2' }, note: 'daGap CÓ số 2! Vậy là tìm được cặp.' },
+              { line: 13, vars: { nums: '[2, 7, 11, 15]', target: '9', daGap: '{2: 0}', i: '1', can: '2' }, output: ['[0, 1]'], note: 'Chỉ duyệt một lượt là xong, thay vì hai vòng lặp lồng nhau n × n.' },
+            ],},
         },
         {
           type: 'code',
@@ -272,7 +284,18 @@ foreach (int gia in prices)
 }
 Console.WriteLine(laiCaoNhat);   // 5 (mua giá 1, bán giá 6)`,
             note: 'Chỉ cần một lượt duyệt: vừa đi vừa ghi nhớ giá thấp nhất đã gặp.',
-          },
+          
+            trace: [
+              { line: 1, vars: { prices: '[7, 1, 5, 3, 6, 4]' } },
+              { line: 3, vars: { prices: '[7, 1, 5, 3, 6, 4]', giaThapNhat: '∞', laiCaoNhat: '0' } },
+              { line: 6, vars: { prices: '[7, 1, 5, 3, 6, 4]', giaThapNhat: '7', laiCaoNhat: '0', gia: '7' }, note: 'Ngày 1 giá 7 — rẻ nhất tới giờ, ghi nhớ làm điểm mua.' },
+              { line: 8, vars: { prices: '[7, 1, 5, 3, 6, 4]', giaThapNhat: '1', laiCaoNhat: '0', gia: '1' }, note: 'Ngày 2 giá 1 còn rẻ hơn — dời điểm mua xuống đây.' },
+              { line: 9, vars: { prices: '[7, 1, 5, 3, 6, 4]', giaThapNhat: '1', laiCaoNhat: '4', gia: '5' }, note: 'Ngày 3 giá 5, bán được lãi 5 − 1 = 4.' },
+              { line: 9, vars: { prices: '[7, 1, 5, 3, 6, 4]', giaThapNhat: '1', laiCaoNhat: '4', gia: '3' }, note: 'Ngày 4 lãi chỉ 2, nhỏ hơn 4 nên giữ nguyên kỷ lục.' },
+              { line: 9, vars: { prices: '[7, 1, 5, 3, 6, 4]', giaThapNhat: '1', laiCaoNhat: '5', gia: '6' }, note: 'Ngày 5 giá 6, lãi 5 — kỷ lục mới.' },
+              { line: 9, vars: { prices: '[7, 1, 5, 3, 6, 4]', giaThapNhat: '1', laiCaoNhat: '5', gia: '4' }, note: 'Ngày 6 lãi 3, không hơn được.' },
+              { line: 11, vars: { prices: '[7, 1, 5, 3, 6, 4]', giaThapNhat: '1', laiCaoNhat: '5' }, output: ['5'], note: 'Mua ngày 2 giá 1, bán ngày 5 giá 6. Chỉ một lượt duyệt, không cần thử mọi cặp ngày.' },
+            ],},
         },
         {
           type: 'code',

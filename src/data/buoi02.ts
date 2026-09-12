@@ -136,7 +136,13 @@ Console.WriteLine(diemThi.Value);         // 8`,
 string b = "1" + 1;         // "11"   — nối chuỗi
 double c = 9 / 5;           // 1      — chia số nguyên rồi mới gán
 double d = 9.0 / 5;         // 1.8    — đúng`,
-          },
+          
+            trace: [
+              { line: 1, vars: { a: '2' }, note: 'Hai vế đều là số nên + là phép cộng.' },
+              { line: 2, vars: { a: '2', b: '"11"' }, note: 'Một vế là chuỗi thì + trở thành phép NỐI chuỗi: "1" nối với "1" ra "11".' },
+              { line: 3, vars: { a: '2', b: '"11"', c: '1' }, note: 'Bẫy ở đây: 9 và 5 đều là int nên phép chia làm theo số nguyên ra 1, rồi mới gán vào double.' },
+              { line: 4, vars: { a: '2', b: '"11"', c: '1', d: '1.8' }, note: 'Chỉ cần một vế là số thực thì cả biểu thức tính theo số thực.' },
+            ],},
         },
       ],
     },
@@ -174,7 +180,13 @@ else
     Console.WriteLine("Dữ liệu không hợp lệ.");
 }`,
             note: 'Convert.ToInt32("abc") làm chương trình văng lỗi. TryParse chỉ trả về false — chương trình vẫn chạy tiếp.',
-          },
+          
+            trace: [
+              { line: 1, vars: {}, output: ['Nhập tuổi: '] },
+              { line: 2, vars: { nhap: '"abc"' }, output: ['Nhập tuổi: abc'], note: 'Người dùng gõ chữ thay vì số.' },
+              { line: 4, vars: { nhap: '"abc"', tuoi: '0' }, output: ['Nhập tuổi: abc'], note: 'TryParse trả về false và đặt tuoi về 0 — chương trình KHÔNG văng lỗi.' },
+              { line: 10, vars: { nhap: '"abc"', tuoi: '0' }, output: ['Nhập tuổi: abc', 'Dữ liệu không hợp lệ.'], note: 'Nhảy vào nhánh else. Nếu dùng Convert.ToInt32 thì tới đây chương trình đã chết.' },
+            ],},
         },
         {
           type: 'visual',

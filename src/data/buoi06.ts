@@ -68,7 +68,19 @@ for (int i = 1; i <= n; i++)
 // ****
 // *****`,
             note: 'Mấu chốt: điều kiện vòng trong phụ thuộc vào biến của vòng ngoài.',
-          },
+          
+            trace: [
+              { line: 1, vars: { n: '5' } },
+              { line: 2, vars: { n: '5', i: '1' }, note: 'Dòng thứ nhất.' },
+              { line: 4, vars: { n: '5', i: '1', j: '1' }, output: ['*'], note: 'Vòng trong chạy j từ 1 tới i, tức đúng 1 lần.' },
+              { line: 5, vars: { n: '5', i: '1' }, output: ['*'], note: 'WriteLine rỗng để xuống dòng, kết thúc dòng 1.' },
+              { line: 2, vars: { n: '5', i: '2' }, output: ['*'], note: 'i tăng lên 2 — vòng trong sẽ chạy 2 lần.' },
+              { line: 4, vars: { n: '5', i: '2', j: '2' }, output: ['*', '**'] },
+              { line: 4, vars: { n: '5', i: '3', j: '3' }, output: ['*', '**', '***'], note: 'Mấu chốt nằm ở đây: điều kiện vòng trong là j <= i, nên số sao bằng đúng số dòng.' },
+              { line: 4, vars: { n: '5', i: '4', j: '4' }, output: ['*', '**', '***', '****'] },
+              { line: 4, vars: { n: '5', i: '5', j: '5' }, output: ['*', '**', '***', '****', '*****'] },
+              { line: 2, vars: { n: '5', i: '6' }, output: ['*', '**', '***', '****', '*****'], note: '6 <= 5 sai — thoát cả hai vòng lặp.' },
+            ],},
         },
         {
           type: 'callout',
@@ -194,7 +206,16 @@ for (int i = 0, j = s.Length - 1; i < j; i++, j--)
 }
 Console.WriteLine(doiXung ? "Đối xứng" : "Không đối xứng");`,
             note: 'Duyệt xuôi và ngược cùng lúc — chỉ cần chạy nửa chuỗi là đủ kết luận.',
-          },
+          
+            trace: [
+              { line: 1, vars: { s: '"radar"', doiXung: 'true' } },
+              { line: 4, vars: { s: '"radar"', doiXung: 'true', i: '0', j: '4' }, note: 'Hai con trỏ đặt ở hai đầu chuỗi.' },
+              { line: 6, vars: { s: '"radar"', doiXung: 'true', i: '0', j: '4' }, note: "s[0] = 'r' và s[4] = 'r' — khớp, đi tiếp." },
+              { line: 4, vars: { s: '"radar"', doiXung: 'true', i: '1', j: '3' }, note: 'i tiến vào, j lùi lại, hai con trỏ cùng đi về giữa.' },
+              { line: 6, vars: { s: '"radar"', doiXung: 'true', i: '1', j: '3' }, note: "s[1] = 'a' và s[3] = 'a' — vẫn khớp." },
+              { line: 4, vars: { s: '"radar"', doiXung: 'true', i: '2', j: '2' }, note: 'i = j = 2 nên điều kiện i < j sai — dừng. Ký tự giữa không cần so với chính nó.' },
+              { line: 9, vars: { s: '"radar"', doiXung: 'true', i: '2', j: '2' }, output: ['Đối xứng'], note: 'Chỉ cần duyệt nửa chuỗi là đủ kết luận.' },
+            ],},
         },
         {
           type: 'visual',

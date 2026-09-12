@@ -212,7 +212,17 @@ int[] mang = { 1, 2, 3 };
 XuLyDanhSach(mang, x => Console.WriteLine(x * 2));   // 2 4 6
 XuLyDanhSach(mang, x => Console.WriteLine(x * x));   // 1 4 9`,
             note: 'Cùng một hàm duyệt, thay đổi hành vi bằng cách đổi callback truyền vào.',
-          },
+          
+            trace: [
+              { line: 7, vars: { mang: '[1, 2, 3]' }, note: 'Gọi XuLyDanhSach lần đầu, truyền vào lambda x => x * 2.' },
+              { line: 1, vars: { so: '[1, 2, 3]', hanhDong: 'x => x * 2' }, note: 'Hàm nhận được một HÀM làm tham số, chưa biết nó làm gì.' },
+              { line: 3, vars: { so: '[1, 2, 3]', hanhDong: 'x => x * 2', x: '1' } },
+              { line: 4, vars: { so: '[1, 2, 3]', hanhDong: 'x => x * 2', x: '1' }, output: ['2'], note: 'Đây là chỗ callback được gọi lại — hành vi do nơi gọi quyết định.' },
+              { line: 4, vars: { so: '[1, 2, 3]', hanhDong: 'x => x * 2', x: '2' }, output: ['2', '4'] },
+              { line: 4, vars: { so: '[1, 2, 3]', hanhDong: 'x => x * 2', x: '3' }, output: ['2', '4', '6'] },
+              { line: 8, vars: { mang: '[1, 2, 3]' }, output: ['2', '4', '6'], note: 'Gọi lần hai với lambda khác: x => x * x.' },
+              { line: 4, vars: { so: '[1, 2, 3]', hanhDong: 'x => x * x', x: '3' }, output: ['2', '4', '6', '1', '4', '9'], note: 'Cùng một hàm duyệt, đổi callback là đổi hẳn kết quả — không phải sửa dòng nào trong XuLyDanhSach.' },
+            ],},
         },
         {
           type: 'visual',

@@ -202,7 +202,15 @@ else
 }
 Console.WriteLine($"Tiền điện: {tien:N0} đồng");`,
             note: 'Bậc thang thì mỗi bậc chỉ tính phần vượt qua bậc trước, không nhân toàn bộ số kWh với một giá.',
-          },
+          
+            trace: [
+              { line: 1, vars: { soKwh: '120', tien: '0' }, note: 'Giả sử hộ gia đình dùng 120 kWh trong tháng.' },
+              { line: 2, vars: { soKwh: '120', tien: '0' }, note: '120 <= 50 là sai, bỏ qua nhánh này.' },
+              { line: 6, vars: { soKwh: '120', tien: '0' }, note: '120 <= 100 cũng sai, bỏ qua nốt.' },
+              { line: 10, vars: { soKwh: '120', tien: '0' }, note: 'Rơi vào nhánh else — bậc cao nhất.' },
+              { line: 12, vars: { soKwh: '120', tien: '210880' }, note: '50×1678 + 50×1734 + 20×2014. Chú ý bậc ba chỉ nhân với 20 kWh vượt mốc, không phải cả 120.' },
+              { line: 14, vars: { soKwh: '120', tien: '210880' }, output: ['Tiền điện: 210.880 đồng'], note: 'Định dạng N0 thêm dấu phân cách hàng nghìn.' },
+            ],},
         },
       ],
     },

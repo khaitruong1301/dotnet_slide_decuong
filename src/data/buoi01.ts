@@ -124,7 +124,15 @@ int namSinh = Convert.ToInt32(Console.ReadLine());   // string -> int
 int tuoi = 2026 - namSinh;
 Console.WriteLine($"Chào {hoTen}, bạn {tuoi} tuổi.");`,
             note: 'Dấu $ trước chuỗi bật chế độ nội suy: giá trị trong {} được ghép thẳng vào chuỗi.',
-          },
+          
+            trace: [
+              { line: 1, vars: {}, output: ['Nhập họ tên: '], note: 'Write in lời nhắc nhưng không xuống dòng, con trỏ vẫn nằm cùng dòng.' },
+              { line: 2, vars: { hoTen: '"Trần Bình"' }, output: ['Nhập họ tên: Trần Bình'], note: 'ReadLine dừng chờ người dùng gõ rồi trả về một chuỗi.' },
+              { line: 4, vars: { hoTen: '"Trần Bình"' }, output: ['Nhập họ tên: Trần Bình', 'Nhập năm sinh: '] },
+              { line: 5, vars: { hoTen: '"Trần Bình"', namSinh: '2004' }, output: ['Nhập họ tên: Trần Bình', 'Nhập năm sinh: 2004'], note: 'Người dùng gõ "2004" là chuỗi, Convert.ToInt32 mới đổi nó thành số 2004.' },
+              { line: 7, vars: { hoTen: '"Trần Bình"', namSinh: '2004', tuoi: '22' }, output: ['Nhập họ tên: Trần Bình', 'Nhập năm sinh: 2004'], note: '2026 − 2004 = 22. Phép trừ này chỉ chạy được vì namSinh đã là kiểu số.' },
+              { line: 8, vars: { hoTen: '"Trần Bình"', namSinh: '2004', tuoi: '22' }, output: ['Nhập họ tên: Trần Bình', 'Nhập năm sinh: 2004', 'Chào Trần Bình, bạn 22 tuổi.'], note: 'Dấu $ cho phép nhét thẳng giá trị biến vào giữa chuỗi.' },
+            ],},
         },
         {
           type: 'visual',

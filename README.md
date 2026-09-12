@@ -44,6 +44,17 @@ Muốn bảo vệ thật thì phải kiểm tra ở phía máy chủ.
 
 Đổi token: sửa hằng `TOKEN` trong `src/components/TokenGate.tsx`.
 
+## Chạy thử code từng dòng
+
+Các đoạn code quan trọng trong phần lý thuyết hiển thị dạng **hai cột**: trái là code
+với dòng đang chạy được tô sáng, phải là bảng biến trong bộ nhớ và màn hình console.
+Bên dưới có nút Đầu / Lùi / Tiến / Tự chạy để xem chương trình chạy từng bước như một
+debugger — giá trị biến đổi tới đâu thấy tới đó, mảng được vẽ thành ô kèm chỉ số.
+
+Hiện có 13 đoạn mô phỏng, tập trung vào chỗ người học hay vấp: bẫy chia số nguyên,
+`TryParse`, tiền điện bậc thang, vòng lặp `while`, `break`/`continue`, vòng lặp lồng
+nhau, hai con trỏ, callback, Two Sum, và cơ chế chọn bản `override` theo kiểu thật.
+
 ## Giao diện
 
 - **Hai theme sáng / tối**, nút chuyển nằm ở chân menu trái. Lần đầu vào trang sẽ theo

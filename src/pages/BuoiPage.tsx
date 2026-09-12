@@ -3,6 +3,7 @@ import { Link, useLocation, useParams } from 'react-router-dom'
 import { BUOI_LIST, findBuoi } from '../data'
 import type { Block, Exercise } from '../data/types'
 import CodeBlock from '../components/CodeBlock'
+import CodeRunner from '../components/CodeRunner'
 import Visual from '../components/Visual'
 import ExerciseSlide from '../components/ExerciseSlide'
 
@@ -49,7 +50,8 @@ function BlockView({ block }: { block: Block }) {
       )
 
     case 'code':
-      return <CodeBlock sample={block.sample} />
+      // Có trace thì hiện dạng hai cột chạy từng dòng, không thì vẫn là khối code thường
+      return block.sample.trace ? <CodeRunner sample={block.sample} /> : <CodeBlock sample={block.sample} />
 
     case 'visual':
       return (

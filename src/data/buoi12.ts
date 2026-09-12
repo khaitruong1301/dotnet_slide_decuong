@@ -155,7 +155,13 @@ const buoi12: Buoi = {
         }
     }`,
                 note: 'base.HienThi() gọi lại bản gốc ở lớp cha — dùng khi muốn giữ phần cũ và thêm phần mới, thay vì viết lại từ đầu.',
-              },
+              
+            trace: [
+              { line: 25, vars: { 'nv (kiểu khai báo)': 'NhanVien', 'nv (kiểu thật)': 'NhanVienSanXuat', soSanPham: '300' }, note: 'Biến khai báo kiểu lớp cha nhưng đối tượng thật là lớp con.' },
+              { line: 28, vars: { 'nv (kiểu thật)': 'NhanVienSanXuat', soSanPham: '300' }, note: 'Gọi nv.TinhLuong(). C# tìm bản cài đặt theo kiểu THẬT chứ không theo kiểu khai báo.' },
+              { line: 29, vars: { 'nv (kiểu thật)': 'NhanVienSanXuat', soSanPham: '300', 'kết quả': '4500000' }, note: 'Chạy bản override của NhanVienSanXuat: 300 × 15.000. Bản virtual ở lớp cha bị bỏ qua hoàn toàn.' },
+              { line: 10, vars: { 'nv (kiểu thật)': 'NhanVienSanXuat', 'kết quả': '4500000' }, output: ['Bình: 4.500.000 đ'], note: 'Đây chính là tính đa hình: cùng một lời gọi, kết quả phụ thuộc vào đối tượng đứng phía sau.' },
+            ],},
             },
             {
               type: 'visual',
