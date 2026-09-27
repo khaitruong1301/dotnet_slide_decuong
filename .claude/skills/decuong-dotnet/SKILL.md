@@ -44,6 +44,7 @@ const buoi0X: Buoi = {
 | `table` | So sánh nhiều cột. Cột đầu tiên tự động hiển thị dạng monospace. |
 | `callout` | `info` = ghi nhớ, `warn` = cái bẫy hay sai, `tip` = mẹo thực chiến. |
 | `visual` | Sơ đồ minh hoạ — xem phần dưới. |
+| `tabs` | Nhóm nội dung chia tab, mỗi tab là một chức năng / một bước với `label`, `hint` (chữ ký) và `blocks` con. Trên màn hình chỉ hiện một tab; bản PDF đầy đủ mở hết và in tên tab làm tiêu đề phụ. Dùng cho hướng dẫn từng chức năng của bài lớn (xem buổi 16). |
 
 ## Sơ đồ minh hoạ (`visual`)
 

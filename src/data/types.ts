@@ -82,6 +82,18 @@ export type Block =
   | { type: 'visual'; visual: Visual }
   | { type: 'callout'; tone: 'info' | 'warn' | 'tip'; title?: string; text: string }
   | { type: 'table'; head: string[]; rows: string[][] }
+  /**
+   * Nhóm nội dung chia tab — mỗi tab là một chức năng / một bước, gồm các khối con.
+   * Trên màn hình chỉ hiện một tab; bản in đầy đủ mở hết và in tên tab làm tiêu đề phụ.
+   */
+  | { type: 'tabs'; items: TabItem[] }
+
+export interface TabItem {
+  label: string
+  /** Một dòng tóm tắt hiện dưới tên tab, ví dụ chữ ký phương thức. */
+  hint?: string
+  blocks: Block[]
+}
 
 export interface Section {
   id: string

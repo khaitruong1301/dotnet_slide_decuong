@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { BUOI_LIST, findBuoi } from '../data'
-import type { Block, Exercise } from '../data/types'
+import type { Block, Exercise, TabItem } from '../data/types'
 import CodeBlock from '../components/CodeBlock'
 import CodeRunner from '../components/CodeRunner'
 import Visual from '../components/Visual'
@@ -21,8 +21,48 @@ const LEVEL = {
   'Nâng cao': 'bg-rose-400/15 text-rose-300',
 }
 
+/** Khối chia tab: nút chọn ở trên (không in), mỗi panel giữ trong DOM để bản in đầy đủ mở hết. */
+function TabsBlock({ items }: { items: TabItem[] }) {
+  const [active, setActive] = useState(0)
+  return (
+    <div className="rounded-2xl border border-ink/10 bg-panel/40">
+      <div className="no-print flex flex-wrap gap-1.5 border-b border-ink/8 px-3 py-2.5">
+        {items.map((t, i) => (
+          <button
+            key={i}
+            onClick={() => setActive(i)}
+            className={`rounded-lg px-3 py-1.5 text-[13px] font-semibold transition ${
+              i === active ? 'bg-brand-500/18 text-brand-300 ring-1 ring-brand-400/35' : 'text-ink/50 hover:bg-ink/6 hover:text-ink/80'
+            }`}
+          >
+            <span className="mr-1.5 font-mono text-[11px] opacity-60">{i + 1}</span>
+            {t.label}
+          </button>
+        ))}
+      </div>
+      {items.map((t, i) => (
+        <div key={i} data-panel data-open={String(i === active)} className="space-y-4 px-4 py-5 sm:px-5">
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h3 className="text-[17px] font-bold text-ink">
+              <span className="mr-2 font-mono text-[13px] text-brand-400">{i + 1}.</span>
+              {t.label}
+            </h3>
+            {t.hint && <code className="font-mono text-[12.5px] text-accent-400">{t.hint}</code>}
+          </div>
+          {t.blocks.map((b, j) => (
+            <BlockView key={j} block={b} />
+          ))}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function BlockView({ block }: { block: Block }) {
   switch (block.type) {
+    case 'tabs':
+      return <TabsBlock items={block.items} />
+
     case 'text':
       return <p className="text-[15px] leading-[1.8] text-ink/65">{block.text}</p>
 

@@ -221,6 +221,8 @@ body {
   /* Nút "Tải PDF đầy đủ" bật cờ full -> mở hết mọi tab đang ẩn.
      Nút "Tải PDF tab đang xem" giữ nguyên trạng thái ẩn/hiện của tab. */
   html[data-print='full'] [data-panel][data-open='false'] { display: block; }
+  /* Khối chia tab: mỗi tab in như một mục nhỏ, cách nhau một đường kẻ */
+  [data-panel] + [data-panel] { border-top: 1px solid rgb(20 20 43 / 0.12); }
   html[data-print='tab'] .print-full-only { display: none !important; }
 
   /* Chế độ "xuất slide bài đã chọn": bỏ hết trang, chỉ in bộ slide */
