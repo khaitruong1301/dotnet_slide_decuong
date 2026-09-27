@@ -150,9 +150,11 @@ function ExerciseCard({
   onPick: () => void
 }) {
   const [done, setDone] = useState(false)
+  // Mặc định thu gọn: chỉ hiện số và tên bài, bấm vào tên mới xổ nội dung
+  const [open, setOpen] = useState(false)
   return (
     <li data-ex className={`card p-4 transition ${done ? 'opacity-55' : ''} ${picked ? 'ring-1 ring-brand-400/45' : ''}`}>
-      <div className="mb-2.5 flex flex-wrap items-center gap-2.5">
+      <div className="flex flex-wrap items-center gap-2.5">
         <label className="no-print flex cursor-pointer items-center" title="Chọn bài này để xuất PDF">
           <input
             type="checkbox"
@@ -171,10 +173,28 @@ function ExerciseCard({
         >
           {done ? '✓' : index + 1}
         </button>
-        <h4 className={`text-[15px] font-bold text-ink ${done ? 'line-through' : ''}`}>{ex.title}</h4>
-        <span className={`rounded-md px-2 py-0.5 text-[10.5px] font-semibold ${LEVEL[ex.level]}`}>{ex.level}</span>
+        <button
+          onClick={() => setOpen((o) => !o)}
+          aria-expanded={open}
+          className="flex min-w-0 flex-1 items-center gap-2.5 text-left"
+        >
+          <h4 className={`text-[15px] font-bold text-ink ${done ? 'line-through' : ''}`}>{ex.title}</h4>
+          <span className={`rounded-md px-2 py-0.5 text-[10.5px] font-semibold ${LEVEL[ex.level]}`}>{ex.level}</span>
+          {ex.guide && ex.guide.length > 0 && (
+            <span className="no-print rounded-md bg-accent-400/12 px-2 py-0.5 text-[10.5px] font-semibold text-accent-400">
+              {ex.guide.length} tab hướng dẫn
+            </span>
+          )}
+          <svg
+            width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"
+            className={`no-print ml-auto shrink-0 text-ink/35 transition ${open ? 'rotate-180' : ''}`} aria-hidden
+          >
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </button>
       </div>
 
+      <div data-ex-body data-open={String(open)} className="mt-2.5">
       <p className="text-[14.5px] leading-[1.75] text-ink/60">{ex.requirement}</p>
 
       {ex.signature && (
@@ -222,7 +242,44 @@ function ExerciseCard({
       )}
 
       {ex.hint && <p className="mt-3 text-[13.5px] text-amber-300/75">Gợi ý: {ex.hint}</p>}
+
+      {ex.guide && ex.guide.length > 0 && (
+        <div className="mt-4">
+          <div className="mb-2 text-[10.5px] font-bold uppercase tracking-widest text-ink/40">Hướng dẫn từng yêu cầu</div>
+          <TabsBlock items={ex.guide} />
+        </div>
+      )}
+      </div>
     </li>
+  )
+}
+
+/** Các trang hướng dẫn in ngay sau slide của bài tập: mỗi tab một mục, nội dung chảy tự nhiên qua nhiều trang. */
+function GuideSheet({ ex }: { ex: Exercise }) {
+  if (!ex.guide || ex.guide.length === 0) return null
+  return (
+    <section className="print-slide relative">
+      <div className="mb-3 flex items-center gap-3">
+        <span className="slide-badge">Hướng dẫn</span>
+        <span className="text-[13px] text-ink/45">{ex.title}</span>
+      </div>
+      {ex.guide.map((t, i) => (
+        <div key={i} className="mb-5 break-inside-avoid-page">
+          <div className="mb-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-ink/10 pb-1.5">
+            <h3 className="text-[16px] font-bold text-ink">
+              <span className="mr-2 font-mono text-[12px] text-brand-400">{i + 1}.</span>
+              {t.label}
+            </h3>
+            {t.hint && <code className="font-mono text-[11.5px] text-accent-400">{t.hint}</code>}
+          </div>
+          <div className="space-y-3 text-[13px]">
+            {t.blocks.map((b, j) => (
+              <BlockView key={j} block={b} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
   )
 }
 
@@ -274,6 +331,8 @@ export default function BuoiPage() {
   const [tab, setTab] = useState<'ly-thuyet' | 'bai-tap'>('ly-thuyet')
   const [level, setLevel] = useState<string>('')
   const [picked, setPicked] = useState<Set<string>>(new Set())
+  // Xuất slide có in kèm các trang hướng dẫn của bài hay không (mặc định chỉ slide, mỗi bài một trang)
+  const [kemHuongDan, setKemHuongDan] = useState(false)
 
   const levelsCo = LEVELS.filter((lv) => buoi?.exercises.some((e) => e.level === lv))
 
@@ -530,10 +589,16 @@ export default function BuoiPage() {
                 Bỏ chọn hết
               </button>
 
+              {pickedExercises.some((e) => e.guide && e.guide.length > 0) && (
+                <label className="ml-auto flex cursor-pointer items-center gap-1.5 text-[12.5px] text-ink/60" title="In thêm các trang hướng dẫn ngay sau slide của bài">
+                  <input type="checkbox" checked={kemHuongDan} onChange={(e) => setKemHuongDan(e.target.checked)} className="h-3.5 w-3.5 accent-[var(--brand-500)]" />
+                  Kèm hướng dẫn
+                </label>
+              )}
               <button
                 onClick={() => printAs('selected')}
                 disabled={picked.size === 0}
-                className="ml-auto inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-brand-600 to-brand-500 px-3.5 py-1.5 text-[12.5px] font-semibold text-white transition hover:brightness-110 disabled:opacity-35 disabled:hover:brightness-100"
+                className={`${pickedExercises.some((e) => e.guide && e.guide.length > 0) ? '' : 'ml-auto '}inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-brand-600 to-brand-500 px-3.5 py-1.5 text-[12.5px] font-semibold text-white transition hover:brightness-110 disabled:opacity-35 disabled:hover:brightness-100`}
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <path d="M12 3v12M7 10l5 5 5-5M4 21h16" />
@@ -587,7 +652,10 @@ export default function BuoiPage() {
         {/* Bộ slide bài tập đã chọn — ẩn trên màn hình, chỉ hiện khi in ở chế độ selected */}
         <div data-print-deck>
           {pickedExercises.map((ex, i) => (
-            <ExerciseSlide key={ex.id} buoi={buoi} ex={ex} index={i + 1} />
+            <div key={ex.id} className="contents">
+              <ExerciseSlide buoi={buoi} ex={ex} index={i + 1} />
+              {kemHuongDan && <GuideSheet ex={ex} />}
+            </div>
           ))}
         </div>
       </article>

@@ -132,6 +132,12 @@ export interface Exercise {
    * thu chữ nhỏ hơn để vẫn gọn trong một trang A4 ngang. Chỉ có tác dụng khi có visual.
    */
   dense?: boolean
+  /**
+   * Hướng dẫn làm bài chia tab: tab đầu thường là sơ đồ lớp, các tab sau mỗi tab một
+   * yêu cầu của đề (thêm, xoá, tìm…) với lưu đồ, code mẫu và ghi chú. Hiện dưới thẻ
+   * bài tập trên web; khi xuất slide thì in thành các trang hướng dẫn ngay sau slide.
+   */
+  guide?: TabItem[]
 }
 
 export interface Buoi {

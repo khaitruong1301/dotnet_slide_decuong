@@ -91,6 +91,8 @@ html { scroll-behavior: smooth; }
   layer đứng trước lại thắng phần không-layer — nên rule ghi đè khi in sẽ không ăn.
 */
 [data-panel][data-open='false'] { display: none; }
+/* Thân thẻ bài tập: gập trên màn hình, luôn mở khi in ở mọi chế độ */
+[data-ex-body][data-open='false'] { display: none; }
 
 /* Bộ slide bài tập chỉ dùng cho bản in, không chiếm chỗ trên màn hình */
 [data-print-deck] { display: none; }
@@ -220,6 +222,8 @@ body {
 
   /* Nút "Tải PDF đầy đủ" bật cờ full -> mở hết mọi tab đang ẩn.
      Nút "Tải PDF tab đang xem" giữ nguyên trạng thái ẩn/hiện của tab. */
+  [data-ex-body][data-open='false'] { display: block; }
+  [data-ex] [data-panel][data-open='false'] { display: block; }
   html[data-print='full'] [data-panel][data-open='false'] { display: block; }
   /* Khối chia tab: mỗi tab in như một mục nhỏ, cách nhau một đường kẻ */
   [data-panel] + [data-panel] { border-top: 1px solid rgb(20 20 43 / 0.12); }
@@ -248,7 +252,8 @@ body {
   .print-footer strong { color: var(--cyber-500); font-weight: 700; }
   /* Ngắt TRƯỚC mỗi slide, trừ slide đầu — dùng break-after sẽ thừa một trang trắng ở cuối */
   .print-slide { break-before: page; }
-  .print-slide:first-child { break-before: auto; }
+  [data-print-deck] > :first-child > .print-slide:first-child,
+  [data-print-deck] > .print-slide:first-child { break-before: auto; }
 
   /* Thu nhỏ sơ đồ để mỗi bài tập gọn trong đúng một trang A4 ngang */
   .print-slide .slide-figure { font-size: 10px; padding: 0.4rem 0.9rem; }

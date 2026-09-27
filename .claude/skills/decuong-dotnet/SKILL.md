@@ -105,6 +105,8 @@ rời — dùng khi mô tả class độc lập.
 | `constraints` | Nên có | Giới hạn kích thước, miền giá trị, yêu cầu độ phức tạp |
 | `examples` | Có | Ít nhất 2 test case từ mức Trung bình trở lên; `explain` cho ca dễ hiểu nhầm |
 | `hint` | Tuỳ | Gợi ý hướng đi, không giải hộ |
+| `guide` | Tuỳ | Hướng dẫn làm bài chia tab (`TabItem[]`): tab đầu là sơ đồ lớp, các tab sau mỗi tab một yêu cầu của đề với lưu đồ, code mẫu, ghi chú. Bài dạng "xây chương trình quản lý" phải có. |
+| `dense` | Tuỳ | Bài lớn: slide xếp hình + gợi ý bên trái, ví dụ + ràng buộc bên phải để gọn một trang |
 
 Ưu tiên thêm một ca biên vào `examples`: mảng rỗng, giá trị trùng mốc điều kiện,
 trường hợp không có đáp án.
@@ -114,6 +116,11 @@ trường hợp không có đáp án.
 
 Trang bài học **tự nhóm bài tập theo cấp độ** và đánh số lại trong từng nhóm, nên
 không cần tự sắp xếp thứ tự dễ-khó trong mảng.
+
+Thẻ bài tập **mặc định thu gọn**, chỉ hiện số và tên bài; bấm vào tên mới xổ đề, ví dụ,
+gợi ý và khối tab hướng dẫn (`guide`). Khi in, thân thẻ luôn mở ở mọi chế độ. Bộ slide
+xuất PDF chỉ in slide một trang mỗi bài; tick *Kèm hướng dẫn* mới in thêm các trang
+hướng dẫn ngay sau slide của bài.
 
 Nút *Bốc đề 10 bài* lấy ngẫu nhiên theo tỷ lệ 2 Cơ bản · 6 Trung bình · 2 Nâng cao.
 Buổi nào không đủ bài ở một mức thì phần thiếu được bù bằng bài bất kỳ còn lại, và
