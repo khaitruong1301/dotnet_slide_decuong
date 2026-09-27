@@ -2,21 +2,21 @@ import type { Buoi } from './types'
 
 /**
  * Buổi ôn tập OOP. Một bài tập lớn duy nhất — viết trọn chương trình console quản lý
- * bãi giữ xe. Phần lý thuyết phân rã đề bài, vẽ sơ đồ lớp và lộ trình 6 bước; phần
- * gợi ý của bài liệt kê rõ class, thuộc tính, phương thức để người học biết chính xác
- * phải viết cái gì.
+ * sản phẩm cho cửa hàng điện máy. Phần lý thuyết phân rã đề bài, vẽ sơ đồ lớp và lộ
+ * trình 6 bước; phần gợi ý của bài liệt kê rõ class, thuộc tính, phương thức để người
+ * học biết chính xác phải viết cái gì.
  */
 const buoi16: Buoi = {
   id: 16,
-  slug: 'on-tap-oop-bai-giu-xe',
-  title: 'Ôn tập OOP — Bãi giữ xe',
+  slug: 'on-tap-oop-cua-hang-dien-may',
+  title: 'Ôn tập OOP — Cửa hàng điện máy',
   subtitle: 'Một bài lớn viết trọn chương trình console: class, kế thừa, đa hình, List và lưu file JSON',
   duration: '3 giờ',
   keywords: ['class', 'property', 'constructor', 'inheritance', 'override', 'polymorphism', 'List<T>', 'JSON'],
   goals: [
-    'Đọc một đề bài đời thường và tự chỉ ra được class, thuộc tính, phương thức cần có',
+    'Đọc một đề bài nghiệp vụ thật và tự chỉ ra được class, thuộc tính, phương thức cần có',
     'Viết class có constructor và property kiểm tra dữ liệu',
-    'Dùng kế thừa và override để mỗi loại xe tính phí theo cách riêng',
+    'Dùng kế thừa và override để mỗi nhóm hàng tính giá bán theo cách riêng',
     'Quản lý danh sách đối tượng bằng List<T>, gọi phương thức qua lớp cha (đa hình)',
     'Lưu và đọc lại danh sách đối tượng từ file JSON',
   ],
@@ -24,40 +24,40 @@ const buoi16: Buoi = {
   sections: [
     {
       id: 'de-bai-chung',
-      title: '1. Bài toán ôn tập: bãi giữ xe',
+      title: '1. Bài toán ôn tập: quản lý sản phẩm cửa hàng điện máy',
       blocks: [
         {
           type: 'text',
-          text: 'Một bãi giữ xe nhận ba loại xe: xe đạp, xe máy và xe hơi. Mỗi xe khi vào bãi được ghi biển số, tên chủ xe và số giờ gửi. Khi lấy xe, nhân viên tính phí theo loại xe. Cuối ngày chủ bãi muốn xem danh sách xe đang gửi, tổng doanh thu, và lưu lại danh sách để hôm sau mở lên dùng tiếp.',
+          text: 'Một cửa hàng điện máy bán ba nhóm hàng: điện tử (tivi, laptop), điện lạnh (tủ lạnh, máy lạnh) và gia dụng (nồi cơm, máy xay). Mỗi sản phẩm có mã, tên, giá nhập và số lượng tồn. Giá bán không nhập tay mà tính từ giá nhập theo quy tắc riêng của từng nhóm. Nhân viên cần thêm hàng mới, tìm hàng theo tên, cập nhật giá nhập và số lượng, bán hàng (trừ tồn kho, in tiền), xoá hàng ngừng kinh doanh, xem tổng giá trị tồn kho, và lưu dữ liệu để hôm sau mở lên dùng tiếp.',
         },
         {
           type: 'text',
-          text: 'Đề bài này cố tình đơn giản hơn bài quản lý nhân viên: chỉ có ba thuộc tính chung, một phương thức cần đa hình, và công thức tính phí là phép nhân. Trọng tâm là nhìn ra được cấu trúc lớp, không phải xử lý nghiệp vụ.',
+          text: 'So với bài quản lý nhân viên, đề này vẫn đủ quy mô một chương trình thật nhưng cấu trúc lớp rõ hơn: phần chung là bốn thuộc tính, mỗi nhóm hàng chỉ thêm đúng một thông số kỹ thuật và một công thức giá bán.',
         },
         {
           type: 'visual',
           visual: {
             kind: 'ipo',
             caption: 'Phân rã đề bài thành ba khối',
-            input: ['Biển số', 'Tên chủ xe', 'Số giờ gửi', 'Loại xe: đạp / máy / hơi'],
-            process: ['Tạo đối tượng đúng loại', 'Thêm vào danh sách', 'Tính phí theo loại (đa hình)', 'Cộng dồn doanh thu'],
-            output: ['Danh sách xe kèm phí', 'Tổng doanh thu', 'File bai-xe.json'],
+            input: ['Mã, tên sản phẩm', 'Giá nhập, số lượng tồn', 'Nhóm hàng + một thông số riêng', 'Mã và số lượng khi bán'],
+            process: ['Tạo đối tượng đúng nhóm', 'Thêm vào danh sách', 'Tính giá bán theo nhóm (đa hình)', 'Trừ tồn kho khi bán, cộng tồn kho'],
+            output: ['Danh sách hàng kèm giá bán', 'Tiền mỗi lần bán', 'Tổng giá trị tồn kho', 'File dien-may.json'],
           },
         },
         {
           type: 'table',
-          head: ['Loại xe', 'Phí một giờ', 'Quy tắc riêng'],
+          head: ['Nhóm hàng (class)', 'Thông số riêng', 'Giá bán', 'Bảo hành'],
           rows: [
-            ['XeDap', '2.000 đ', 'Không có'],
-            ['XeMay', '5.000 đ', 'Gửi qua đêm (trên 12 giờ) cộng thêm 10.000 đ'],
-            ['XeHoi', '20.000 đ', 'Từ giờ thứ 5 trở đi mỗi giờ chỉ tính 15.000 đ'],
+            ['DienTu', 'KichCoInch : int', 'GiaNhap × 1,2', '12 tháng'],
+            ['DienLanh', 'CongSuatW : int', 'GiaNhap × 1,15 + 300.000 đ phí lắp đặt', '24 tháng'],
+            ['GiaDung', 'ThangBaoHanh : int', 'GiaNhap × 1,3', 'Theo thông số riêng'],
           ],
         },
         {
           type: 'callout',
           tone: 'info',
           title: 'Cách đọc đề để tìm class',
-          text: 'Danh từ trong đề bài thường là class hoặc thuộc tính: xe, biển số, chủ xe, số giờ, bãi xe. Động từ là phương thức: tính phí, thêm, tìm, xoá, hiển thị, lưu. Danh từ nào "là một loại của" danh từ khác thì là lớp con: xe máy là một loại xe.',
+          text: 'Danh từ trong đề bài thường là class hoặc thuộc tính: sản phẩm, mã, tên, giá nhập, số lượng, cửa hàng. Động từ là phương thức: tính giá bán, thêm, tìm, cập nhật, bán, xoá, hiển thị, lưu. Danh từ nào "là một loại của" danh từ khác thì là lớp con: tủ lạnh là một sản phẩm thuộc nhóm điện lạnh.',
         },
       ],
     },
@@ -69,18 +69,18 @@ const buoi16: Buoi = {
           type: 'visual',
           visual: {
             kind: 'uml',
-            caption: 'Ba loại xe kế thừa từ Xe, mỗi loại ghi đè TinhPhi() theo bảng giá riêng',
+            caption: 'Ba nhóm hàng kế thừa SanPham, mỗi nhóm thêm một thông số và ghi đè TinhGiaBan()',
             relation: 'inherit',
             parent: {
-              name: 'Xe',
+              name: 'SanPham',
               stereotype: 'abstract',
-              attrs: ['+ BienSo : string', '+ TenChu : string', '+ SoGio : int'],
-              methods: ['+ TinhPhi() : decimal', '+ MoTa() : string'],
+              attrs: ['+ Ma : string', '+ Ten : string', '+ GiaNhap : decimal', '+ SoLuong : int'],
+              methods: ['+ TinhGiaBan() : decimal  (abstract)', '+ ThangBaoHanh() : int  (virtual, 12)', '+ MoTa() : string'],
             },
             children: [
-              { name: 'XeDap', methods: ['+ TinhPhi() : 2.000 × giờ'] },
-              { name: 'XeMay', methods: ['+ TinhPhi() : 5.000 × giờ (+10.000 nếu > 12 giờ)'] },
-              { name: 'XeHoi', methods: ['+ TinhPhi() : 20.000 × 4 giờ đầu, 15.000 × giờ sau'] },
+              { name: 'DienTu', attrs: ['+ KichCoInch : int'], methods: ['+ TinhGiaBan() : GiaNhap × 1,2'] },
+              { name: 'DienLanh', attrs: ['+ CongSuatW : int'], methods: ['+ TinhGiaBan() : GiaNhap × 1,15 + 300.000', '+ ThangBaoHanh() : 24'] },
+              { name: 'GiaDung', attrs: ['+ ThangBaoHanh : int'], methods: ['+ TinhGiaBan() : GiaNhap × 1,3', '+ ThangBaoHanh() : thông số riêng'] },
             ],
           },
         },
@@ -88,12 +88,12 @@ const buoi16: Buoi = {
           type: 'visual',
           visual: {
             kind: 'uml',
-            caption: 'BaiXe là lớp quản lý, giữ danh sách và cung cấp các thao tác',
+            caption: 'CuaHang là lớp quản lý, giữ danh sách private và cung cấp các thao tác nghiệp vụ',
             children: [
               {
-                name: 'BaiXe',
-                attrs: ['− danhSach : List<Xe>'],
-                methods: ['+ Them(Xe xe) : bool', '+ Tim(string bienSo) : Xe?', '+ TimTheoChu(string ten) : List<Xe>', '+ DoiSoGio(string bienSo, int gio) : bool', '+ LayXe(string bienSo) : decimal?', '+ HienThi()', '+ TongDoanhThu() : decimal', '+ LuuFile() / DocFile()'],
+                name: 'CuaHang',
+                attrs: ['− danhSach : List<SanPham>'],
+                methods: ['+ Them(SanPham sp) : bool', '+ Tim(string ma) : SanPham?', '+ TimTheoTen(string tuKhoa) : List<SanPham>', '+ CapNhat(string ma, decimal giaNhap, int soLuong) : bool', '+ Ban(string ma, int soLuong) : decimal?', '+ Xoa(string ma) : bool', '+ HienThi()', '+ TongTonKho() : decimal', '+ LuuFile() / DocFile()'],
               },
             ],
           },
@@ -102,16 +102,21 @@ const buoi16: Buoi = {
           type: 'visual',
           visual: {
             kind: 'flow',
-            caption: 'Luồng tính phí khi lấy xe — chỗ đa hình phát huy tác dụng',
+            caption: 'Luồng bán hàng — chỗ đa hình phát huy tác dụng',
             steps: [
-              { kind: 'start', text: 'Nhập biển số cần lấy' },
-              { kind: 'process', text: 'xe = baiXe.Tim(bienSo)' },
-              { kind: 'decision', text: 'xe == null ?', branches: [
-                { label: 'Đúng', steps: [{ kind: 'io', text: 'In "Không tìm thấy xe"' }] },
+              { kind: 'start', text: 'Nhập mã và số lượng cần bán' },
+              { kind: 'process', text: 'sp = cuaHang.Tim(ma)' },
+              { kind: 'decision', text: 'sp == null ?', branches: [
+                { label: 'Đúng', steps: [{ kind: 'io', text: 'In "Không tìm thấy sản phẩm"' }] },
                 { label: 'Sai', steps: [
-                  { kind: 'process', text: 'phi = xe.TinhPhi()  — C# tự chọn đúng phiên bản theo loại xe' },
-                  { kind: 'io', text: 'In biển số, chủ xe, phí' },
-                  { kind: 'process', text: 'baiXe.Xoa(bienSo)' },
+                  { kind: 'decision', text: 'sp.SoLuong < số lượng bán ?', branches: [
+                    { label: 'Đúng', steps: [{ kind: 'io', text: 'In "Không đủ hàng, còn N"' }] },
+                    { label: 'Sai', steps: [
+                      { kind: 'process', text: 'tien = soLuongBan × sp.TinhGiaBan()  — C# tự chọn đúng công thức theo nhóm hàng' },
+                      { kind: 'process', text: 'sp.SoLuong -= soLuongBan' },
+                      { kind: 'io', text: 'In tên hàng, số lượng, tiền' },
+                    ] },
+                  ] },
                 ] },
               ] },
               { kind: 'end', text: 'Về menu' },
@@ -122,7 +127,7 @@ const buoi16: Buoi = {
           type: 'callout',
           tone: 'warn',
           title: 'Bẫy hay gặp',
-          text: 'Nếu trong BaiXe viết if (xe is XeMay) … else if (xe is XeHoi) … để tính phí thì đã bỏ mất đa hình. Chỉ cần gọi xe.TinhPhi() — phiên bản nào chạy do đối tượng thật quyết định, không phải do kiểu của biến.',
+          text: 'Nếu trong CuaHang viết if (sp is DienLanh) … else if (sp is GiaDung) … để tính giá thì đã bỏ mất đa hình. Chỉ cần gọi sp.TinhGiaBan() — phiên bản nào chạy do đối tượng thật quyết định, không phải do kiểu của biến. Bẫy thứ hai: giá bán là kết quả tính toán, không được lưu thành thuộc tính, vì đổi giá nhập là giá bán phải đổi theo.',
         },
         {
           type: 'visual',
@@ -130,12 +135,12 @@ const buoi16: Buoi = {
             kind: 'timeline',
             caption: 'Lộ trình viết bài lớn — mỗi bước chạy được rồi mới sang bước kế',
             items: [
-              { label: '1', text: 'Class Xe: 3 property, constructor, MoTa(). Tạo 2 đối tượng in thử.' },
-              { label: '2', text: 'Xe thành abstract với TinhPhi(); viết XeDap, XeMay, XeHoi override theo bảng giá.' },
-              { label: '3', text: 'BaiXe với List<Xe>: Them, Tim, TimTheoChu, DoiSoGio, LayXe, HienThi.' },
-              { label: '4', text: 'TongDoanhThu() chỉ foreach cộng xe.TinhPhi() — kiểm tra đa hình chạy đúng.' },
-              { label: '5', text: 'XeDto + LuuFile / DocFile bằng System.Text.Json, dựng lại đúng lớp con theo Loai.' },
-              { label: '6', text: 'Main: vòng lặp menu, mỗi mục một hàm static, try/catch quanh phần nhập liệu.' },
+              { label: 'Class gốc', text: 'Class SanPham: 4 property (GiaNhap, SoLuong kiểm tra ≥ 0), constructor, MoTa(). Tạo 2 đối tượng in thử.' },
+              { label: 'Kế thừa', text: 'SanPham thành abstract với TinhGiaBan(); viết DienTu, DienLanh, GiaDung override theo bảng giá.' },
+              { label: 'Quản lý', text: 'CuaHang với List<SanPham>: Them, Tim, TimTheoTen, CapNhat, Ban, Xoa, HienThi.' },
+              { label: 'Đa hình', text: 'TongTonKho() chỉ foreach cộng sp.SoLuong × sp.TinhGiaBan() — kiểm tra đa hình chạy đúng.' },
+              { label: 'JSON', text: 'SanPhamDto + LuuFile / DocFile bằng System.Text.Json, dựng lại đúng lớp con theo Loai.' },
+              { label: 'Menu', text: 'Main: vòng lặp menu, mỗi mục một hàm static, try/catch quanh phần nhập liệu.' },
             ],
           },
         },
@@ -143,7 +148,7 @@ const buoi16: Buoi = {
           type: 'callout',
           tone: 'tip',
           title: 'Bí quyết không bị rối',
-          text: 'Cả chương trình chỉ có một chỗ được hỏi "loại xe là gì": hàm TaoXe(loai, bienSo, tenChu, soGio) trong Main và switch theo Loai trong DocFile. Mọi nơi khác chỉ làm việc với kiểu Xe.',
+          text: 'Cả chương trình chỉ có hai chỗ được hỏi "nhóm hàng là gì": hàm TaoSanPham(loai, …) trong Main và switch theo Loai trong DocFile. Mọi nơi khác chỉ làm việc với kiểu SanPham.',
         },
       ],
     },
@@ -151,29 +156,29 @@ const buoi16: Buoi = {
 
   exercises: [
     {
-      id: 'b16-h001', level: 'Nâng cao', title: 'Chương trình quản lý bãi giữ xe', dense: true,
-      requirement: 'Xây dựng chương trình console quản lý bãi giữ xe với các chức năng: (1) thêm xe vào bãi, có ba loại xe đạp, xe máy, xe hơi; (2) tính phí gửi cho từng loại theo bảng giá riêng bằng đa hình; (3) tìm xe theo biển số hoặc tên chủ xe, không phân biệt hoa thường; (4) đổi số giờ gửi theo biển số; (5) lấy xe: in phí rồi xoá khỏi bãi; (6) hiển thị danh sách gồm biển số, chủ xe, loại, số giờ, phí; (7) tổng doanh thu; (8) lưu danh sách ra file JSON và tự đọc lại khi khởi động.',
-      signature: 'abstract class Xe { BienSo, TenChu, SoGio; abstract decimal TinhPhi(); }\nclass XeDap : Xe   class XeMay : Xe   class XeHoi : Xe\nclass BaiXe { Them, Tim, TimTheoChu, DoiSoGio, LayXe, HienThi, TongDoanhThu, LuuFile, DocFile }',
+      id: 'b16-h001', level: 'Nâng cao', title: 'Chương trình quản lý sản phẩm cửa hàng điện máy', dense: true,
+      requirement: 'Xây dựng chương trình console quản lý sản phẩm cửa hàng điện máy với các chức năng: (1) thêm sản phẩm thuộc ba nhóm điện tử, điện lạnh, gia dụng, mỗi nhóm có một thông số riêng; (2) tính giá bán từ giá nhập theo quy tắc riêng của nhóm bằng đa hình; (3) tìm theo mã hoặc từ khoá trong tên, không phân biệt hoa thường; (4) cập nhật giá nhập và số lượng theo mã; (5) bán hàng: kiểm tra tồn, trừ kho, in tiền; (6) xoá theo mã; (7) hiển thị danh sách kèm giá bán, bảo hành và tổng giá trị tồn kho; (8) lưu ra file JSON và tự đọc lại khi khởi động.',
+      signature: 'abstract class SanPham { Ma, Ten, GiaNhap, SoLuong; abstract decimal TinhGiaBan(); virtual int ThangBaoHanh(); }\nclass DienTu : SanPham { KichCoInch }   class DienLanh : SanPham { CongSuatW }   class GiaDung : SanPham { ThangBaoHanh }\nclass CuaHang { Them, Tim, TimTheoTen, CapNhat, Ban, Xoa, HienThi, TongTonKho, LuuFile, DocFile }',
       constraints: [
-        'Xe đạp 2.000 đ/giờ · xe máy 5.000 đ/giờ, trên 12 giờ cộng 10.000 đ · xe hơi 20.000 đ/giờ cho 4 giờ đầu, từ giờ thứ 5 còn 15.000 đ/giờ',
-        'Biển số không trùng; SoGio âm bị từ chối trong property · Không if / switch theo loại xe khi tính phí, doanh thu',
-        'Main chỉ nhập xuất và gọi BaiXe; lỗi nhập liệu phải được bắt, chương trình không dừng',
+        'Điện tử: giá nhập × 1,2 · Điện lạnh: × 1,15 + 300.000 đ lắp đặt, BH 24 tháng · Gia dụng: × 1,3, BH theo thông số riêng',
+        'Mã không trùng; GiaNhap, SoLuong âm bị từ chối trong property · Không if / switch theo nhóm khi tính giá, tồn kho',
+        'Bán quá tồn thì từ chối · Main chỉ nhập xuất, gọi CuaHang; lỗi nhập liệu phải được bắt, chương trình không dừng',
       ],
       examples: [
-        { input: 'Thêm xe máy 59A1-123.45 (Lan, 14 giờ), xe hơi 51H-678.90 (Minh, 6 giờ); hiển thị', output: '59A1-123.45 — Lan — Xe máy — 14 giờ — 80.000 đ\n51H-678.90 — Minh — Xe hơi — 6 giờ — 110.000 đ\nTổng doanh thu: 190.000 đ', explain: 'Xe máy: 14 × 5.000 + 10.000 vì trên 12 giờ. Xe hơi: 4 × 20.000 + 2 × 15.000.' },
-        { input: 'Tìm chủ xe "lan"; đổi số giờ "59a1-123.45" thành 3; lấy xe 59A1-123.45', output: '59A1-123.45 — Lan — Xe máy — 14 giờ\nĐã đổi số giờ\nPhí 15.000 đ. Đã lấy xe.', explain: 'Không phân biệt hoa thường. Còn 3 giờ nên phí = 3 × 5.000.' },
-        { input: 'Thoát rồi mở lại; hiển thị', output: '51H-678.90 — Minh — Xe hơi — 6 giờ — 110.000 đ', explain: 'Thoát đã lưu bai-xe.json; khởi động đọc lại và dựng đúng lớp XeHoi nên phí vẫn 110.000.' },
+        { input: 'Thêm TV01 Tivi Samsung (điện tử 55 inch, nhập 10tr, tồn 5), TL01 Tủ lạnh LG (điện lạnh 150 W, nhập 8tr, tồn 3), NC01 Nồi cơm Sharp (gia dụng BH 6 tháng, nhập 500k, tồn 20); hiển thị', output: 'TV01 · Tivi Samsung · Điện tử · tồn 5 · 12.000.000 đ · BH 12t\nTL01 · Tủ lạnh LG · Điện lạnh · tồn 3 · 9.500.000 đ · BH 24t\nNC01 · Nồi cơm Sharp · Gia dụng · tồn 20 · 650.000 đ · BH 6t\nTổng tồn kho: 101.500.000 đ', explain: 'Tủ lạnh: 8tr × 1,15 + 300k. Tồn kho = 5 × 12tr + 3 × 9,5tr + 20 × 650k.' },
+        { input: 'Tìm theo tên "tủ"; bán TL01 số lượng 2; bán TL01 số lượng 2 lần nữa', output: 'TL01 · Tủ lạnh LG · Điện lạnh · tồn 3\nBán 2 × 9.500.000 = 19.000.000 đ. Còn 1.\nKhông đủ hàng, còn 1', explain: 'Tìm khớp một phần tên, không phân biệt hoa thường. Lần bán thứ hai bị từ chối vì tồn còn 1.' },
+        { input: 'Cập nhật NC01 giá nhập 600k, tồn 10; thoát rồi mở lại; hiển thị NC01', output: 'NC01 · Nồi cơm Sharp · Gia dụng · tồn 10 · 780.000 đ · BH 6t', explain: 'Giá bán tính lại: 600k × 1,3. JSON dựng lại đúng lớp GiaDung nên BH vẫn 6 tháng.' },
       ],
-      hint: 'Cần đúng 5 class. Xe (abstract): 3 property BienSo, TenChu, SoGio (set kiểm tra ≥ 0), constructor 3 tham số, abstract TinhPhi(), MoTa(). XeDap, XeMay, XeHoi: chỉ constructor gọi base(...) và override TinhPhi(). BaiXe: 1 field private List<Xe>; các phương thức Them(xe) → bool, Tim(bienSo) → Xe?, TimTheoChu(ten) → List<Xe>, DoiSoGio(bienSo, gio) → bool, LayXe(bienSo) → decimal?, HienThi(), TongDoanhThu() → decimal (chỉ foreach cộng xe.TinhPhi()), LuuFile(), DocFile(). XeDto: Loai, BienSo, TenChu, SoGio — chỉ để ghi JSON; khi đọc, switch theo Loai để new đúng lớp con.',
+      hint: 'Cần đúng 6 class. SanPham (abstract): 4 property Ma, Ten, GiaNhap, SoLuong (set kiểm tra ≥ 0), constructor 4 tham số, abstract TinhGiaBan(), virtual ThangBaoHanh() trả 12, MoTa(). DienTu thêm KichCoInch; DienLanh thêm CongSuatW, override ThangBaoHanh() = 24; GiaDung thêm ThangBaoHanh và override trả về nó. Mỗi lớp con: constructor gọi base(...) + override TinhGiaBan(). CuaHang: field private List<SanPham>; Them(sp) → bool, Tim(ma) → SanPham?, TimTheoTen(tuKhoa) → List<SanPham>, CapNhat(ma, giaNhap, soLuong) → bool, Ban(ma, soLuong) → decimal?, Xoa(ma) → bool, HienThi(), TongTonKho() → decimal (foreach cộng SoLuong × TinhGiaBan()), LuuFile(), DocFile(). SanPhamDto: Loai, Ma, Ten, GiaNhap, SoLuong, ThongSo — chỉ để ghi JSON; đọc lên switch theo Loai để new đúng lớp con.',
       visual: {
         kind: 'uml',
-        caption: 'Xe giữ phần chung, ba lớp con chỉ ghi đè TinhPhi(); BaiXe (xem sơ đồ ở phần lý thuyết) giữ List<Xe>',
+        caption: 'Mỗi nhóm thêm một thông số và ghi đè TinhGiaBan(); CuaHang giữ List<SanPham>',
         relation: 'inherit',
-        parent: { name: 'Xe', stereotype: 'abstract', attrs: ['+ BienSo, TenChu, SoGio'], methods: ['+ TinhPhi() : decimal  (abstract)', '+ MoTa() : string'] },
+        parent: { name: 'SanPham', stereotype: 'abstract', attrs: ['+ Ma, Ten, GiaNhap, SoLuong'], methods: ['+ TinhGiaBan() : decimal  (abstract)', '+ ThangBaoHanh() : int  (virtual)'] },
         children: [
-          { name: 'XeDap', methods: ['+ TinhPhi() override'] },
-          { name: 'XeMay', methods: ['+ TinhPhi() override'] },
-          { name: 'XeHoi', methods: ['+ TinhPhi() override'] },
+          { name: 'DienTu', attrs: ['+ KichCoInch'], methods: ['+ TinhGiaBan()'] },
+          { name: 'DienLanh', attrs: ['+ CongSuatW'], methods: ['+ TinhGiaBan()', '+ ThangBaoHanh()'] },
+          { name: 'GiaDung', attrs: ['+ ThangBaoHanh'], methods: ['+ TinhGiaBan()', '+ ThangBaoHanh()'] },
         ],
       },
     },

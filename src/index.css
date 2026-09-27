@@ -258,8 +258,14 @@ body {
   /* Bài lớn (dense): hình trái, ví dụ phải, chữ nhỏ hơn một nấc để vẫn gọn một trang */
   .print-slide[data-dense] .slide-title { font-size: 24px; }
   .print-slide[data-dense] .slide-figure { margin-top: 0; }
-  .print-slide[data-dense] .slide-figure { font-size: 8px; padding: 0.3rem 0.5rem; }
-  .print-slide[data-dense] :is(p, dl, li, pre):not(.slide-figure *) { font-size: 11.5px; line-height: 1.45; }
+  .print-slide[data-dense] .slide-figure { font-size: 7.5px; padding: 0.3rem 0.5rem; }
+  .print-slide[data-dense] .slide-figure .min-w-\[10rem\] { min-width: 7rem; }
+  .print-slide[data-dense] p.border-amber-400\/60 { font-size: 10.5px; line-height: 1.4; padding: 0.35rem 0.6rem; }
+  .print-slide[data-dense] ul > li.font-mono:not(.slide-figure *) { font-size: 10px; line-height: 1.4; }
+  .print-slide[data-dense] :is(p, li, pre):not(.slide-figure *) { font-size: 11.5px; line-height: 1.45; }
+  .print-slide[data-dense] dl { font-size: 10.5px; line-height: 1.4; }
+  .print-slide[data-dense] pre { font-size: 10.5px; line-height: 1.4; padding: 0.3rem 0.6rem; }
+  .print-slide[data-dense] dl + p { font-size: 10.5px; margin-top: 0.2rem; }
   .print-slide[data-dense] > div > * { margin-top: 0.3rem; }
   .print-slide[data-dense] .bg-ink\/4 { padding: 0.3rem 0.6rem; }
   .print-slide[data-dense] .bg-ink\/4 > div:first-child { margin-bottom: 0.15rem; }

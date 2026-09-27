@@ -62,6 +62,13 @@ export default function ExerciseSlide({ buoi, ex, index }: { buoi: Buoi; ex: Exe
     </div>
   )
 
+  const hint = ex.hint && (
+      <p className="mt-3 rounded-lg border-l-2 border-amber-400/60 bg-amber-400/8 px-3.5 py-2 text-[13px] text-ink/70">
+        <span className="font-semibold text-amber-300">Gợi ý: </span>
+        {ex.hint}
+      </p>
+  )
+
   return (
     <section className="print-slide relative flex flex-col" data-dense={dense || undefined}>
       {/* Logo chìm — bọc trong khung inset-0 để không làm cao thêm trang in */}
@@ -89,12 +96,15 @@ export default function ExerciseSlide({ buoi, ex, index }: { buoi: Buoi; ex: Exe
         )}
 
         {dense ? (
-          <div className="mt-3 grid items-start gap-3" style={{ gridTemplateColumns: '4fr 7fr' }}>
+          <div className="mt-3 grid items-start gap-3" style={{ gridTemplateColumns: 'minmax(0, 5fr) minmax(0, 6fr)' }}>
             <div>
               {figure}
+              {hint}
+            </div>
+            <div>
+              {examples}
               {constraints}
             </div>
-            <div>{examples}</div>
           </div>
         ) : (
           <>
@@ -105,12 +115,7 @@ export default function ExerciseSlide({ buoi, ex, index }: { buoi: Buoi; ex: Exe
 
         {!dense && constraints}
 
-        {ex.hint && (
-          <p className="mt-3 rounded-lg border-l-2 border-amber-400/60 bg-amber-400/8 px-3.5 py-2 text-[13px] text-ink/70">
-            <span className="font-semibold text-amber-300">Gợi ý: </span>
-            {ex.hint}
-          </p>
-        )}
+        {!dense && hint}
       </div>
     </section>
   )
