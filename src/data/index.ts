@@ -14,17 +14,18 @@ import buoi12 from './buoi12'
 import buoi13 from './buoi13'
 import buoi14 from './buoi14'
 import buoi15 from './buoi15'
+import buoi16 from './buoi16'
 
 export const COURSE = {
   title: 'C# / ASP.NET Core — Nền tảng',
-  subtitle: 'Đề cương 15 buổi: từ cú pháp cơ bản đến hướng đối tượng và nguyên tắc SOLID',
+  subtitle: 'Đề cương 16 buổi: từ cú pháp cơ bản đến hướng đối tượng, SOLID và buổi ôn tập OOP',
   author: 'Trương Tấn Khải',
 }
 
 export const BUOI_LIST: Buoi[] = [
   buoi01, buoi02, buoi03, buoi04, buoi05, buoi06,
   buoi07, buoi08, buoi09, buoi10, buoi11, buoi12,
-  buoi13, buoi14, buoi15,
+  buoi13, buoi14, buoi15, buoi16,
 ]
 
 export function findBuoi(slug?: string): Buoi | undefined {
