@@ -723,6 +723,31 @@ danhSach = JsonSerializer.Deserialize<List<SanPham>>(File.ReadAllText("dien-may.
 
   exercises: [
     {
+      id: 'b16-m001', level: 'Trung bình', title: 'Quản lý khách hàng thân thiết', dense: true,
+      requirement: 'Cửa hàng điện máy muốn lưu khách hàng thân thiết. Mỗi khách là một người (họ tên, số điện thoại, năm sinh) và có thêm mã khách và điểm tích luỹ. Xây dựng chương trình console với các chức năng: (1) thêm khách, từ chối nếu trùng mã hoặc trùng số điện thoại; (2) xoá khách theo mã; (3) tìm khách theo số điện thoại hoặc theo từ khoá trong họ tên, không phân biệt hoa thường; (4) hiển thị danh sách gồm mã, họ tên, tuổi, số điện thoại, điểm. Dùng kế thừa để KhachHang dùng lại phần "người" thay vì khai báo lại.',
+      signature: 'class Nguoi { HoTen, SoDienThoai, NamSinh; int Tuoi(); }\nclass KhachHang : Nguoi { MaKH, DiemTichLuy; string MoTa(); }\nclass DanhSachKhach { Them, Xoa, TimTheoSdt, TimTheoTen, HienThi }',
+      constraints: [
+        'Không override, không virtual, không abstract — kế thừa chỉ để dùng lại thuộc tính và Tuoi()',
+        'Constructor của KhachHang gọi base(hoTen, soDienThoai, namSinh) · NamSinh sau năm hiện tại và điểm âm bị từ chối trong property',
+        'Không lưu file · Main chỉ nhập xuất và gọi DanhSachKhach; lỗi nhập liệu phải được bắt',
+      ],
+      examples: [
+        { input: 'Thêm KH01 "Nguyễn Văn An" 0901234567 1990 điểm 120; thêm KH02 "Trần Thị Bích" 0912345678 2001 điểm 0; hiển thị', output: 'KH01 · Nguyễn Văn An · 36 tuổi · 0901234567 · 120 điểm\nKH02 · Trần Thị Bích · 25 tuổi · 0912345678 · 0 điểm', explain: 'Tuổi = năm hiện tại (2026) − năm sinh, tính trong Nguoi và KhachHang dùng lại.' },
+        { input: 'Thêm KH03 "Lê Văn Cường" 0901234567 1985 điểm 50', output: 'Từ chối: số điện thoại đã có (KH01)', explain: 'Trùng số điện thoại dù mã khác vẫn từ chối.' },
+        { input: 'Tìm theo tên "văn"; xoá KH01; tìm SĐT 0901234567', output: 'KH01 · Nguyễn Văn An · 36 tuổi\nĐã xoá KH01\nKhông tìm thấy', explain: 'Tìm tên khớp một phần, không phân biệt hoa thường. Sau khi xoá, số điện thoại đó không còn.' },
+      ],
+      hint: 'Cần 3 class. Nguoi: 3 property HoTen, SoDienThoai, NamSinh (set kiểm tra ≤ năm hiện tại), constructor 3 tham số, Tuoi() = DateTime.Now.Year − NamSinh. KhachHang : Nguoi: thêm MaKH và DiemTichLuy (set kiểm tra ≥ 0), constructor 5 tham số gọi base(...), MoTa() ghép mã, HoTen, Tuoi(), SoDienThoai, điểm. DanhSachKhach: field private List<KhachHang>; Them(kh) → bool, Xoa(maKH) → bool, TimTheoSdt(sdt) → KhachHang?, TimTheoTen(tuKhoa) → List<KhachHang>, HienThi(). Bên trong KhachHang gọi thẳng HoTen, Tuoi() như của mình — đó là cái kế thừa cho.',
+      visual: {
+        kind: 'uml',
+        caption: 'KhachHang kế thừa Nguoi để dùng lại ba thuộc tính và Tuoi(), chỉ thêm phần riêng của khách',
+        relation: 'inherit',
+        parent: { name: 'Nguoi', attrs: ['+ HoTen : string', '+ SoDienThoai : string', '+ NamSinh : int'], methods: ['+ Tuoi() : int'] },
+        children: [
+          { name: 'KhachHang', attrs: ['+ MaKH : string', '+ DiemTichLuy : int'], methods: ['+ MoTa() : string'] },
+        ],
+      },
+    },
+    {
       id: 'b16-h001', level: 'Nâng cao', title: 'Chương trình quản lý sản phẩm cửa hàng điện máy', dense: true,
       requirement: 'Xây dựng chương trình console quản lý sản phẩm cửa hàng điện máy với các chức năng: (1) thêm sản phẩm thuộc ba nhóm điện tử, điện lạnh, gia dụng, mỗi nhóm có một thông số riêng; (2) tính giá bán từ giá nhập theo quy tắc riêng của nhóm bằng đa hình; (3) tìm theo mã hoặc từ khoá trong tên, không phân biệt hoa thường; (4) cập nhật giá nhập và số lượng theo mã; (5) bán hàng: kiểm tra tồn, trừ kho, in tiền; (6) xoá theo mã; (7) hiển thị danh sách kèm giá bán, bảo hành và tổng giá trị tồn kho; (8) lưu ra file JSON và tự đọc lại khi khởi động.',
       signature: 'abstract class SanPham { Ma, Ten, GiaNhap, SoLuong; abstract decimal TinhGiaBan(); virtual int ThangBaoHanh(); }\nclass DienTu : SanPham { KichCoInch }   class DienLanh : SanPham { CongSuatW }   class GiaDung : SanPham { ThangBaoHanh }\nclass CuaHang { Them, Tim, TimTheoTen, CapNhat, Ban, Xoa, HienThi, TongTonKho, LuuFile, DocFile }',
