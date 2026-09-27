@@ -115,6 +115,11 @@ export interface Exercise {
    * từ trường io, nên chỉ cần khai báo khi muốn vẽ luồng xử lý cụ thể.
    */
   visual?: Visual
+  /**
+   * Bài lớn có nhiều ví dụ dài: slide xếp hình bên trái, ví dụ bên phải và
+   * thu chữ nhỏ hơn để vẫn gọn trong một trang A4 ngang. Chỉ có tác dụng khi có visual.
+   */
+  dense?: boolean
 }
 
 export interface Buoi {

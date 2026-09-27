@@ -255,6 +255,16 @@ body {
   .print-slide:has(.slide-figure) .slide-title { font-size: 30px; }
   .print-slide:has(.slide-figure) .slide-figure { font-size: 9px; padding: 0.3rem 0.8rem; }
   .print-slide:has(.slide-figure) > div > * { margin-top: 0.55rem; }
+  /* Bài lớn (dense): hình trái, ví dụ phải, chữ nhỏ hơn một nấc để vẫn gọn một trang */
+  .print-slide[data-dense] .slide-title { font-size: 24px; }
+  .print-slide[data-dense] .slide-figure { margin-top: 0; }
+  .print-slide[data-dense] .slide-figure { font-size: 8px; padding: 0.3rem 0.5rem; }
+  .print-slide[data-dense] :is(p, dl, li, pre):not(.slide-figure *) { font-size: 11.5px; line-height: 1.45; }
+  .print-slide[data-dense] > div > * { margin-top: 0.3rem; }
+  .print-slide[data-dense] .bg-ink\/4 { padding: 0.3rem 0.6rem; }
+  .print-slide[data-dense] .bg-ink\/4 > div:first-child { margin-bottom: 0.15rem; }
+  .print-slide[data-dense] .mt-3\.5 { margin-top: 0; }
+  .print-slide[data-dense] .space-y-2\.5 > * + * { margin-top: 0.35rem; }
   /* Sơ đồ IPO tự dựng chỉ có ba khối nên phóng to cho dễ đọc */
   .print-slide .slide-figure[data-auto='true'] { font-size: 14px; padding: 1.4rem 1.2rem; }
   .print-slide .slide-title { font-size: 38px; }
