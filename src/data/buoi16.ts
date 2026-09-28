@@ -1200,6 +1200,356 @@ public decimal TongLuong()
   },
 ]
 
+/** Hướng dẫn bài đơn giao hàng — bài dễ: kế thừa một tầng, override nhẹ, JSON bằng attribute có sẵn. */
+const HUONG_DAN_DON_HANG: TabItem[] = [
+  {
+    label: 'Sơ đồ lớp',
+    hint: 'DonHang ← DonGiaoNhanh · QuanLyDon',
+    blocks: [
+      {
+        type: 'text',
+        text: 'Đơn giao nhanh cũng là một đơn hàng, chỉ khác phí giao và cách mô tả. Vậy DonGiaoNhanh kế thừa DonHang, override đúng hai phương thức, còn lại dùng nguyên. QuanLyDon giữ List<DonHang> nên chứa được cả hai loại.',
+      },
+      {
+        type: 'visual',
+        visual: {
+          kind: 'uml',
+          caption: 'Override nhẹ: lớp con chỉ đổi phí giao và thêm chữ vào mô tả',
+          relation: 'inherit',
+          parent: { name: 'DonHang', attrs: ['+ MaDon : string', '+ TenKhach : string', '+ DiaChi : string', '+ TienHang : decimal'], methods: ['+ PhiGiao() : 30.000  (virtual)', '+ TongThanhToan() : TienHang + PhiGiao()', '+ MoTa() : string  (virtual)'] },
+          children: [{ name: 'DonGiaoNhanh', methods: ['+ PhiGiao() : 60.000  override', '+ MoTa() : base + " · GIAO NHANH"  override'] }],
+        },
+      },
+      {
+        type: 'visual',
+        visual: {
+          kind: 'uml',
+          caption: 'QuanLyDon — thêm, xoá, sửa, tìm, hiển thị, lưu / đọc file',
+          children: [{ name: 'QuanLyDon', attrs: ['− danhSach : List<DonHang>'], methods: ['+ Them(DonHang d) : bool', '+ Xoa(string maDon) : bool', '+ SuaDiaChi(string maDon, string diaChiMoi) : bool', '+ TimTheoKhach(string tuKhoa) : List<DonHang>', '+ HienThi()', '+ TongPhiGiao() : decimal', '+ LuuFile() / DocFile()'] }],
+        },
+      },
+      {
+        type: 'code',
+        sample: {
+          title: 'Class DonHang — lớp cha',
+          code: `class DonHang
+{
+    public string MaDon { get; set; } = "";
+    public string TenKhach { get; set; } = "";
+    public string DiaChi { get; set; } = "";
+
+    private decimal tienHang;
+    public decimal TienHang
+    {
+        get => tienHang;
+        set
+        {
+            if (value < 0) throw new ArgumentException("Tiền hàng không được âm");
+            tienHang = value;
+        }
+    }
+
+    public DonHang() { }                     // constructor rỗng: cần cho JSON đọc lại
+    public DonHang(string maDon, string tenKhach, string diaChi, decimal tienHang)
+    {
+        MaDon = maDon;
+        TenKhach = tenKhach;
+        DiaChi = diaChi;
+        TienHang = tienHang;
+    }
+
+    public virtual decimal PhiGiao() => 30_000;
+    public decimal TongThanhToan() => TienHang + PhiGiao();
+    public virtual string MoTa()
+        => $"{MaDon} · {TenKhach} · {DiaChi} · hàng {TienHang:N0} + phí {PhiGiao():N0} = {TongThanhToan():N0} đ";
+}`,
+          note: 'TongThanhToan() viết một lần ở lớp cha nhưng gọi PhiGiao() là bản của lớp thật — đơn nhanh tự ra 60.000 mà không cần viết lại TongThanhToan.',
+        },
+      },
+      {
+        type: 'code',
+        sample: {
+          title: 'Class DonGiaoNhanh — chỉ hai override',
+          code: `class DonGiaoNhanh : DonHang
+{
+    public DonGiaoNhanh() { }
+    public DonGiaoNhanh(string maDon, string tenKhach, string diaChi, decimal tienHang)
+        : base(maDon, tenKhach, diaChi, tienHang) { }
+
+    public override decimal PhiGiao() => 60_000;
+    public override string MoTa() => base.MoTa() + " · GIAO NHANH";
+}`,
+          note: 'base.MoTa() lấy nguyên dòng của lớp cha rồi nối thêm — không chép lại chuỗi định dạng.',
+        },
+      },
+      {
+        type: 'callout',
+        tone: 'info',
+        title: 'Vì sao có constructor rỗng',
+        text: 'System.Text.Json tạo đối tượng bằng constructor không tham số rồi gán từng property. Không có nó thì DocFile ném NotSupportedException. Constructor 4 tham số vẫn giữ để Main tạo đơn cho gọn.',
+      },
+    ],
+  },
+  {
+    label: 'Thêm đơn',
+    hint: 'bool Them(DonHang d)',
+    blocks: [
+      {
+        type: 'text',
+        text: 'Main hỏi "giao nhanh không" để new đúng lớp, rồi giao cho Them. Them chỉ kiểm tra trùng mã.',
+      },
+      {
+        type: 'visual',
+        visual: {
+          kind: 'flow',
+          caption: 'Luồng thêm đơn',
+          steps: [
+            { kind: 'io', text: 'Nhập mã đơn, tên khách, địa chỉ, tiền hàng' },
+            { kind: 'decision', text: 'Giao nhanh ?', branches: [
+              { label: 'Đúng', steps: [{ kind: 'process', text: 'd = new DonGiaoNhanh(…)' }] },
+              { label: 'Sai', steps: [{ kind: 'process', text: 'd = new DonHang(…)' }] },
+            ] },
+            { kind: 'decision', text: 'ql.Them(d) ?', branches: [
+              { label: 'true', steps: [{ kind: 'io', text: 'In "Đã thêm " + d.MaDon' }] },
+              { label: 'false', steps: [{ kind: 'io', text: 'In "Mã đơn đã tồn tại"' }] },
+            ] },
+          ],
+        },
+      },
+      {
+        type: 'code',
+        sample: {
+          title: 'Them và Tim',
+          code: `private List<DonHang> danhSach = new List<DonHang>();
+
+public DonHang? Tim(string maDon)
+    => danhSach.FirstOrDefault(d => d.MaDon.Equals(maDon, StringComparison.OrdinalIgnoreCase));
+
+public bool Them(DonHang d)
+{
+    if (Tim(d.MaDon) != null) return false;
+    danhSach.Add(d);
+    return true;
+}`,
+        },
+      },
+    ],
+  },
+  {
+    label: 'Xoá đơn',
+    hint: 'bool Xoa(string maDon)',
+    blocks: [
+      {
+        type: 'text',
+        text: 'Tìm theo mã rồi Remove. Đơn thường hay đơn nhanh xoá như nhau.',
+      },
+      {
+        type: 'visual',
+        visual: {
+          kind: 'strip',
+          caption: 'Xoa("DH02") — gỡ phần tử [1]',
+          name: 'danhSach (trước khi xoá)',
+          items: ['DH01 · An', 'DH02 · Bích (nhanh) ✕', 'DH03 · Cường'],
+          highlight: [1],
+        },
+      },
+      {
+        type: 'code',
+        sample: {
+          title: 'Xoa',
+          code: `public bool Xoa(string maDon)
+{
+    DonHang? d = Tim(maDon);
+    if (d == null) return false;
+    danhSach.Remove(d);
+    return true;
+}`,
+        },
+      },
+    ],
+  },
+  {
+    label: 'Sửa địa chỉ',
+    hint: 'bool SuaDiaChi(string maDon, string diaChiMoi)',
+    blocks: [
+      {
+        type: 'text',
+        text: 'Sửa không tạo đối tượng mới, chỉ gán lại property của đơn đã có. Địa chỉ mới rỗng thì từ chối.',
+      },
+      {
+        type: 'visual',
+        visual: {
+          kind: 'boxes',
+          caption: 'SuaDiaChi("DH01", "34 Hai Bà Trưng") — chỉ một ô đổi, các ô khác giữ nguyên',
+          items: [
+            { label: 'MaDon', value: '"DH01"' },
+            { label: 'TenKhach', value: '"Nguyễn Văn An"' },
+            { label: 'DiaChi', value: '"34 Hai Bà Trưng"', note: 'trước: "12 Lê Lợi"' },
+            { label: 'TienHang', value: '1.500.000' },
+          ],
+        },
+      },
+      {
+        type: 'code',
+        sample: {
+          title: 'SuaDiaChi',
+          code: `public bool SuaDiaChi(string maDon, string diaChiMoi)
+{
+    if (string.IsNullOrWhiteSpace(diaChiMoi)) throw new ArgumentException("Địa chỉ không được rỗng");
+    DonHang? d = Tim(maDon);
+    if (d == null) return false;
+    d.DiaChi = diaChiMoi.Trim();
+    return true;
+}`,
+          note: 'Hai lý do thất bại báo hai cách: không có đơn thì return false, dữ liệu sai thì ném lỗi để Main bắt.',
+        },
+      },
+    ],
+  },
+  {
+    label: 'Tìm theo khách',
+    hint: 'List<DonHang> TimTheoKhach(string tuKhoa)',
+    blocks: [
+      {
+        type: 'text',
+        text: 'Một khách có thể có nhiều đơn nên trả về List. Khớp một phần tên, không phân biệt hoa thường.',
+      },
+      {
+        type: 'visual',
+        visual: {
+          kind: 'strip',
+          caption: 'TimTheoKhach("an") — giữ lại các đơn có tên khách chứa từ khoá',
+          name: 'danhSach',
+          items: ['DH01 · Nguyễn Văn An', 'DH02 · Trần Thị Bích', 'DH03 · Phạm Anh'],
+          highlight: [0, 2],
+        },
+      },
+      {
+        type: 'code',
+        sample: {
+          title: 'TimTheoKhach',
+          code: `public List<DonHang> TimTheoKhach(string tuKhoa)
+    => danhSach.Where(d => d.TenKhach.Contains(tuKhoa, StringComparison.OrdinalIgnoreCase))
+               .ToList();`,
+          note: 'Kết quả rỗng thì Main in "Không có đơn nào", không in danh sách trống.',
+        },
+      },
+    ],
+  },
+  {
+    label: 'Hiển thị & tổng phí',
+    hint: 'void HienThi() · decimal TongPhiGiao()',
+    blocks: [
+      {
+        type: 'text',
+        text: 'Mỗi đơn một dòng bằng MoTa(). Đơn nhanh tự có đuôi "GIAO NHANH" và phí 60.000 nhờ override — HienThi không cần biết loại đơn. Tổng phí giao cộng PhiGiao() của từng đơn.',
+      },
+      {
+        type: 'visual',
+        visual: {
+          kind: 'compare',
+          caption: 'Cùng một dòng Console.WriteLine(d.MoTa()) — hai kết quả',
+          columns: [
+            { title: 'DH01 — DonHang', tone: 'plain', items: ['PhiGiao() → 30.000', 'TongThanhToan() → 1.530.000', 'MoTa() không có đuôi'] },
+            { title: 'DH02 — DonGiaoNhanh', tone: 'good', items: ['PhiGiao() → 60.000 (override)', 'TongThanhToan() → 2.060.000 — không viết lại', 'MoTa() + " · GIAO NHANH" (override)'] },
+          ],
+        },
+      },
+      {
+        type: 'code',
+        sample: {
+          title: 'HienThi và TongPhiGiao',
+          code: `public void HienThi()
+{
+    if (danhSach.Count == 0) { Console.WriteLine("Chưa có đơn"); return; }
+    foreach (DonHang d in danhSach)
+        Console.WriteLine(d.MoTa());
+    Console.WriteLine($"Tổng phí giao: {TongPhiGiao():N0} đ");
+}
+
+public decimal TongPhiGiao()
+{
+    decimal tong = 0;
+    foreach (DonHang d in danhSach) tong += d.PhiGiao();
+    return tong;
+}`,
+        },
+      },
+    ],
+  },
+  {
+    label: 'Lưu / đọc JSON',
+    hint: 'void LuuFile() · void DocFile()',
+    blocks: [
+      {
+        type: 'text',
+        text: 'Danh sách có hai loại đơn nên JSON phải ghi kèm loại — nếu không, đọc lại mọi đơn đều thành DonHang thường. Bài này dùng cách ngắn nhất: gắn hai attribute lên DonHang, System.Text.Json (.NET 7 trở lên) tự ghi trường "Loai" và tự new đúng lớp khi đọc.',
+      },
+      {
+        type: 'visual',
+        visual: {
+          kind: 'map',
+          caption: 'Một bản ghi đơn nhanh trong don-hang.json — "Loai" do thư viện tự ghi ở đầu',
+          name: 'bản ghi DH02',
+          pairs: [
+            { key: '"Loai"', value: '"Nhanh"   ← đọc lên sẽ new DonGiaoNhanh' },
+            { key: '"MaDon"', value: '"DH02"' },
+            { key: '"TenKhach"', value: '"Trần Thị Bích"' },
+            { key: '"DiaChi"', value: '"5 Trần Phú"' },
+            { key: '"TienHang"', value: '2000000' },
+          ],
+        },
+      },
+      {
+        type: 'code',
+        sample: {
+          title: 'Hai attribute trên DonHang, rồi LuuFile / DocFile',
+          code: `using System.Text.Json;
+using System.Text.Json.Serialization;
+
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "Loai")]
+[JsonDerivedType(typeof(DonHang), "Thuong")]
+[JsonDerivedType(typeof(DonGiaoNhanh), "Nhanh")]
+class DonHang { /* như tab Sơ đồ lớp */ }
+
+// QuanLyDon.cs
+public void LuuFile(string duongDan = "don-hang.json")
+{
+    var options = new JsonSerializerOptions { WriteIndented = true };
+    File.WriteAllText(duongDan, JsonSerializer.Serialize(danhSach, options));
+}
+
+public void DocFile(string duongDan = "don-hang.json")
+{
+    if (!File.Exists(duongDan)) return;                       // lần chạy đầu chưa có file
+    string json = File.ReadAllText(duongDan);
+    danhSach = JsonSerializer.Deserialize<List<DonHang>>(json) ?? new List<DonHang>();
+}`,
+          note: 'Serialize nhận List<DonHang> nhưng nhờ attribute, phần tử nào là DonGiaoNhanh được ghi "Loai": "Nhanh" và đọc lại đúng lớp. PhiGiao() sau khi đọc vẫn ra 60.000.',
+        },
+      },
+      {
+        type: 'visual',
+        visual: {
+          kind: 'timeline',
+          caption: 'Vòng đời dữ liệu trong một phiên chạy',
+          items: [
+            { label: 'Khởi động', text: 'ql.DocFile() — có file thì nạp, không có thì danh sách trống' },
+            { label: 'Làm việc', text: 'Thêm / xoá / sửa / tìm trên List trong bộ nhớ' },
+            { label: 'Thoát', text: 'ql.LuuFile() — ghi đè toàn bộ danh sách ra don-hang.json' },
+          ],
+        },
+      },
+      {
+        type: 'callout',
+        tone: 'warn',
+        title: 'Hai lỗi hay gặp',
+        text: 'NotSupportedException khi đọc: thiếu constructor rỗng ở DonHang hoặc DonGiaoNhanh. JsonException "metadata property must be first": trường "Loai" không đứng đầu bản ghi — xảy ra khi sửa file bằng tay; file do chương trình ghi thì luôn đúng.',
+      },
+    ],
+  },
+]
+
 const buoi16: Buoi = {
   id: 16,
   slug: 'on-tap-oop-cua-hang-dien-may',
@@ -1349,6 +1699,39 @@ const buoi16: Buoi = {
   ],
 
   exercises: [
+    {
+      id: 'b16-c001', level: 'Cơ bản', title: 'Quản lý đơn giao hàng', dense: true,
+      guide: HUONG_DAN_DON_HANG,
+      demo: 'don-hang',
+      requirement: 'Cửa hàng điện máy giao hàng tận nơi. Mỗi đơn có mã đơn, tên khách, địa chỉ, tiền hàng; phí giao mặc định 30.000 đ. Đơn giao nhanh là một đơn hàng có phí giao 60.000 đ và dòng mô tả có thêm chữ "GIAO NHANH". Tổng thanh toán = tiền hàng + phí giao. Xây dựng chương trình console với các chức năng sau:',
+      tasks: [
+        'Thêm đơn thường hoặc đơn giao nhanh, từ chối nếu trùng mã',
+        'Xoá đơn theo mã',
+        'Sửa địa chỉ giao theo mã đơn',
+        'Tìm đơn theo từ khoá trong tên khách, không phân biệt hoa thường',
+        'Hiển thị danh sách kèm phí giao, tổng thanh toán từng đơn và tổng phí giao của cửa hàng',
+        'Lưu danh sách ra file JSON khi thoát và tự đọc lại khi khởi động — đơn nhanh đọc lên vẫn là đơn nhanh',
+      ],
+      signature: 'class DonHang { MaDon, TenKhach, DiaChi, TienHang; virtual decimal PhiGiao(); decimal TongThanhToan(); virtual string MoTa(); }\nclass DonGiaoNhanh : DonHang { override PhiGiao(); override MoTa(); }\nclass QuanLyDon { Them, Xoa, SuaDiaChi, TimTheoKhach, HienThi, TongPhiGiao, LuuFile, DocFile }',
+      constraints: [
+        'DonGiaoNhanh chỉ override PhiGiao() và MoTa(), không khai báo lại thuộc tính · TongThanhToan() chỉ viết ở lớp cha',
+        'Tiền hàng âm bị từ chối trong property · Mỗi class có constructor rỗng để JSON đọc lại',
+        'Dùng [JsonPolymorphic] + [JsonDerivedType] của System.Text.Json để file ghi kèm loại đơn · Main chỉ nhập xuất, lỗi nhập liệu phải được bắt',
+      ],
+      examples: [
+        { input: 'Thêm DH01 "Nguyễn Văn An" "12 Lê Lợi" 1.500.000 (thường); DH02 "Trần Thị Bích" "5 Trần Phú" 2.000.000 (nhanh); hiển thị', output: 'DH01 · Nguyễn Văn An · 12 Lê Lợi · hàng 1.500.000 + phí 30.000 = 1.530.000 đ\nDH02 · Trần Thị Bích · 5 Trần Phú · hàng 2.000.000 + phí 60.000 = 2.060.000 đ · GIAO NHANH\nTổng phí giao: 90.000 đ', explain: 'Cùng gọi MoTa() và TongThanhToan(), đơn nhanh ra phí 60.000 nhờ override PhiGiao().' },
+        { input: 'Sửa địa chỉ DH01 thành "34 Hai Bà Trưng"; tìm khách "an"; xoá DH03', output: 'Đã sửa địa chỉ\nDH01 · Nguyễn Văn An · 34 Hai Bà Trưng · …\nKhông tìm thấy đơn', explain: 'Tìm khớp một phần tên; DH03 không có nên xoá thất bại.' },
+        { input: 'Thoát; mở lại chương trình; hiển thị', output: 'DH01 · … · phí 30.000 …\nDH02 · … · phí 60.000 … · GIAO NHANH', explain: 'File JSON có trường "Loai": "Nhanh" nên DH02 được dựng lại đúng lớp DonGiaoNhanh.' },
+      ],
+      hint: 'Cần 3 class. DonHang: 4 property MaDon, TenKhach, DiaChi, TienHang (set kiểm tra ≥ 0), constructor rỗng + constructor 4 tham số, virtual PhiGiao() = 30.000, TongThanhToan() = TienHang + PhiGiao(), virtual MoTa(). DonGiaoNhanh : DonHang: constructor rỗng + constructor gọi base(...), override PhiGiao() = 60.000, override MoTa() = base.MoTa() + " · GIAO NHANH". QuanLyDon: field private List<DonHang>; Tim(ma), Them(d) → bool, Xoa(ma) → bool, SuaDiaChi(ma, diaChi) → bool, TimTheoKhach(tuKhoa) → List<DonHang>, HienThi(), TongPhiGiao() → decimal, LuuFile() = JsonSerializer.Serialize(danhSach), DocFile() = Deserialize<List<DonHang>>. Gắn [JsonPolymorphic(TypeDiscriminatorPropertyName = "Loai")], [JsonDerivedType(typeof(DonHang), "Thuong")], [JsonDerivedType(typeof(DonGiaoNhanh), "Nhanh")] lên DonHang.',
+      visual: {
+        kind: 'uml',
+        caption: 'Kế thừa một tầng, override nhẹ hai phương thức; TongThanhToan() dùng chung',
+        relation: 'inherit',
+        parent: { name: 'DonHang', attrs: ['+ MaDon, TenKhach, DiaChi', '+ TienHang : decimal'], methods: ['+ PhiGiao() : 30.000  virtual', '+ TongThanhToan()', '+ MoTa()  virtual'] },
+        children: [{ name: 'DonGiaoNhanh', methods: ['+ PhiGiao() : 60.000  override', '+ MoTa() + " · GIAO NHANH"  override'] }],
+      },
+    },
     {
       id: 'b16-m001', level: 'Trung bình', title: 'Quản lý khách hàng thân thiết', dense: true,
       guide: HUONG_DAN_KHACH_HANG,
