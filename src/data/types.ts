@@ -115,6 +115,11 @@ export interface Exercise {
   level: 'Cơ bản' | 'Trung bình' | 'Nâng cao'
   /** Đề bài: mô tả bài toán, không phải câu mệnh lệnh "hãy viết chương trình…". */
   requirement: string
+  /**
+   * Các yêu cầu của đề, mỗi yêu cầu một dòng — hiện thành danh sách đánh số dưới đoạn
+   * mô tả. Bài kiểu "xây chương trình có N chức năng" phải tách ra đây, không gom vào requirement.
+   */
+  tasks?: string[]
   /** Chữ ký hàm cần cài đặt, ví dụ: int[] TwoSum(int[] nums, int target) */
   signature?: string
   /** Ràng buộc đầu vào — giới hạn kích thước, miền giá trị, điều kiện đảm bảo. */

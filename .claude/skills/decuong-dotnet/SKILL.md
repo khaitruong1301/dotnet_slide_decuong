@@ -101,6 +101,7 @@ rời — dùng khi mô tả class độc lập.
 | Trường | Bắt buộc | Ghi chú |
 |---|---|---|
 | `requirement` | Có | Mô tả bài toán ở thể trần thuật: "Cho… Trả về…" |
+| `tasks` | Với bài xây chương trình | Mỗi yêu cầu / chức năng một phần tử — hiện thành danh sách đánh số dưới `requirement`, trên slide xếp 2 cột khi trên 4 mục. Không gom "(1)… (2)…" vào một đoạn văn: Khải chê khó nhìn. |
 | `signature` | Nên có | Chữ ký hàm hoặc API của class cần cài đặt |
 | `constraints` | Nên có | Giới hạn kích thước, miền giá trị, yêu cầu độ phức tạp |
 | `examples` | Có | Ít nhất 2 test case từ mức Trung bình trở lên; `explain` cho ca dễ hiểu nhầm |

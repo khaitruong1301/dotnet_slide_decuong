@@ -1353,7 +1353,14 @@ const buoi16: Buoi = {
       id: 'b16-m001', level: 'Trung bình', title: 'Quản lý khách hàng thân thiết', dense: true,
       guide: HUONG_DAN_KHACH_HANG,
       demo: 'khach-hang',
-      requirement: 'Cửa hàng điện máy lưu khách hàng thân thiết. Mỗi khách là một người (họ tên, số điện thoại, năm sinh) và có thêm mã khách, điểm tích luỹ. Khách thường được giảm 5% và tích 1 điểm cho mỗi 10.000 đ mua hàng; khách VIP có thêm hạng thẻ, được giảm 10% và tích điểm gấp đôi. Xây dựng chương trình console với các chức năng: (1) thêm khách thường hoặc VIP, từ chối nếu trùng mã hoặc trùng số điện thoại; (2) xoá khách theo mã; (3) tìm theo số điện thoại hoặc từ khoá trong họ tên, không phân biệt hoa thường; (4) mua hàng: nhập mã và số tiền, in số tiền phải trả sau giảm và cộng điểm theo loại khách; (5) hiển thị danh sách, dòng của khách VIP có thêm hạng thẻ.',
+      requirement: 'Cửa hàng điện máy lưu khách hàng thân thiết. Mỗi khách là một người (họ tên, số điện thoại, năm sinh) và có thêm mã khách, điểm tích luỹ. Khách thường được giảm 5% và tích 1 điểm cho mỗi 10.000 đ mua hàng; khách VIP có thêm hạng thẻ, được giảm 10% và tích điểm gấp đôi. Xây dựng chương trình console với các chức năng sau:',
+      tasks: [
+        'Thêm khách thường hoặc VIP, từ chối nếu trùng mã hoặc trùng số điện thoại',
+        'Xoá khách theo mã',
+        'Tìm theo số điện thoại hoặc từ khoá trong họ tên, không phân biệt hoa thường',
+        'Mua hàng: nhập mã và số tiền, in số tiền phải trả sau giảm và cộng điểm theo loại khách',
+        'Hiển thị danh sách, dòng của khách VIP có thêm hạng thẻ',
+      ],
       signature: 'interface ITichDiem { decimal TyLeGiamGia(); void CongDiem(decimal tienMua); }\nclass Nguoi { HoTen, SoDienThoai, NamSinh; int Tuoi(); virtual string MoTa(); }\nclass KhachHang : Nguoi, ITichDiem { MaKH, DiemTichLuy; virtual TyLeGiamGia, CongDiem; override MoTa }\nclass KhachHangVip : KhachHang { HangThe; override TyLeGiamGia, CongDiem, MoTa }   class DanhSachKhach { Them, Xoa, TimTheoSdt, TimTheoTen, MuaHang, HienThi }',
       constraints: [
         'Kế thừa hai tầng Nguoi ← KhachHang ← KhachHangVip; KhachHang cài ITichDiem; KhachHangVip chỉ được override, không khai báo lại thuộc tính của cha',
@@ -1377,7 +1384,13 @@ const buoi16: Buoi = {
     {
       id: 'b16-m002', level: 'Trung bình', title: 'Quản lý nhân viên cửa hàng', dense: true,
       guide: HUONG_DAN_NHAN_VIEN,
-      requirement: 'Cửa hàng điện máy cần quản lý nhân viên. Mỗi nhân viên là một người (họ tên, số điện thoại, năm sinh) và có thêm mã nhân viên, chức vụ, lương tháng; tiền thưởng bằng 10% lương, giống nhau cho mọi người. Xây dựng chương trình console với các chức năng: (1) thêm nhân viên, từ chối nếu trùng mã; (2) xoá theo mã; (3) tìm theo mã hoặc theo chức vụ, không phân biệt hoa thường; (4) hiển thị danh sách gồm mã, họ tên, tuổi, chức vụ, lương, thưởng và tổng lương tháng của cửa hàng. Dùng lại class Nguoi của bài khách hàng nếu đã có.',
+      requirement: 'Cửa hàng điện máy cần quản lý nhân viên. Mỗi nhân viên là một người (họ tên, số điện thoại, năm sinh) và có thêm mã nhân viên, chức vụ, lương tháng; tiền thưởng bằng 10% lương, giống nhau cho mọi người. Xây dựng chương trình console với các chức năng sau (dùng lại class Nguoi của bài khách hàng nếu đã có):',
+      tasks: [
+        'Thêm nhân viên, từ chối nếu trùng mã',
+        'Xoá theo mã',
+        'Tìm theo mã hoặc theo chức vụ, không phân biệt hoa thường',
+        'Hiển thị danh sách gồm mã, họ tên, tuổi, chức vụ, lương, thưởng và tổng lương tháng của cửa hàng',
+      ],
       signature: 'class Nguoi { HoTen, SoDienThoai, NamSinh; int Tuoi(); }\nclass NhanVien : Nguoi { MaNV, ChucVu, LuongThang; decimal TienThuong(); string MoTa(); }\nclass DanhSachNhanVien { Them, Xoa, Tim, TimTheoChucVu, HienThi, TongLuong }',
       constraints: [
         'Không override, không virtual, không abstract — TienThuong() là phương thức thường vì mọi chức vụ tính như nhau',
@@ -1401,7 +1414,17 @@ const buoi16: Buoi = {
     {
       id: 'b16-h001', level: 'Nâng cao', title: 'Chương trình quản lý sản phẩm cửa hàng điện máy', dense: true,
       guide: HUONG_DAN_DIEN_MAY,
-      requirement: 'Xây dựng chương trình console quản lý sản phẩm cửa hàng điện máy với các chức năng: (1) thêm sản phẩm thuộc ba nhóm điện tử, điện lạnh, gia dụng, mỗi nhóm có một thông số riêng; (2) tính giá bán từ giá nhập theo quy tắc riêng của nhóm bằng đa hình; (3) tìm theo mã hoặc từ khoá trong tên, không phân biệt hoa thường; (4) cập nhật giá nhập và số lượng theo mã; (5) bán hàng: kiểm tra tồn, trừ kho, in tiền; (6) xoá theo mã; (7) hiển thị danh sách kèm giá bán, bảo hành và tổng giá trị tồn kho; (8) lưu ra file JSON và tự đọc lại khi khởi động.',
+      requirement: 'Xây dựng chương trình console quản lý sản phẩm cửa hàng điện máy với các chức năng sau:',
+      tasks: [
+        'Thêm sản phẩm thuộc ba nhóm điện tử, điện lạnh, gia dụng, mỗi nhóm có một thông số riêng',
+        'Tính giá bán từ giá nhập theo quy tắc riêng của nhóm bằng đa hình',
+        'Tìm theo mã hoặc từ khoá trong tên, không phân biệt hoa thường',
+        'Cập nhật giá nhập và số lượng theo mã',
+        'Bán hàng: kiểm tra tồn, trừ kho, in tiền',
+        'Xoá theo mã',
+        'Hiển thị danh sách kèm giá bán, bảo hành và tổng giá trị tồn kho',
+        'Lưu ra file JSON và tự đọc lại khi khởi động',
+      ],
       signature: 'abstract class SanPham { Ma, Ten, GiaNhap, SoLuong; abstract decimal TinhGiaBan(); virtual int ThangBaoHanh(); }\nclass DienTu : SanPham { KichCoInch }   class DienLanh : SanPham { CongSuatW }   class GiaDung : SanPham { ThangBaoHanh }\nclass CuaHang { Them, Tim, TimTheoTen, CapNhat, Ban, Xoa, HienThi, TongTonKho, LuuFile, DocFile }',
       constraints: [
         'Điện tử: giá nhập × 1,2 · Điện lạnh: × 1,15 + 300.000 đ lắp đặt, BH 24 tháng · Gia dụng: × 1,3, BH theo thông số riêng',

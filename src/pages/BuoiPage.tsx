@@ -198,6 +198,19 @@ function ExerciseCard({
       <div data-ex-body data-open={String(open)} className="mt-2.5">
       <p className="text-[14.5px] leading-[1.75] text-ink/60">{ex.requirement}</p>
 
+      {ex.tasks && ex.tasks.length > 0 && (
+        <ol className="mt-2.5 space-y-1.5">
+          {ex.tasks.map((t, i) => (
+            <li key={i} className="flex gap-2.5 text-[14.5px] leading-[1.7] text-ink/70">
+              <span className="mt-[3px] flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-brand-500/15 font-mono text-[11px] text-brand-300">
+                {i + 1}
+              </span>
+              <span>{t}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+
       {ex.signature && (
         <pre className="mt-3 overflow-x-auto rounded-lg border border-ink/10 bg-ink/5 px-3 py-2 font-mono text-[12.5px] text-accent-400">
           {ex.signature}

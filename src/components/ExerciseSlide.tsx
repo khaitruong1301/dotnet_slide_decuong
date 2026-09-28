@@ -89,6 +89,19 @@ export default function ExerciseSlide({ buoi, ex, index }: { buoi: Buoi; ex: Exe
 
         <p className="mt-3 max-w-5xl text-[15.5px] leading-relaxed text-ink/75">{ex.requirement}</p>
 
+        {ex.tasks && ex.tasks.length > 0 && (
+          <ol className="slide-tasks mt-2 grid gap-x-6 gap-y-1" style={{ gridTemplateColumns: ex.tasks.length > 4 ? 'repeat(2, minmax(0, 1fr))' : '1fr' }}>
+            {ex.tasks.map((t, i) => (
+              <li key={i} className="flex gap-2 text-[13.5px] leading-snug text-ink/75">
+                <span className="mt-px flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-md bg-brand-500/15 font-mono text-[10.5px] font-bold text-brand-300">
+                  {i + 1}
+                </span>
+                <span>{t}</span>
+              </li>
+            ))}
+          </ol>
+        )}
+
         {ex.signature && (
           <pre className="mt-2.5 w-fit max-w-full overflow-x-auto rounded-lg border border-ink/12 bg-ink/5 px-3 py-1.5 font-mono text-[13px] text-accent-400">
             {ex.signature}
