@@ -138,6 +138,8 @@ export interface Exercise {
    * bài tập trên web; khi xuất slide thì in thành các trang hướng dẫn ngay sau slide.
    */
   guide?: TabItem[]
+  /** Khoá chương trình mẫu chạy được trên web (xem src/demos), hiện khung console dưới bài. */
+  demo?: string
 }
 
 export interface Buoi {

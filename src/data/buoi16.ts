@@ -572,35 +572,47 @@ danhSach = JsonSerializer.Deserialize<List<SanPham>>(File.ReadAllText("dien-may.
 const HUONG_DAN_KHACH_HANG: TabItem[] = [
   {
     label: 'Sơ đồ lớp',
-    hint: 'Nguoi ← KhachHang · DanhSachKhach',
+    hint: 'Nguoi ← KhachHang ← KhachHangVip · KhachHang : ITichDiem',
     blocks: [
       {
         type: 'text',
-        text: 'Đọc đề: "mỗi khách là một người" — vậy KhachHang là một Nguoi, phần họ tên, số điện thoại, năm sinh đặt ở Nguoi để dùng lại. Khách chỉ thêm mã và điểm. Danh sách khách là một class riêng, không kế thừa ai, giữ List<KhachHang>.',
+        text: 'Đọc đề có ba tầng: "mỗi khách là một người" → KhachHang kế thừa Nguoi; "khách VIP là khách hàng được ưu đãi hơn" → KhachHangVip kế thừa KhachHang và chỉ đổi hai cách tính; "mọi khách đều tích điểm và giảm giá" → gom hai việc đó thành interface ITichDiem để phần mua hàng chỉ cần nhìn khách qua interface.',
       },
       {
         type: 'visual',
         visual: {
           kind: 'uml',
-          caption: 'Mũi tên rỗng là kế thừa: KhachHang có mọi thứ của Nguoi cộng thêm phần riêng',
+          caption: 'Kế thừa hai tầng: KhachHang dùng lại Nguoi, KhachHangVip dùng lại KhachHang và ghi đè ba phương thức',
           relation: 'inherit',
-          parent: { name: 'Nguoi', attrs: ['+ HoTen : string', '+ SoDienThoai : string', '+ NamSinh : int'], methods: ['+ Tuoi() : int'] },
-          children: [{ name: 'KhachHang', attrs: ['+ MaKH : string', '+ DiemTichLuy : int'], methods: ['+ MoTa() : string'] }],
+          parent: { name: 'Nguoi', attrs: ['+ HoTen : string', '+ SoDienThoai : string', '+ NamSinh : int'], methods: ['+ Tuoi() : int', '+ MoTa() : string  (virtual)'] },
+          children: [{ name: 'KhachHang', attrs: ['+ MaKH : string', '+ DiemTichLuy : int'], methods: ['+ TyLeGiamGia() : 0,05  (virtual)', '+ CongDiem(tienMua)  (virtual)', '+ MoTa()  override'] }],
         },
       },
       {
         type: 'visual',
         visual: {
           kind: 'uml',
-          caption: 'DanhSachKhach chỉ quản lý, không phải là người nên không kế thừa Nguoi',
-          children: [{ name: 'DanhSachKhach', attrs: ['− danhSach : List<KhachHang>'], methods: ['+ Them(KhachHang kh) : bool', '+ Xoa(string maKH) : bool', '+ TimTheoSdt(string sdt) : KhachHang?', '+ TimTheoTen(string tuKhoa) : List<KhachHang>', '+ HienThi()'] }],
+          caption: 'KhachHang cam kết ITichDiem; KhachHangVip ghi đè để giảm 10% và nhân đôi điểm',
+          relation: 'implement',
+          parent: { name: 'ITichDiem', stereotype: 'interface', methods: ['+ TyLeGiamGia() : decimal', '+ CongDiem(decimal tienMua) : void'] },
+          children: [
+            { name: 'KhachHang', methods: ['+ TyLeGiamGia() : 0,05', '+ CongDiem(): 1 điểm / 10.000 đ'] },
+            { name: 'KhachHangVip : KhachHang', attrs: ['+ HangThe : string'], methods: ['+ TyLeGiamGia() : 0,10  override', '+ CongDiem(): × 2  override', '+ MoTa() + " · VIP hạng"  override'] },
+          ],
         },
       },
       {
         type: 'code',
         sample: {
-          title: 'Class Nguoi — phần chung của mọi người',
-          code: `class Nguoi
+          title: 'Interface ITichDiem và class Nguoi',
+          code: `// Lời hứa: ai tích điểm được thì phải có hai việc này
+interface ITichDiem
+{
+    decimal TyLeGiamGia();            // 0.05m nghĩa là giảm 5%
+    void CongDiem(decimal tienMua);
+}
+
+class Nguoi
 {
     public string HoTen { get; set; }
     public string SoDienThoai { get; set; }
@@ -624,15 +636,18 @@ const HUONG_DAN_KHACH_HANG: TabItem[] = [
     }
 
     public int Tuoi() => DateTime.Now.Year - NamSinh;
+
+    // virtual: lớp con được phép viết lại
+    public virtual string MoTa() => $"{HoTen} · {Tuoi()} tuổi · {SoDienThoai}";
 }`,
-          note: 'NamSinh là property đầy đủ có kiểm tra; HoTen và SoDienThoai là auto-property. Tuoi() viết một lần ở đây, mọi lớp con đều dùng được.',
+          note: 'Interface chỉ có chữ ký, không có thân hàm, không có field. Nguoi không cài ITichDiem — không phải người nào cũng tích điểm, chỉ khách hàng mới tích.',
         },
       },
       {
         type: 'code',
         sample: {
-          title: 'Class KhachHang kế thừa Nguoi — constructor con gọi base',
-          code: `class KhachHang : Nguoi
+          title: 'KhachHang kế thừa Nguoi và cài ITichDiem',
+          code: `class KhachHang : Nguoi, ITichDiem       // kế thừa 1 class, cài 1 interface
 {
     public string MaKH { get; set; }
 
@@ -648,22 +663,47 @@ const HUONG_DAN_KHACH_HANG: TabItem[] = [
     }
 
     public KhachHang(string maKH, string hoTen, string soDienThoai, int namSinh, int diem)
-        : base(hoTen, soDienThoai, namSinh)      // giao 3 giá trị cho lớp cha
+        : base(hoTen, soDienThoai, namSinh)
     {
         MaKH = maKH;
         DiemTichLuy = diem;
     }
 
-    public string MoTa() => $"{MaKH} · {HoTen} · {Tuoi()} tuổi · {SoDienThoai} · {DiemTichLuy} điểm";
+    // Cài interface, đồng thời để virtual cho KhachHangVip ghi đè
+    public virtual decimal TyLeGiamGia() => 0.05m;
+    public virtual void CongDiem(decimal tienMua) => DiemTichLuy += (int)(tienMua / 10_000);
+
+    public override string MoTa() => $"{MaKH} · {base.MoTa()} · {DiemTichLuy} điểm";
 }`,
-          note: 'Trong MoTa() gọi thẳng HoTen và Tuoi() dù chúng khai báo ở Nguoi — đó là cái kế thừa cho. Không có override nào: KhachHang không đổi cách Nguoi hoạt động, chỉ thêm vào.',
+          note: 'base.MoTa() gọi bản của Nguoi rồi nối thêm phần của khách — không chép lại chuỗi. Một phương thức vừa cài interface vừa virtual là hợp lệ.',
+        },
+      },
+      {
+        type: 'code',
+        sample: {
+          title: 'KhachHangVip — chỉ viết phần khác đi',
+          code: `class KhachHangVip : KhachHang
+{
+    public string HangThe { get; set; }           // "Vàng" hoặc "Bạch kim"
+
+    public KhachHangVip(string maKH, string hoTen, string soDienThoai, int namSinh, int diem, string hangThe)
+        : base(maKH, hoTen, soDienThoai, namSinh, diem)
+    {
+        HangThe = hangThe;
+    }
+
+    public override decimal TyLeGiamGia() => 0.10m;                                    // giảm 10%
+    public override void CongDiem(decimal tienMua) => DiemTichLuy += (int)(tienMua / 10_000) * 2;   // nhân đôi điểm
+    public override string MoTa() => $"{base.MoTa()} · VIP {HangThe}";
+}`,
+          note: 'Ba override, không có gì khác — thêm, xoá, tìm đều dùng lại nguyên của KhachHang. Đó là lý do kế thừa thêm một tầng thay vì chép class.',
         },
       },
       {
         type: 'callout',
         tone: 'info',
-        title: 'Kế thừa khác đa hình chỗ nào',
-        text: 'Bài này chỉ dùng kế thừa để tránh chép lại code. Không có phương thức nào ở lớp con làm khác lớp cha, nên không cần virtual / override. Bài lớn ở dưới mới cần đa hình vì mỗi nhóm hàng tính giá khác nhau.',
+        title: 'Interface khác abstract class chỗ nào',
+        text: 'Một class chỉ kế thừa được một class cha nhưng cài được nhiều interface. Interface không giữ dữ liệu, chỉ là danh sách việc phải làm được. Dùng interface khi nhiều loại đối tượng không cùng họ hàng vẫn cần cùng một khả năng — ví dụ sau này thẻ quà tặng cũng tích điểm dù không phải là người.',
       },
     ],
   },
@@ -673,23 +713,22 @@ const HUONG_DAN_KHACH_HANG: TabItem[] = [
     blocks: [
       {
         type: 'text',
-        text: 'Hai điều kiện từ chối: trùng mã và trùng số điện thoại. Kiểm tra cả hai trước khi Add. Main tạo đối tượng KhachHang rồi giao cho Them — nếu dữ liệu sai (năm sinh, điểm âm) thì constructor đã ném lỗi từ trước, Main bắt bằng try/catch.',
+        text: 'Main hỏi khách thường hay VIP để new đúng lớp — đây là chỗ duy nhất trong chương trình cần biết loại khách. Them nhận tham số kiểu KhachHang nên nhận được cả KhachHangVip. Hai điều kiện từ chối: trùng mã và trùng số điện thoại.',
       },
       {
         type: 'visual',
         visual: {
           kind: 'flow',
-          caption: 'Luồng Them — hai lần kiểm tra rồi mới nhận',
+          caption: 'Luồng thêm khách — Main tạo đúng lớp, DanhSachKhach kiểm tra rồi mới nhận',
           steps: [
-            { kind: 'start', text: 'Them(kh)' },
-            { kind: 'decision', text: 'Có khách cùng MaKH ?', branches: [
-              { label: 'Đúng', steps: [{ kind: 'io', text: 'return false — trùng mã' }] },
-              { label: 'Sai', steps: [
-                { kind: 'decision', text: 'TimTheoSdt(kh.SoDienThoai) != null ?', branches: [
-                  { label: 'Đúng', steps: [{ kind: 'io', text: 'return false — trùng SĐT' }] },
-                  { label: 'Sai', steps: [{ kind: 'process', text: 'danhSach.Add(kh)' }, { kind: 'io', text: 'return true' }] },
-                ] },
-              ] },
+            { kind: 'io', text: 'Nhập mã, họ tên, SĐT, năm sinh, điểm' },
+            { kind: 'decision', text: 'Khách VIP ?', branches: [
+              { label: 'Đúng', steps: [{ kind: 'io', text: 'Nhập hạng thẻ' }, { kind: 'process', text: 'kh = new KhachHangVip(…, hangThe)' }] },
+              { label: 'Sai', steps: [{ kind: 'process', text: 'kh = new KhachHang(…)' }] },
+            ] },
+            { kind: 'decision', text: 'ds.Them(kh) ?', branches: [
+              { label: 'true', steps: [{ kind: 'io', text: 'In "Đã thêm " + kh.HoTen' }] },
+              { label: 'false', steps: [{ kind: 'io', text: 'In "Trùng mã hoặc số điện thoại"' }] },
             ] },
           ],
         },
@@ -697,8 +736,19 @@ const HUONG_DAN_KHACH_HANG: TabItem[] = [
       {
         type: 'code',
         sample: {
-          title: 'Them trong DanhSachKhach',
-          code: `private readonly List<KhachHang> danhSach = new List<KhachHang>();
+          title: 'TaoKhach trong Main và Them trong DanhSachKhach',
+          code: `// Program.cs
+static KhachHang TaoKhach(bool vip, string ma, string ten, string sdt, int namSinh, int diem)
+{
+    if (!vip) return new KhachHang(ma, ten, sdt, namSinh, diem);
+
+    Console.Write("Hạng thẻ (Vàng / Bạch kim): ");
+    string hang = Console.ReadLine() ?? "Vàng";
+    return new KhachHangVip(ma, ten, sdt, namSinh, diem, hang);
+}
+
+// DanhSachKhach.cs
+private readonly List<KhachHang> danhSach = new List<KhachHang>();
 
 public bool Them(KhachHang kh)
 {
@@ -709,7 +759,7 @@ public bool Them(KhachHang kh)
     danhSach.Add(kh);
     return true;
 }`,
-          note: 'Any trả về true ngay khi gặp phần tử khớp đầu tiên. Muốn Main báo rõ "trùng mã" hay "trùng SĐT" thì đổi kiểu trả về thành string thông báo, hoặc ném hai ngoại lệ khác nhau.',
+          note: 'Kiểu trả về của TaoKhach là KhachHang dù có thể new KhachHangVip — từ đây trở đi mọi nơi chỉ thấy KhachHang.',
         },
       },
     ],
@@ -720,7 +770,7 @@ public bool Them(KhachHang kh)
     blocks: [
       {
         type: 'text',
-        text: 'Tìm đối tượng theo mã rồi Remove. Trả về false nếu không có để Main báo "Không tìm thấy". Sau khi xoá, số điện thoại của khách đó được phép dùng lại cho khách mới.',
+        text: 'Tìm đối tượng theo mã rồi Remove. Trả về false nếu không có để Main báo "Không tìm thấy". Khách thường hay VIP xoá như nhau — không cần biết loại.',
       },
       {
         type: 'visual',
@@ -728,7 +778,7 @@ public bool Them(KhachHang kh)
           kind: 'strip',
           caption: 'Xoa("KH01") — gỡ phần tử [0], KH02 dồn lên thành [0]',
           name: 'danhSach (trước khi xoá)',
-          items: ['KH01 · An ✕', 'KH02 · Bích', 'KH03 · Cường'],
+          items: ['KH01 · An ✕', 'KH02 · Bích (VIP)', 'KH03 · Cường'],
           highlight: [0],
         },
       },
@@ -768,20 +818,89 @@ public bool Them(KhachHang kh)
         type: 'code',
         sample: {
           title: 'Hai hàm tìm',
-          code: `public KhachHang? TimTheoSdt(string sdt)
+          code: `public KhachHang? Tim(string maKH)
+    => danhSach.FirstOrDefault(k => k.MaKH.Equals(maKH, StringComparison.OrdinalIgnoreCase));
+
+public KhachHang? TimTheoSdt(string sdt)
     => danhSach.FirstOrDefault(k => k.SoDienThoai == sdt.Trim());
 
 public List<KhachHang> TimTheoTen(string tuKhoa)
     => danhSach.Where(k => k.HoTen.Contains(tuKhoa, StringComparison.OrdinalIgnoreCase))
                .ToList();`,
-          note: 'Số điện thoại so sánh bằng == là đủ vì không có hoa thường; Trim() để bỏ khoảng trắng người dùng lỡ gõ. Kết quả List rỗng thì Main in "Không tìm thấy", không được in danh sách trống.',
+          note: 'Kết quả List rỗng thì Main in "Không tìm thấy", không được in danh sách trống. Tim theo mã dùng cho Xoa và MuaHang.',
         },
       },
       {
         type: 'callout',
         tone: 'warn',
         title: 'Contains có dấu và không dấu',
-        text: 'Contains với OrdinalIgnoreCase chỉ bỏ qua hoa thường, không bỏ dấu tiếng Việt: gõ "van" sẽ không khớp "Văn". Đề bài này chỉ yêu cầu không phân biệt hoa thường, nên như vậy là đủ.',
+        text: 'Contains với OrdinalIgnoreCase chỉ bỏ qua hoa thường, không bỏ dấu tiếng Việt: gõ "van" sẽ không khớp "Văn". Đề bài chỉ yêu cầu không phân biệt hoa thường nên như vậy là đủ.',
+      },
+    ],
+  },
+  {
+    label: 'Mua hàng & tích điểm',
+    hint: 'decimal? MuaHang(string maKH, decimal tienMua)',
+    blocks: [
+      {
+        type: 'text',
+        text: 'Đây là chỗ interface và override phát huy tác dụng. MuaHang tìm khách, rồi nhìn khách qua ITichDiem để hỏi tỷ lệ giảm và cộng điểm. Khách thường hay VIP đều đi qua đúng hai câu lệnh đó — bản nào chạy do đối tượng thật quyết định.',
+      },
+      {
+        type: 'visual',
+        visual: {
+          kind: 'flow',
+          caption: 'Luồng MuaHang — không có if theo loại khách',
+          steps: [
+            { kind: 'start', text: 'MuaHang(maKH, tienMua)' },
+            { kind: 'process', text: 'kh = Tim(maKH)' },
+            { kind: 'decision', text: 'kh == null ?', branches: [
+              { label: 'Đúng', steps: [{ kind: 'io', text: 'return null' }] },
+              { label: 'Sai', steps: [
+                { kind: 'process', text: 'ITichDiem td = kh' },
+                { kind: 'process', text: 'phaiTra = tienMua × (1 − td.TyLeGiamGia())  — 5% hay 10% do lớp thật' },
+                { kind: 'process', text: 'td.CongDiem(tienMua)  — ×1 hay ×2 do lớp thật' },
+                { kind: 'io', text: 'return phaiTra' },
+              ] },
+            ] },
+          ],
+        },
+      },
+      {
+        type: 'visual',
+        visual: {
+          kind: 'compare',
+          caption: 'Cùng mua 2.000.000 đ — hai kết quả khác nhau từ cùng một đoạn code MuaHang',
+          columns: [
+            { title: 'KH01 An — KhachHang', tone: 'plain', items: ['TyLeGiamGia() → 0,05', 'Phải trả 2.000.000 × 0,95 = 1.900.000 đ', 'CongDiem: +200 điểm', '120 → 320 điểm'] },
+            { title: 'KH02 Bích — KhachHangVip', tone: 'good', items: ['TyLeGiamGia() → 0,10 (override)', 'Phải trả 2.000.000 × 0,90 = 1.800.000 đ', 'CongDiem: +200 × 2 = +400 điểm (override)', '0 → 400 điểm'] },
+          ],
+        },
+      },
+      {
+        type: 'code',
+        sample: {
+          title: 'MuaHang trong DanhSachKhach',
+          code: `public decimal? MuaHang(string maKH, decimal tienMua)
+{
+    if (tienMua <= 0) throw new ArgumentException("Số tiền phải dương");
+
+    KhachHang? kh = Tim(maKH);
+    if (kh == null) return null;
+
+    ITichDiem td = kh;                                  // nhìn khách qua interface
+    decimal phaiTra = tienMua * (1 - td.TyLeGiamGia());  // KhachHang: 5%, KhachHangVip: 10%
+    td.CongDiem(tienMua);                                // KhachHang: ×1, KhachHangVip: ×2
+    return phaiTra;
+}`,
+          note: 'Dòng ITichDiem td = kh chỉ để nhấn mạnh: phần mua hàng không cần biết gì ngoài hai việc trong interface. Viết kh.TyLeGiamGia() trực tiếp cũng cho cùng kết quả.',
+        },
+      },
+      {
+        type: 'callout',
+        tone: 'warn',
+        title: 'Bẫy: quên virtual ở KhachHang',
+        text: 'Nếu TyLeGiamGia() ở KhachHang không có virtual mà KhachHangVip vẫn viết TyLeGiamGia(), C# báo cảnh báo "hides inherited member" và khi gọi qua biến KhachHang sẽ chạy bản 5% — khách VIP mất ưu đãi mà không có lỗi nào. Luôn đi cặp: virtual ở cha, override ở con.',
       },
     ],
   },
@@ -791,7 +910,33 @@ public List<KhachHang> TimTheoTen(string tuKhoa)
     blocks: [
       {
         type: 'text',
-        text: 'Mỗi khách một dòng, dùng MoTa() đã viết trong KhachHang nên DanhSachKhach chỉ cần một vòng foreach. Danh sách trống thì in "Chưa có khách" thay vì không in gì.',
+        text: 'Mỗi khách một dòng bằng MoTa(). Vì MoTa() được override ở cả KhachHang lẫn KhachHangVip, cùng một vòng foreach in ra hai kiểu dòng khác nhau: khách VIP tự có thêm " · VIP Vàng" ở cuối.',
+      },
+      {
+        type: 'code',
+        sample: {
+          title: 'MoTa() gọi chuỗi ba tầng',
+          code: `List<KhachHang> ds = new List<KhachHang>();
+ds.Add(new KhachHang("KH01", "Nguyễn Văn An", "0901234567", 1990, 120));
+ds.Add(new KhachHangVip("KH02", "Trần Thị Bích", "0912345678", 2001, 0, "Vàng"));
+foreach (KhachHang kh in ds)
+{
+    string dong = kh.MoTa();
+    Console.WriteLine(dong);
+}`,
+          note: 'KhachHangVip.MoTa() → base là KhachHang.MoTa() → base là Nguoi.MoTa(). Ba tầng nối nhau, mỗi tầng chỉ thêm phần của mình.',
+          trace: [
+            { line: 1, vars: { ds: '→ 0x100' }, refs: { ds: '0x100' }, heap: { '0x100': 'List<KhachHang> [ ]' } },
+            { line: 2, vars: { ds: '→ 0x100' }, refs: { ds: '0x100' }, heap: { '0x100': '[→0x200]', '0x200': 'KhachHang { MaKH: "KH01", Diem: 120 }' } },
+            { line: 3, vars: { ds: '→ 0x100' }, refs: { ds: '0x100' }, heap: { '0x100': '[→0x200, →0x210]', '0x200': 'KhachHang { MaKH: "KH01", Diem: 120 }', '0x210': 'KhachHangVip { MaKH: "KH02", Diem: 0, HangThe: "Vàng" }' }, note: 'Hai đối tượng hai lớp khác nhau cùng nằm trong List<KhachHang>.' },
+            { line: 4, vars: { ds: '→ 0x100', kh: '→ 0x200' }, refs: { ds: '0x100', kh: '0x200' }, heap: { '0x100': '[→0x200, →0x210]', '0x200': 'KhachHang { MaKH: "KH01", Diem: 120 }', '0x210': 'KhachHangVip { MaKH: "KH02", Diem: 0, HangThe: "Vàng" }' }, focus: { '0x100': [0] } },
+            { line: 6, vars: { ds: '→ 0x100', kh: '→ 0x200', dong: '"KH01 · Nguyễn Văn An · 36 tuổi · 0901234567 · 120 điểm"' }, refs: { ds: '0x100', kh: '0x200' }, heap: { '0x100': '[→0x200, →0x210]', '0x200': 'KhachHang { MaKH: "KH01", Diem: 120 }', '0x210': 'KhachHangVip { MaKH: "KH02", Diem: 0, HangThe: "Vàng" }' }, focus: { '0x100': [0] }, note: 'KhachHang.MoTa(): lấy base.MoTa() của Nguoi rồi thêm mã và điểm.' },
+            { line: 7, vars: { ds: '→ 0x100', kh: '→ 0x200', dong: '"KH01 · Nguyễn Văn An · 36 tuổi · 0901234567 · 120 điểm"' }, refs: { ds: '0x100', kh: '0x200' }, heap: { '0x100': '[→0x200, →0x210]', '0x200': 'KhachHang { MaKH: "KH01", Diem: 120 }', '0x210': 'KhachHangVip { MaKH: "KH02", Diem: 0, HangThe: "Vàng" }' }, output: ['KH01 · Nguyễn Văn An · 36 tuổi · 0901234567 · 120 điểm'] },
+            { line: 4, vars: { ds: '→ 0x100', kh: '→ 0x210' }, refs: { ds: '0x100', kh: '0x210' }, heap: { '0x100': '[→0x200, →0x210]', '0x200': 'KhachHang { MaKH: "KH01", Diem: 120 }', '0x210': 'KhachHangVip { MaKH: "KH02", Diem: 0, HangThe: "Vàng" }' }, focus: { '0x100': [1] }, output: ['KH01 · Nguyễn Văn An · 36 tuổi · 0901234567 · 120 điểm'], note: 'kh vẫn khai báo KhachHang nhưng giờ trỏ tới KhachHangVip.' },
+            { line: 6, vars: { ds: '→ 0x100', kh: '→ 0x210', dong: '"KH02 · Trần Thị Bích · 25 tuổi · 0912345678 · 0 điểm · VIP Vàng"' }, refs: { ds: '0x100', kh: '0x210' }, heap: { '0x100': '[→0x200, →0x210]', '0x200': 'KhachHang { MaKH: "KH01", Diem: 120 }', '0x210': 'KhachHangVip { MaKH: "KH02", Diem: 0, HangThe: "Vàng" }' }, focus: { '0x100': [1] }, output: ['KH01 · Nguyễn Văn An · 36 tuổi · 0901234567 · 120 điểm'], note: 'KhachHangVip.MoTa() → base (KhachHang) → base (Nguoi), rồi nối " · VIP Vàng".' },
+            { line: 7, vars: { ds: '→ 0x100', kh: '→ 0x210', dong: '"KH02 · Trần Thị Bích · 25 tuổi · 0912345678 · 0 điểm · VIP Vàng"' }, refs: { ds: '0x100', kh: '0x210' }, heap: { '0x100': '[→0x200, →0x210]', '0x200': 'KhachHang { MaKH: "KH01", Diem: 120 }', '0x210': 'KhachHangVip { MaKH: "KH02", Diem: 0, HangThe: "Vàng" }' }, output: ['KH01 · Nguyễn Văn An · 36 tuổi · 0901234567 · 120 điểm', 'KH02 · Trần Thị Bích · 25 tuổi · 0912345678 · 0 điểm · VIP Vàng'], note: 'Cùng câu lệnh kh.MoTa(), hai dòng khác nhau.' },
+          ],
+        },
       },
       {
         type: 'code',
@@ -809,7 +954,7 @@ public void HienThi()
 DanhSachKhach ds = new DanhSachKhach();
 while (true)
 {
-    Console.WriteLine("1 Thêm  2 Xoá  3 Tìm SĐT  4 Tìm tên  5 Hiển thị  0 Thoát");
+    Console.WriteLine("1 Thêm  2 Xoá  3 Tìm SĐT  4 Tìm tên  5 Mua hàng  6 Hiển thị  0 Thoát");
     string chon = Console.ReadLine() ?? "";
     if (chon == "0") break;
     try
@@ -820,8 +965,9 @@ while (true)
             case "2": XoaKhach(ds); break;
             case "3": TimSdt(ds); break;
             case "4": TimTen(ds); break;
-            case "5": ds.HienThi(); break;
-            default: Console.WriteLine("Chọn 0–5"); break;
+            case "5": MuaHang(ds); break;
+            case "6": ds.HienThi(); break;
+            default: Console.WriteLine("Chọn 0–6"); break;
         }
     }
     catch (Exception ex)
@@ -829,7 +975,7 @@ while (true)
         Console.WriteLine("Lỗi: " + ex.Message);
     }
 }`,
-          note: 'try/catch bọc cả switch nên int.Parse sai định dạng, năm sinh vượt năm hiện tại, điểm âm đều được báo một chỗ mà chương trình không dừng.',
+          note: 'try/catch bọc cả switch nên int.Parse sai định dạng, năm sinh vượt năm hiện tại, điểm âm, số tiền âm đều được báo một chỗ mà chương trình không dừng.',
         },
       },
     ],
@@ -899,7 +1045,7 @@ const HUONG_DAN_NHAN_VIEN: TabItem[] = [
 
     public string MoTa() => $"{MaNV} · {HoTen} · {Tuoi()} tuổi · {ChucVu} · {LuongThang:N0} đ · thưởng {TienThuong():N0} đ";
 }`,
-          note: 'TienThuong() giống nhau cho mọi nhân viên nên là phương thức thường. Nếu đề đòi "quản lý thưởng 20%, nhân viên 10%" thì lúc đó mới cần lớp con và override — bài này cố tình chưa tới đó.',
+          note: 'TienThuong() giống nhau cho mọi nhân viên nên là phương thức thường. Muốn "quản lý thưởng 20%" thì làm như KhachHangVip ở bài khách hàng: thêm lớp con và override — bài này cố tình chưa tới đó.',
         },
       },
     ],
@@ -1206,27 +1352,26 @@ const buoi16: Buoi = {
     {
       id: 'b16-m001', level: 'Trung bình', title: 'Quản lý khách hàng thân thiết', dense: true,
       guide: HUONG_DAN_KHACH_HANG,
-      requirement: 'Cửa hàng điện máy muốn lưu khách hàng thân thiết. Mỗi khách là một người (họ tên, số điện thoại, năm sinh) và có thêm mã khách và điểm tích luỹ. Xây dựng chương trình console với các chức năng: (1) thêm khách, từ chối nếu trùng mã hoặc trùng số điện thoại; (2) xoá khách theo mã; (3) tìm khách theo số điện thoại hoặc theo từ khoá trong họ tên, không phân biệt hoa thường; (4) hiển thị danh sách gồm mã, họ tên, tuổi, số điện thoại, điểm. Dùng kế thừa để KhachHang dùng lại phần "người" thay vì khai báo lại.',
-      signature: 'class Nguoi { HoTen, SoDienThoai, NamSinh; int Tuoi(); }\nclass KhachHang : Nguoi { MaKH, DiemTichLuy; string MoTa(); }\nclass DanhSachKhach { Them, Xoa, TimTheoSdt, TimTheoTen, HienThi }',
+      demo: 'khach-hang',
+      requirement: 'Cửa hàng điện máy lưu khách hàng thân thiết. Mỗi khách là một người (họ tên, số điện thoại, năm sinh) và có thêm mã khách, điểm tích luỹ. Khách thường được giảm 5% và tích 1 điểm cho mỗi 10.000 đ mua hàng; khách VIP có thêm hạng thẻ, được giảm 10% và tích điểm gấp đôi. Xây dựng chương trình console với các chức năng: (1) thêm khách thường hoặc VIP, từ chối nếu trùng mã hoặc trùng số điện thoại; (2) xoá khách theo mã; (3) tìm theo số điện thoại hoặc từ khoá trong họ tên, không phân biệt hoa thường; (4) mua hàng: nhập mã và số tiền, in số tiền phải trả sau giảm và cộng điểm theo loại khách; (5) hiển thị danh sách, dòng của khách VIP có thêm hạng thẻ.',
+      signature: 'interface ITichDiem { decimal TyLeGiamGia(); void CongDiem(decimal tienMua); }\nclass Nguoi { HoTen, SoDienThoai, NamSinh; int Tuoi(); virtual string MoTa(); }\nclass KhachHang : Nguoi, ITichDiem { MaKH, DiemTichLuy; virtual TyLeGiamGia, CongDiem; override MoTa }\nclass KhachHangVip : KhachHang { HangThe; override TyLeGiamGia, CongDiem, MoTa }   class DanhSachKhach { Them, Xoa, TimTheoSdt, TimTheoTen, MuaHang, HienThi }',
       constraints: [
-        'Không override, không virtual, không abstract — kế thừa chỉ để dùng lại thuộc tính và Tuoi()',
-        'Constructor của KhachHang gọi base(hoTen, soDienThoai, namSinh) · NamSinh sau năm hiện tại và điểm âm bị từ chối trong property',
-        'Không lưu file · Main chỉ nhập xuất và gọi DanhSachKhach; lỗi nhập liệu phải được bắt',
+        'Kế thừa hai tầng Nguoi ← KhachHang ← KhachHangVip; KhachHang cài ITichDiem; KhachHangVip chỉ được override, không khai báo lại thuộc tính của cha',
+        'MuaHang không dùng if / is theo loại khách — chỉ gọi TyLeGiamGia() và CongDiem() qua kiểu KhachHang hoặc ITichDiem',
+        'Năm sinh sau năm hiện tại, điểm âm, số tiền mua ≤ 0 bị từ chối · Không lưu file · Main chỉ nhập xuất và gọi DanhSachKhach, lỗi nhập liệu phải được bắt',
       ],
       examples: [
-        { input: 'Thêm KH01 "Nguyễn Văn An" 0901234567 1990 điểm 120; thêm KH02 "Trần Thị Bích" 0912345678 2001 điểm 0; hiển thị', output: 'KH01 · Nguyễn Văn An · 36 tuổi · 0901234567 · 120 điểm\nKH02 · Trần Thị Bích · 25 tuổi · 0912345678 · 0 điểm', explain: 'Tuổi = năm hiện tại (2026) − năm sinh, tính trong Nguoi và KhachHang dùng lại.' },
-        { input: 'Thêm KH03 "Lê Văn Cường" 0901234567 1985 điểm 50', output: 'Từ chối: số điện thoại đã có (KH01)', explain: 'Trùng số điện thoại dù mã khác vẫn từ chối.' },
-        { input: 'Tìm theo tên "văn"; xoá KH01; tìm SĐT 0901234567', output: 'KH01 · Nguyễn Văn An · 36 tuổi\nĐã xoá KH01\nKhông tìm thấy', explain: 'Tìm tên khớp một phần, không phân biệt hoa thường. Sau khi xoá, số điện thoại đó không còn.' },
+        { input: 'Thêm KH01 "Nguyễn Văn An" 0901234567 1990 điểm 120 (thường); KH02 "Trần Thị Bích" 0912345678 2001 điểm 0 VIP hạng Vàng; hiển thị', output: 'KH01 · Nguyễn Văn An · 36 tuổi · 0901234567 · 120 điểm\nKH02 · Trần Thị Bích · 25 tuổi · 0912345678 · 0 điểm · VIP Vàng', explain: 'Cùng gọi MoTa() nhưng dòng VIP có thêm hạng thẻ nhờ override.' },
+        { input: 'KH01 mua 2.000.000; KH02 mua 2.000.000; hiển thị', output: 'KH01 trả 1.900.000 đ, +200 điểm\nKH02 trả 1.800.000 đ, +400 điểm\nKH01 · … · 320 điểm\nKH02 · … · 400 điểm · VIP Vàng', explain: 'Thường: giảm 5%, 1 điểm / 10.000 đ. VIP: giảm 10%, điểm nhân đôi.' },
+        { input: 'Thêm KH03 "Lê Văn Cường" 0901234567 1985; tìm tên "văn"; xoá KH01; mua hàng KH01 500.000', output: 'Từ chối: trùng số điện thoại (KH01)\nKH01 · Nguyễn Văn An · 36 tuổi …\nĐã xoá KH01\nKhông tìm thấy khách', explain: 'Tìm tên khớp một phần, không phân biệt hoa thường; sau khi xoá, mua hàng theo mã đó bị từ chối.' },
       ],
-      hint: 'Cần 3 class. Nguoi: 3 property HoTen, SoDienThoai, NamSinh (set kiểm tra ≤ năm hiện tại), constructor 3 tham số, Tuoi() = DateTime.Now.Year − NamSinh. KhachHang : Nguoi: thêm MaKH và DiemTichLuy (set kiểm tra ≥ 0), constructor 5 tham số gọi base(...), MoTa() ghép mã, HoTen, Tuoi(), SoDienThoai, điểm. DanhSachKhach: field private List<KhachHang>; Them(kh) → bool, Xoa(maKH) → bool, TimTheoSdt(sdt) → KhachHang?, TimTheoTen(tuKhoa) → List<KhachHang>, HienThi(). Bên trong KhachHang gọi thẳng HoTen, Tuoi() như của mình — đó là cái kế thừa cho.',
+      hint: 'Cần 1 interface và 4 class. ITichDiem: TyLeGiamGia() → decimal, CongDiem(decimal). Nguoi: HoTen, SoDienThoai, NamSinh (set kiểm tra ≤ năm hiện tại), constructor 3 tham số, Tuoi(), virtual MoTa(). KhachHang : Nguoi, ITichDiem: MaKH, DiemTichLuy (≥ 0), constructor 5 tham số gọi base(...), virtual TyLeGiamGia() = 0,05m, virtual CongDiem() cộng tienMua / 10.000, override MoTa() = MaKH + base.MoTa() + điểm. KhachHangVip : KhachHang: HangThe, constructor 6 tham số gọi base(...), override TyLeGiamGia() = 0,10m, override CongDiem() nhân đôi, override MoTa() = base.MoTa() + " · VIP " + HangThe. DanhSachKhach: field private List<KhachHang>; Them(kh) → bool, Xoa(maKH) → bool, Tim(maKH) → KhachHang?, TimTheoSdt(sdt) → KhachHang?, TimTheoTen(tuKhoa) → List<KhachHang>, MuaHang(maKH, tienMua) → decimal? (phải trả; gọi TyLeGiamGia rồi CongDiem), HienThi().',
       visual: {
         kind: 'uml',
-        caption: 'KhachHang kế thừa Nguoi để dùng lại ba thuộc tính và Tuoi(), chỉ thêm phần riêng của khách',
+        caption: 'KhachHang kế thừa Nguoi và cài ITichDiem; KhachHangVip kế thừa KhachHang, override ba phương thức',
         relation: 'inherit',
-        parent: { name: 'Nguoi', attrs: ['+ HoTen : string', '+ SoDienThoai : string', '+ NamSinh : int'], methods: ['+ Tuoi() : int'] },
-        children: [
-          { name: 'KhachHang', attrs: ['+ MaKH : string', '+ DiemTichLuy : int'], methods: ['+ MoTa() : string'] },
-        ],
+        parent: { name: 'KhachHang : Nguoi, ITichDiem', attrs: ['+ MaKH, DiemTichLuy', '(từ Nguoi: HoTen, SoDienThoai, NamSinh)'], methods: ['+ TyLeGiamGia() : 0,05  virtual', '+ CongDiem(tienMua)  virtual', '+ MoTa()  override'] },
+        children: [{ name: 'KhachHangVip', attrs: ['+ HangThe : string'], methods: ['+ TyLeGiamGia() : 0,10  override', '+ CongDiem(): × 2  override', '+ MoTa() + " · VIP hạng"  override'] }],
       },
     },
     {

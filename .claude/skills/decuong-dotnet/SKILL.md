@@ -107,6 +107,7 @@ rời — dùng khi mô tả class độc lập.
 | `hint` | Tuỳ | Gợi ý hướng đi, không giải hộ |
 | `guide` | Tuỳ | Hướng dẫn làm bài chia tab (`TabItem[]`): tab đầu là sơ đồ lớp, các tab sau mỗi tab một yêu cầu của đề với lưu đồ, code mẫu, ghi chú. Bài dạng "xây chương trình quản lý" phải có. |
 | `dense` | Tuỳ | Bài lớn: slide xếp hình + gợi ý bên trái, ví dụ + ràng buộc bên phải để gọn một trang |
+| `demo` | Tuỳ | Khoá chương trình mẫu chạy trên web (`src/demos/index.ts`): hiện khung console dưới bài, người học gõ số chọn menu như console thật. Chương trình là hàm `async (io) => …` dùng `io.write` / `await io.read(prompt)` — viết lại lời giải C# sang TypeScript với cùng cấu trúc lớp. Không in ra PDF. |
 
 Ưu tiên thêm một ca biên vào `examples`: mảng rỗng, giá trị trùng mốc điều kiện,
 trường hợp không có đáp án.

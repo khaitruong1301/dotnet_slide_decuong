@@ -6,6 +6,7 @@ import CodeBlock from '../components/CodeBlock'
 import CodeRunner from '../components/CodeRunner'
 import Visual from '../components/Visual'
 import ExerciseSlide from '../components/ExerciseSlide'
+import ConsoleDemo from '../components/ConsoleDemo'
 
 const CALLOUT = {
   info: { ring: 'border-accent-400/35 bg-accent-400/8', dot: 'text-accent-400', label: 'Ghi nhớ' },
@@ -242,6 +243,15 @@ function ExerciseCard({
       )}
 
       {ex.hint && <p className="mt-3 text-[13.5px] text-amber-300/75">Gợi ý: {ex.hint}</p>}
+
+      {ex.demo && (
+        <div className="no-print mt-4">
+          <div className="mb-2 text-[10.5px] font-bold uppercase tracking-widest text-ink/40">
+            Chạy thử chương trình mẫu <span className="normal-case tracking-normal text-ink/35">— gõ số chọn menu rồi Enter, giống console thật</span>
+          </div>
+          <ConsoleDemo id={ex.demo} />
+        </div>
+      )}
 
       {ex.guide && ex.guide.length > 0 && (
         <div className="mt-4">
