@@ -39,27 +39,27 @@ const HUONG_DAN_DIEN_MAY: TabItem[] = [
                     sample: {
                       title: 'TaoSanPham trong Main và Them trong CuaHang',
                       code: `// Program.cs — chỗ duy nhất trong Main hỏi "nhóm hàng là gì"
-  static SanPham TaoSanPham(int nhom, string ma, string ten, decimal giaNhap, int soLuong)
-  {
-      Console.Write(nhom == 1 ? "Kích cỡ (inch): " : nhom == 2 ? "Công suất (W): " : "Bảo hành (tháng): ");
-      int thongSo = int.Parse(Console.ReadLine()!);
+static SanPham TaoSanPham(int nhom, string ma, string ten, decimal giaNhap, int soLuong)
+{
+    Console.Write(nhom == 1 ? "Kích cỡ (inch): " : nhom == 2 ? "Công suất (W): " : "Bảo hành (tháng): ");
+    int thongSo = int.Parse(Console.ReadLine()!);
 
-      return nhom switch
-      {
-          1 => new DienTu(ma, ten, giaNhap, soLuong, thongSo),
-          2 => new DienLanh(ma, ten, giaNhap, soLuong, thongSo),
-          3 => new GiaDung(ma, ten, giaNhap, soLuong, thongSo),
-          _ => throw new ArgumentException("Nhóm hàng phải là 1, 2 hoặc 3"),
-      };
-  }
+    return nhom switch
+    {
+        1 => new DienTu(ma, ten, giaNhap, soLuong, thongSo),
+        2 => new DienLanh(ma, ten, giaNhap, soLuong, thongSo),
+        3 => new GiaDung(ma, ten, giaNhap, soLuong, thongSo),
+        _ => throw new ArgumentException("Nhóm hàng phải là 1, 2 hoặc 3"),
+    };
+}
 
-  // CuaHang.cs — kiểm tra trùng mã rồi mới nhận
-  public bool Them(SanPham sp)
-  {
-      if (Tim(sp.Ma) != null) return false;
-      danhSach.Add(sp);
-      return true;
-  }`,
+// CuaHang.cs — kiểm tra trùng mã rồi mới nhận
+public bool Them(SanPham sp)
+{
+    if (Tim(sp.Ma) != null) return false;
+    danhSach.Add(sp);
+    return true;
+}`,
                       note: 'Constructor của lớp con nhận đủ 5 tham số và gọi base(ma, ten, giaNhap, soLuong). Giá nhập âm sẽ bị property ném ArgumentException ngay tại đây — Main bọc try/catch để báo lỗi rồi hỏi lại.',
                     },
                   },
@@ -84,14 +84,14 @@ const HUONG_DAN_DIEN_MAY: TabItem[] = [
                     sample: {
                       title: 'Ba công thức, ba lớp — và một vòng foreach không cần biết nhóm hàng',
                       code: `List<SanPham> ds = new List<SanPham>();
-  ds.Add(new DienTu("TV01", "Tivi Samsung", 10000000, 5, 55));
-  ds.Add(new DienLanh("TL01", "Tủ lạnh LG", 8000000, 3, 150));
-  ds.Add(new GiaDung("NC01", "Nồi cơm Sharp", 500000, 20, 6));
-  foreach (SanPham sp in ds)
-  {
-      decimal gia = sp.TinhGiaBan();
-      Console.WriteLine($"{sp.Ma}: {gia:N0}");
-  }`,
+ds.Add(new DienTu("TV01", "Tivi Samsung", 10000000, 5, 55));
+ds.Add(new DienLanh("TL01", "Tủ lạnh LG", 8000000, 3, 150));
+ds.Add(new GiaDung("NC01", "Nồi cơm Sharp", 500000, 20, 6));
+foreach (SanPham sp in ds)
+{
+    decimal gia = sp.TinhGiaBan();
+    Console.WriteLine($"{sp.Ma}: {gia:N0}");
+}`,
                       note: 'Biến sp luôn có kiểu SanPham, nhưng bản TinhGiaBan() được chạy đổi theo từng phần tử. Đó là đa hình lúc chạy (runtime polymorphism).',
                       trace: [
                         { line: 1, vars: { ds: '→ 0x100' }, refs: { ds: '0x100' }, heap: { '0x100': 'List<SanPham> [ ]' }, note: 'Danh sách khai báo kiểu SanPham nên nhận được mọi lớp con.' },
@@ -114,25 +114,25 @@ const HUONG_DAN_DIEN_MAY: TabItem[] = [
                     sample: {
                       title: 'Khai báo abstract ở lớp cha và override ở lớp con',
                       code: `abstract class SanPham
-  {
-      // ... 4 property, constructor ...
-      public abstract decimal TinhGiaBan();          // không có thân hàm
-      public virtual int ThangBaoHanh() => 12;        // có mặc định, lớp con được đổi
-  }
+{
+    // ... 4 property, constructor ...
+    public abstract decimal TinhGiaBan();          // không có thân hàm
+    public virtual int ThangBaoHanh() => 12;        // có mặc định, lớp con được đổi
+}
 
-  class DienLanh : SanPham
-  {
-      public int CongSuatW { get; set; }
+class DienLanh : SanPham
+{
+    public int CongSuatW { get; set; }
 
-      public DienLanh(string ma, string ten, decimal giaNhap, int soLuong, int congSuatW)
-          : base(ma, ten, giaNhap, soLuong)
-      {
-          CongSuatW = congSuatW;
-      }
+    public DienLanh(string ma, string ten, decimal giaNhap, int soLuong, int congSuatW)
+        : base(ma, ten, giaNhap, soLuong)
+    {
+        CongSuatW = congSuatW;
+    }
 
-      public override decimal TinhGiaBan() => GiaNhap * 1.15m + 300_000;
-      public override int ThangBaoHanh() => 24;
-  }`,
+    public override decimal TinhGiaBan() => GiaNhap * 1.15m + 300_000;
+    public override int ThangBaoHanh() => 24;
+}`,
                       note: 'abstract bắt buộc lớp con phải override; virtual thì tuỳ — DienTu không override ThangBaoHanh() nên dùng 12 của lớp cha. Hậu tố m ở 1.15m để hằng số là decimal, không phải double.',
                     },
                   },
@@ -167,11 +167,11 @@ const HUONG_DAN_DIEN_MAY: TabItem[] = [
                     sample: {
                       title: 'Tim và TimTheoTen bằng LINQ',
                       code: `public SanPham? Tim(string ma)
-      => danhSach.FirstOrDefault(sp => sp.Ma.Equals(ma, StringComparison.OrdinalIgnoreCase));
+    => danhSach.FirstOrDefault(sp => sp.Ma.Equals(ma, StringComparison.OrdinalIgnoreCase));
 
-  public List<SanPham> TimTheoTen(string tuKhoa)
-      => danhSach.Where(sp => sp.Ten.Contains(tuKhoa, StringComparison.OrdinalIgnoreCase))
-                 .ToList();`,
+public List<SanPham> TimTheoTen(string tuKhoa)
+    => danhSach.Where(sp => sp.Ten.Contains(tuKhoa, StringComparison.OrdinalIgnoreCase))
+               .ToList();`,
                       note: 'FirstOrDefault trả về null khi không có phần tử nào khớp — đúng ý nghĩa của dấu ? trong SanPham?. Where luôn trả về danh sách, rỗng nếu không khớp, không bao giờ null.',
                     },
                   },
@@ -215,26 +215,26 @@ const HUONG_DAN_DIEN_MAY: TabItem[] = [
                     sample: {
                       title: 'Property có kiểm tra và hàm CapNhat',
                       code: `// SanPham.cs — property đầy đủ với field private phía sau
-  private decimal giaNhap;
-  public decimal GiaNhap
-  {
-      get => giaNhap;
-      set
-      {
-          if (value < 0) throw new ArgumentException("Giá nhập không được âm");
-          giaNhap = value;
-      }
-  }
+private decimal giaNhap;
+public decimal GiaNhap
+{
+    get => giaNhap;
+    set
+    {
+        if (value < 0) throw new ArgumentException("Giá nhập không được âm");
+        giaNhap = value;
+    }
+}
 
-  // CuaHang.cs
-  public bool CapNhat(string ma, decimal giaNhap, int soLuong)
-  {
-      SanPham? sp = Tim(ma);
-      if (sp == null) return false;
-      sp.GiaNhap = giaNhap;     // ném lỗi nếu âm — Main bắt bằng try/catch
-      sp.SoLuong = soLuong;
-      return true;
-  }`,
+// CuaHang.cs
+public bool CapNhat(string ma, decimal giaNhap, int soLuong)
+{
+    SanPham? sp = Tim(ma);
+    if (sp == null) return false;
+    sp.GiaNhap = giaNhap;     // ném lỗi nếu âm — Main bắt bằng try/catch
+    sp.SoLuong = soLuong;
+    return true;
+}`,
                       note: 'Giá bán tự đổi theo vì TinhGiaBan() tính từ GiaNhap mỗi lần gọi. Nếu lưu giá bán thành thuộc tính thì ở đây phải nhớ tính lại — dễ quên.',
                     },
                   },
@@ -273,28 +273,28 @@ const HUONG_DAN_DIEN_MAY: TabItem[] = [
                     sample: {
                       title: 'Ban trong CuaHang và cách Main dùng',
                       code: `// CuaHang.cs
-  public decimal? Ban(string ma, int soLuong)
-  {
-      SanPham? sp = Tim(ma);
-      if (sp == null) return null;
-      if (sp.SoLuong < soLuong)
-          throw new InvalidOperationException($"Không đủ hàng, còn {sp.SoLuong}");
+public decimal? Ban(string ma, int soLuong)
+{
+    SanPham? sp = Tim(ma);
+    if (sp == null) return null;
+    if (sp.SoLuong < soLuong)
+        throw new InvalidOperationException($"Không đủ hàng, còn {sp.SoLuong}");
 
-      sp.SoLuong -= soLuong;
-      return soLuong * sp.TinhGiaBan();
-  }
+    sp.SoLuong -= soLuong;
+    return soLuong * sp.TinhGiaBan();
+}
 
-  // Program.cs
-  try
-  {
-      decimal? tien = cuaHang.Ban(ma, soLuong);
-      if (tien == null) Console.WriteLine("Không tìm thấy sản phẩm");
-      else Console.WriteLine($"Bán {soLuong} × {tien / soLuong:N0} = {tien:N0} đ");
-  }
-  catch (InvalidOperationException ex)
-  {
-      Console.WriteLine(ex.Message);
-  }`,
+// Program.cs
+try
+{
+    decimal? tien = cuaHang.Ban(ma, soLuong);
+    if (tien == null) Console.WriteLine("Không tìm thấy sản phẩm");
+    else Console.WriteLine($"Bán {soLuong} × {tien / soLuong:N0} = {tien:N0} đ");
+}
+catch (InvalidOperationException ex)
+{
+    Console.WriteLine(ex.Message);
+}`,
                       note: 'Lưu đồ đầy đủ của luồng bán hàng nằm ở mục 2. Số lượng bán ≤ 0 cũng nên từ chối — property SoLuong không chặn được vì ở đây là phép trừ.',
                     },
                   },
@@ -329,17 +329,17 @@ const HUONG_DAN_DIEN_MAY: TabItem[] = [
                     sample: {
                       title: 'Hai cách viết Xoa',
                       code: `// Cách 1: tìm rồi gỡ đúng đối tượng đó
-  public bool Xoa(string ma)
-  {
-      SanPham? sp = Tim(ma);
-      if (sp == null) return false;
-      danhSach.Remove(sp);
-      return true;
-  }
+public bool Xoa(string ma)
+{
+    SanPham? sp = Tim(ma);
+    if (sp == null) return false;
+    danhSach.Remove(sp);
+    return true;
+}
 
-  // Cách 2: một dòng — RemoveAll trả về số phần tử đã gỡ
-  public bool Xoa(string ma)
-      => danhSach.RemoveAll(sp => sp.Ma.Equals(ma, StringComparison.OrdinalIgnoreCase)) > 0;`,
+// Cách 2: một dòng — RemoveAll trả về số phần tử đã gỡ
+public bool Xoa(string ma)
+    => danhSach.RemoveAll(sp => sp.Ma.Equals(ma, StringComparison.OrdinalIgnoreCase)) > 0;`,
                       note: 'Remove(sp) so sánh tham chiếu — gỡ đúng đối tượng Tim vừa trả về. Hai cách cho cùng kết quả vì mã không trùng.',
                     },
                   },
@@ -374,23 +374,23 @@ const HUONG_DAN_DIEN_MAY: TabItem[] = [
                     sample: {
                       title: 'HienThi và TongTonKho',
                       code: `public void HienThi()
-  {
-      if (danhSach.Count == 0) { Console.WriteLine("Kho trống"); return; }
+{
+    if (danhSach.Count == 0) { Console.WriteLine("Kho trống"); return; }
 
-      Console.WriteLine($"{"Mã",-6}{"Tên",-18}{"Nhóm",-10}{"Tồn",5}{"Giá bán",15}{"BH",5}");
-      foreach (SanPham sp in danhSach)
-          Console.WriteLine($"{sp.Ma,-6}{sp.Ten,-18}{sp.GetType().Name,-10}{sp.SoLuong,5}{sp.TinhGiaBan(),15:N0}{sp.ThangBaoHanh(),4}t");
+    Console.WriteLine($"{"Mã",-6}{"Tên",-18}{"Nhóm",-10}{"Tồn",5}{"Giá bán",15}{"BH",5}");
+    foreach (SanPham sp in danhSach)
+        Console.WriteLine($"{sp.Ma,-6}{sp.Ten,-18}{sp.GetType().Name,-10}{sp.SoLuong,5}{sp.TinhGiaBan(),15:N0}{sp.ThangBaoHanh(),4}t");
 
-      Console.WriteLine($"Tổng tồn kho: {TongTonKho():N0} đ");
-  }
+    Console.WriteLine($"Tổng tồn kho: {TongTonKho():N0} đ");
+}
 
-  public decimal TongTonKho()
-  {
-      decimal tong = 0;
-      foreach (SanPham sp in danhSach)
-          tong += sp.SoLuong * sp.TinhGiaBan();
-      return tong;
-  }`,
+public decimal TongTonKho()
+{
+    decimal tong = 0;
+    foreach (SanPham sp in danhSach)
+        tong += sp.SoLuong * sp.TinhGiaBan();
+    return tong;
+}`,
                       note: 'sp.GetType().Name trả về tên lớp thật (DienTu, DienLanh, GiaDung) dù biến khai báo là SanPham. Muốn in "Điện tử" tiếng Việt thì thêm một phương thức virtual TenNhom() và override ở từng lớp con — vẫn là đa hình.',
                     },
                   },
@@ -444,61 +444,67 @@ const HUONG_DAN_DIEN_MAY: TabItem[] = [
                       title: 'Cách 1 — SanPhamDto, LuuFile và DocFile',
                       code: `using System.Text.Json;
 
-  // Lớp trung gian chỉ để ghi/đọc file — toàn property công khai, không logic
-  class SanPhamDto
-  {
-      public string Loai { get; set; } = "";
-      public string Ma { get; set; } = "";
-      public string Ten { get; set; } = "";
-      public decimal GiaNhap { get; set; }
-      public int SoLuong { get; set; }
-      public int ThongSo { get; set; }   // KichCoInch / CongSuatW / ThangBaoHanh tuỳ Loai
-  }
+// Lớp trung gian chỉ để ghi/đọc file — toàn property công khai, không logic
+class SanPhamDto
+{
+    public string Loai { get; set; } = "";
+    public string Ma { get; set; } = "";
+    public string Ten { get; set; } = "";
+    public decimal GiaNhap { get; set; }
+    public int SoLuong { get; set; }
+    public int ThongSo { get; set; }   // KichCoInch / CongSuatW / ThangBaoHanh tuỳ Loai
+}
 
-  // CuaHang.cs
-  public void LuuFile(string duongDan = "dien-may.json")
-  {
-      List<SanPhamDto> dtos = new List<SanPhamDto>();
-      foreach (SanPham sp in danhSach)
+// CuaHang.cs
+public void LuuFile(string duongDan = "dien-may.json")
+{
+    List<SanPhamDto> dtos = new List<SanPhamDto>();
+    foreach (SanPham sp in danhSach)
+    {
+        dtos.Add(new SanPhamDto
+        {
+            Loai = sp.GetType().Name,
+            Ma = sp.Ma, Ten = sp.Ten, GiaNhap = sp.GiaNhap, SoLuong = sp.SoLuong,
+            ThongSo = sp switch
+            {
+                DienTu dt => dt.KichCoInch,
+                DienLanh dl => dl.CongSuatW,
+                GiaDung gd => gd.ThangBaoHanh,
+                _ => 0,
+            },
+        });
+    }
+    var options = new JsonSerializerOptions { WriteIndented = true };
+    File.WriteAllText(duongDan, JsonSerializer.Serialize(dtos, options));
+}`,
+          note: 'switch theo kiểu thật (sp switch { DienTu dt => … }) để lấy thông số riêng — một trong ba chỗ được hỏi "nhóm hàng là gì", vì đang đứng ở ranh giới giữa đối tượng và chữ trong file.',
+        },
+      },
       {
-          dtos.Add(new SanPhamDto
-          {
-              Loai = sp.GetType().Name,
-              Ma = sp.Ma, Ten = sp.Ten, GiaNhap = sp.GiaNhap, SoLuong = sp.SoLuong,
-              ThongSo = sp switch
-              {
-                  DienTu dt => dt.KichCoInch,
-                  DienLanh dl => dl.CongSuatW,
-                  GiaDung gd => gd.ThangBaoHanh,
-                  _ => 0,
-              },
-          });
-      }
-      var options = new JsonSerializerOptions { WriteIndented = true };
-      File.WriteAllText(duongDan, JsonSerializer.Serialize(dtos, options));
-  }
+        type: 'code',
+        sample: {
+          title: 'Cách 1 — DocFile dựng lại đúng lớp con theo Loai',
+          code: `public void DocFile(string duongDan = "dien-may.json")
+{
+    if (!File.Exists(duongDan)) return;             // lần chạy đầu chưa có file
 
-  public void DocFile(string duongDan = "dien-may.json")
-  {
-      if (!File.Exists(duongDan)) return;             // lần chạy đầu chưa có file
+    string json = File.ReadAllText(duongDan);
+    List<SanPhamDto> dtos = JsonSerializer.Deserialize<List<SanPhamDto>>(json) ?? new();
 
-      string json = File.ReadAllText(duongDan);
-      List<SanPhamDto> dtos = JsonSerializer.Deserialize<List<SanPhamDto>>(json) ?? new();
-
-      danhSach.Clear();
-      foreach (SanPhamDto d in dtos)
-      {
-          SanPham sp = d.Loai switch
-          {
-              "DienTu"   => new DienTu(d.Ma, d.Ten, d.GiaNhap, d.SoLuong, d.ThongSo),
-              "DienLanh" => new DienLanh(d.Ma, d.Ten, d.GiaNhap, d.SoLuong, d.ThongSo),
-              "GiaDung"  => new GiaDung(d.Ma, d.Ten, d.GiaNhap, d.SoLuong, d.ThongSo),
-              _ => throw new InvalidDataException($"Không biết nhóm hàng: {d.Loai}"),
-          };
-          danhSach.Add(sp);
-      }
-  }`,
-                      note: 'Hai switch ở đây là hai chỗ còn lại được hỏi "nhóm hàng là gì" — vì đang đứng ở ranh giới giữa đối tượng trong bộ nhớ và chữ trong file. Bên trong CuaHang, mọi chỗ khác chỉ dùng SanPham.',
+    danhSach.Clear();
+    foreach (SanPhamDto d in dtos)
+    {
+        SanPham sp = d.Loai switch
+        {
+            "DienTu"   => new DienTu(d.Ma, d.Ten, d.GiaNhap, d.SoLuong, d.ThongSo),
+            "DienLanh" => new DienLanh(d.Ma, d.Ten, d.GiaNhap, d.SoLuong, d.ThongSo),
+            "GiaDung"  => new GiaDung(d.Ma, d.Ten, d.GiaNhap, d.SoLuong, d.ThongSo),
+            _ => throw new InvalidDataException($"Không biết nhóm hàng: {d.Loai}"),
+        };
+        danhSach.Add(sp);
+    }
+}`,
+                      note: 'Sau dòng new, sp là một DienTu / DienLanh / GiaDung thật trên heap — đa hình quay lại đầy đủ. Bên trong CuaHang, mọi chỗ khác chỉ dùng SanPham.',
                     },
                   },
                   {
@@ -526,23 +532,23 @@ const HUONG_DAN_DIEN_MAY: TabItem[] = [
                     sample: {
                       title: 'Cách 2 — để System.Text.Json tự lo bằng [JsonPolymorphic] (.NET 7 trở lên)',
                       code: `using System.Text.Json;
-  using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
-  [JsonPolymorphic(TypeDiscriminatorPropertyName = "Loai")]
-  [JsonDerivedType(typeof(DienTu),   "DienTu")]
-  [JsonDerivedType(typeof(DienLanh), "DienLanh")]
-  [JsonDerivedType(typeof(GiaDung),  "GiaDung")]
-  abstract class SanPham
-  {
-      // ... như cũ, các property phải public và có set ...
-  }
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "Loai")]
+[JsonDerivedType(typeof(DienTu),   "DienTu")]
+[JsonDerivedType(typeof(DienLanh), "DienLanh")]
+[JsonDerivedType(typeof(GiaDung),  "GiaDung")]
+abstract class SanPham
+{
+    // ... như cũ, các property phải public và có set ...
+}
 
-  // Ghi: thư viện tự thêm "Loai" vào đầu mỗi bản ghi và ghi đủ property của lớp con
-  File.WriteAllText("dien-may.json",
-      JsonSerializer.Serialize(danhSach, new JsonSerializerOptions { WriteIndented = true }));
+// Ghi: thư viện tự thêm "Loai" vào đầu mỗi bản ghi và ghi đủ property của lớp con
+File.WriteAllText("dien-may.json",
+    JsonSerializer.Serialize(danhSach, new JsonSerializerOptions { WriteIndented = true }));
 
-  // Đọc: trả về List<SanPham> mà từng phần tử là đúng DienTu / DienLanh / GiaDung
-  danhSach = JsonSerializer.Deserialize<List<SanPham>>(File.ReadAllText("dien-may.json")) ?? new();`,
+// Đọc: trả về List<SanPham> mà từng phần tử là đúng DienTu / DienLanh / GiaDung
+danhSach = JsonSerializer.Deserialize<List<SanPham>>(File.ReadAllText("dien-may.json")) ?? new();`,
                       note: 'Để đọc được, mỗi lớp con cần constructor mà tên tham số khớp tên property (ma ↔ Ma, kichCoInch ↔ KichCoInch) hoặc một constructor không tham số. File tự sinh luôn đặt "Loai" đứng đầu; nếu sửa tay mà đẩy nó xuống dưới thì đọc sẽ lỗi (trước .NET 9).',
                     },
                   },
@@ -593,7 +599,7 @@ const HUONG_DAN_KHACH_HANG: TabItem[] = [
       {
         type: 'code',
         sample: {
-          title: 'Hai class Nguoi và KhachHang — constructor con gọi base',
+          title: 'Class Nguoi — phần chung của mọi người',
           code: `class Nguoi
 {
     public string HoTen { get; set; }
@@ -618,9 +624,15 @@ const HUONG_DAN_KHACH_HANG: TabItem[] = [
     }
 
     public int Tuoi() => DateTime.Now.Year - NamSinh;
-}
-
-class KhachHang : Nguoi
+}`,
+          note: 'NamSinh là property đầy đủ có kiểm tra; HoTen và SoDienThoai là auto-property. Tuoi() viết một lần ở đây, mọi lớp con đều dùng được.',
+        },
+      },
+      {
+        type: 'code',
+        sample: {
+          title: 'Class KhachHang kế thừa Nguoi — constructor con gọi base',
+          code: `class KhachHang : Nguoi
 {
     public string MaKH { get; set; }
 

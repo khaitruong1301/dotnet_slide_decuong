@@ -254,33 +254,155 @@ function ExerciseCard({
   )
 }
 
-/** Các trang hướng dẫn in ngay sau slide của bài tập: mỗi tab một mục, nội dung chảy tự nhiên qua nhiều trang. */
-function GuideSheet({ ex }: { ex: Exercise }) {
+/** Một trang hướng dẫn trong bộ slide: một tab (hoặc một phần tab) gồm các khối được chọn, có hệ số thu nhỏ. */
+export interface GuidePage {
+  tab: number
+  blocks: number[]
+  zoom: number
+  /** Trang tiếp theo của cùng một tab — in thêm chữ "(tiếp)" */
+  cont: boolean
+}
+
+/** Bố cục bộ slide sau khi đo: mỗi bài có hệ số thu nhỏ cho slide và danh sách trang hướng dẫn. */
+export type DeckLayout = Record<string, { slideZoom: number; pages: GuidePage[] }>
+
+/** Chiều cao vùng in của một trang A4 ngang (210mm − 2 × 12mm lề) tính bằng px, trừ một chút cho chắc. */
+const PAGE_H = 686
+/** Chiều cao dòng chân trang cố định — chừa ra để nội dung không đè lên. */
+const FOOTER_H = 22
+
+function defaultPages(ex: Exercise): GuidePage[] {
+  return (ex.guide ?? []).map((t, i) => ({ tab: i, blocks: t.blocks.map((_, j) => j), zoom: 1, cont: false }))
+}
+
+/**
+ * Các trang hướng dẫn in ngay sau slide của bài tập. Mặc định mỗi tab một trang; sau khi
+ * đo (fitDeck) thì tab dài được chia thành nhiều trang theo từng khối, trang nào một khối
+ * đã vượt trang thì thu nhỏ bằng zoom cho vừa.
+ */
+function GuideSheet({ ex, pages }: { ex: Exercise; pages?: GuidePage[] }) {
   if (!ex.guide || ex.guide.length === 0) return null
+  const list = pages ?? defaultPages(ex)
   return (
-    <section className="print-slide relative">
-      <div className="mb-3 flex items-center gap-3">
-        <span className="slide-badge">Hướng dẫn</span>
-        <span className="text-[13px] text-ink/45">{ex.title}</span>
-      </div>
-      {ex.guide.map((t, i) => (
-        <div key={i} className="mb-5 break-inside-avoid-page">
-          <div className="mb-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-ink/10 pb-1.5">
-            <h3 className="text-[16px] font-bold text-ink">
-              <span className="mr-2 font-mono text-[12px] text-brand-400">{i + 1}.</span>
-              {t.label}
-            </h3>
-            {t.hint && <code className="font-mono text-[11.5px] text-accent-400">{t.hint}</code>}
-          </div>
-          <div className="space-y-3 text-[13px]">
-            {t.blocks.map((b, j) => (
-              <BlockView key={j} block={b} />
-            ))}
-          </div>
-        </div>
-      ))}
-    </section>
+    <>
+      {list.map((pg, k) => {
+        const t = ex.guide![pg.tab]
+        return (
+          <section key={k} className="print-slide relative" data-guide-tab={pg.tab} style={{ zoom: pg.zoom }}>
+            <div className="slide-watermark" aria-hidden>
+              <img src="/cybersoft-mark.png" alt="" />
+            </div>
+            <div className="relative">
+              <div data-guide-head className="mb-3 flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-ink/10 pb-2">
+                <span className="slide-badge">Hướng dẫn</span>
+                <h3 className="text-[18px] font-bold text-ink">
+                  <span className="mr-2 font-mono text-[13px] text-brand-400">{pg.tab + 1}.</span>
+                  {t.label}
+                  {pg.cont && <span className="ml-2 text-[13px] font-normal text-ink/40">(tiếp)</span>}
+                </h3>
+                {t.hint && <code className="font-mono text-[12px] text-accent-400">{t.hint}</code>}
+                <span className="ml-auto text-[12px] text-ink/40">{ex.title}</span>
+              </div>
+              <div className="text-[13px]">
+                {pg.blocks.map((j) => (
+                  <div key={j} data-gblock={j} className="mb-3">
+                    <BlockView block={t.blocks[j]} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )
+      })}
+    </>
   )
+}
+
+/** Đợi React vẽ xong hai khung hình để đo được kích thước thật. */
+function nextFrames(): Promise<void> {
+  return new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())))
+}
+
+/**
+ * Đo bộ slide đang hiển thị (ở bố cục mặc định, zoom 1) và tính bố cục vừa trang:
+ * - slide bài tập: thu nhỏ nếu cao quá một trang;
+ * - mỗi tab hướng dẫn: xếp lần lượt từng khối vào trang, đầy thì sang trang mới,
+ *   khối nào một mình đã vượt trang thì trang đó thu nhỏ vừa khối.
+ */
+/** Hệ số thu nhỏ thấp nhất còn đọc được — dưới mức này thì chia thêm trang. */
+const MIN_ZOOM = 0.8
+
+/**
+ * Chia dãy chiều cao thành n nhóm liên tiếp sao cho nhóm cao nhất là thấp nhất có thể
+ * (vét cạn các vị trí cắt — mỗi tab chỉ có vài khối nên rất nhanh).
+ */
+function balancedSplit(hs: number[], n: number): number[][] {
+  const m = hs.length
+  if (n >= m) return hs.map((_, i) => [i])
+  let best: number[][] = [hs.map((_, i) => i)]
+  let bestMax = Infinity
+  const cuts: number[] = []
+  const rec = (from: number) => {
+    if (cuts.length === n - 1) {
+      const bounds = [0, ...cuts, m]
+      let mx = 0
+      for (let g = 0; g < n; g++) {
+        let sum = 0
+        for (let i = bounds[g]; i < bounds[g + 1]; i++) sum += hs[i]
+        mx = Math.max(mx, sum)
+      }
+      if (mx < bestMax) {
+        bestMax = mx
+        best = []
+        for (let g = 0; g < n; g++) best.push(Array.from({ length: bounds[g + 1] - bounds[g] }, (_, k) => bounds[g] + k))
+      }
+      return
+    }
+    for (let c = from; c < m; c++) {
+      cuts.push(c)
+      rec(c + 1)
+      cuts.pop()
+    }
+  }
+  rec(1)
+  return best
+}
+
+function measureDeck(exs: Exercise[]): DeckLayout {
+  const out: DeckLayout = {}
+  const limit = PAGE_H - FOOTER_H
+  for (const ex of exs) {
+    const wrap = document.querySelector<HTMLElement>(`[data-deck-ex="${ex.id}"]`)
+    if (!wrap) continue
+    const slide = wrap.querySelector<HTMLElement>('[data-deck-slide]')
+    const slideZoom = slide ? Math.min(1, limit / Math.max(1, slide.offsetHeight)) : 1
+    const pages: GuidePage[] = []
+    wrap.querySelectorAll<HTMLElement>('[data-guide-tab]').forEach((sec) => {
+      const tab = Number(sec.dataset.guideTab)
+      const head = sec.querySelector<HTMLElement>('[data-guide-head]')
+      const headH = (head?.offsetHeight ?? 0) + 12
+      const ids: number[] = []
+      const hs: number[] = []
+      sec.querySelectorAll<HTMLElement>('[data-gblock]').forEach((b) => {
+        ids.push(Number(b.dataset.gblock))
+        hs.push(b.offsetHeight + 12)
+      })
+      if (hs.length === 0) return
+      // Tăng dần số trang cho tới khi trang nào cũng đọc được (zoom ≥ MIN_ZOOM);
+      // chia cân bằng để không có trang chỉ còn một khối nhỏ lẻ loi ở cuối tab.
+      for (let n = 1; n <= hs.length; n++) {
+        const groups = balancedSplit(hs, n)
+        const zooms = groups.map((g) => Math.min(1, limit / (headH + g.reduce((t, i) => t + hs[i], 0))))
+        const ok = groups.every((g, k) => zooms[k] >= MIN_ZOOM || g.length === 1)
+        if (ok || n === hs.length) {
+          groups.forEach((g, k) => pages.push({ tab, blocks: g.map((i) => ids[i]), zoom: zooms[k], cont: k > 0 }))
+          break
+        }
+      }
+    })
+    out[ex.id] = { slideZoom, pages }
+  }
+  return out
 }
 
 /** Mục lục nổi bên phải — bám theo phần đang đọc. */
@@ -331,6 +453,21 @@ export default function BuoiPage() {
   const [tab, setTab] = useState<'ly-thuyet' | 'bai-tap'>('ly-thuyet')
   const [level, setLevel] = useState<string>('')
   const [picked, setPicked] = useState<Set<string>>(new Set())
+  // Bố cục bộ slide sau khi đo — rỗng nghĩa là bố cục mặc định (mỗi tab một trang, zoom 1)
+  const [deckLayout, setDeckLayout] = useState<DeckLayout>({})
+  // Cho phép kiểm thử tự động gọi bước đo mà không mở hộp thoại in: gửi sự kiện
+  // deck:prepare lên document, đo xong trang ghi cờ data-deck-ready lên <html>.
+  // (Hook phải đứng trước mọi return sớm.)
+  useEffect(() => {
+    const onPrepare = () => {
+      delete document.documentElement.dataset.deckReady
+      void prepareDeck().then(() => {
+        document.documentElement.dataset.deckReady = '1'
+      })
+    }
+    document.addEventListener('deck:prepare', onPrepare)
+    return () => document.removeEventListener('deck:prepare', onPrepare)
+  })
 
   const levelsCo = LEVELS.filter((lv) => buoi?.exercises.some((e) => e.level === lv))
 
@@ -376,17 +513,34 @@ export default function BuoiPage() {
    * Đặt cờ data-print trên <html> để CSS biết in đầy đủ hay chỉ in tab đang xem,
    * rồi gỡ cờ ra sau khi hộp thoại in đóng lại.
    */
-  function printAs(mode: 'full' | 'tab' | 'selected') {
+  /**
+   * Chuẩn bị bộ slide trước khi in: bật cờ selected để bộ slide hiện ra đúng bề rộng
+   * trang in, về bố cục mặc định, đo, rồi áp bố cục vừa trang.
+   */
+  async function prepareDeck() {
+    document.documentElement.dataset.print = 'selected'
+    setDeckLayout({})
+    await nextFrames()
+    const layout = measureDeck(buoi!.exercises.filter((e) => picked.has(e.id)))
+    setDeckLayout(layout)
+    await nextFrames()
+    return layout
+  }
+
+  async function printAs(mode: 'full' | 'tab' | 'selected') {
     const root = document.documentElement
-    root.dataset.print = mode
     const cleanup = () => {
       delete root.dataset.print
+      setDeckLayout({})
       window.removeEventListener('afterprint', cleanup)
     }
     window.addEventListener('afterprint', cleanup)
+    if (mode === 'selected') await prepareDeck()
+    else root.dataset.print = mode
     window.print()
     setTimeout(cleanup, 1000)
   }
+
 
   /** Bốc ngẫu nhiên một đề 10 bài theo tỷ lệ 2 Cơ bản · 6 Trung bình · 2 Nâng cao. */
   function pickRandomSet() {
@@ -644,9 +798,11 @@ export default function BuoiPage() {
         {/* Bộ slide bài tập đã chọn — ẩn trên màn hình, chỉ hiện khi in ở chế độ selected */}
         <div data-print-deck>
           {pickedExercises.map((ex, i) => (
-            <div key={ex.id} className="contents">
-              <ExerciseSlide buoi={buoi} ex={ex} index={i + 1} />
-              <GuideSheet ex={ex} />
+            <div key={ex.id} data-deck-ex={ex.id} className="contents">
+              <div data-deck-slide className={i === 0 ? 'deck-first' : undefined} style={{ zoom: deckLayout[ex.id]?.slideZoom ?? 1 }}>
+                <ExerciseSlide buoi={buoi} ex={ex} index={i + 1} />
+              </div>
+              <GuideSheet ex={ex} pages={deckLayout[ex.id]?.pages} />
             </div>
           ))}
         </div>

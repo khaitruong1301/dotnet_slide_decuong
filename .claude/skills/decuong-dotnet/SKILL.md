@@ -265,6 +265,31 @@ Slide in ra phải có **đủ nội dung như trên web**: đề bài, chữ k�
 case Input/Output kèm giải thích, ràng buộc và gợi ý. Bài nào có lưu đồ thì các ví dụ tự
 xếp thành 2–3 cột cho vừa trang.
 
+## Bộ slide tự đo và tự chia trang
+
+Bấm *Xuất slide* thì `printAs('selected')` không in ngay mà chạy `prepareDeck()`:
+bật cờ `data-print="selected"` (bộ slide hiện ra trên màn hình đúng bề rộng 269mm của
+vùng in), về bố cục mặc định, gọi `measureDeck()` đo chiều cao thật từng slide và từng
+khối của từng tab hướng dẫn, rồi mới `window.print()`. Kết quả đo là `DeckLayout`:
+
+- slide bài tập cao quá một trang thì thu nhỏ bằng CSS `zoom` cho vừa;
+- mỗi tab hướng dẫn được chia thành số trang ít nhất sao cho trang nào cũng có
+  `zoom ≥ 0.8` (`MIN_ZOOM`), chia **cân bằng** (`balancedSplit`) để không có trang chỉ
+  còn một khối nhỏ lẻ loi; khối nào một mình đã cao hơn trang thì trang đó thu nhỏ vừa khối.
+
+Vì thế các rule bố cục slide (`.print-slide …`) nằm **ngoài** `@media print`, để kích
+thước lúc đo trên màn hình giống hệt lúc in. Chiều cao trang là `PAGE_H = 686px`
+(210mm − 2 × 12mm lề) trừ `FOOTER_H = 22px` cho dòng chân trang cố định.
+
+Kiểm thử tự động không mở được hộp thoại in, và trình duyệt kiểm thử chạy script trong
+thế giới cách ly nên không thấy hàm gắn lên `window`. Cách gọi bước đo: dispatch
+`new CustomEvent('deck:prepare')` lên `document`, đợi `html[data-deck-ready]` xuất
+hiện, rồi `emulateMedia('print')` và `page.pdf()`. Số trang PDF phải bằng số
+`.print-slide` trong `[data-print-deck]`.
+
+Khối code dài hơn khoảng 35 dòng thì tách thành hai `code` block — một khối quá cao sẽ
+bị thu nhỏ dưới mức đọc được, thuật toán không tách được bên trong một khối.
+
 Mỗi slide phải gọn trong đúng một trang A4 ngang. Sơ đồ dùng đơn vị `em` nên co giãn
 theo `font-size` của khối `.slide-figure`; nếu thêm bài có lưu đồ dài mà bị tràn trang,
 hạ `font-size` của `.slide-figure` trong `@media print` xuống là vừa.
