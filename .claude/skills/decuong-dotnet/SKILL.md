@@ -119,8 +119,8 @@ không cần tự sắp xếp thứ tự dễ-khó trong mảng.
 
 Thẻ bài tập **mặc định thu gọn**, chỉ hiện số và tên bài; bấm vào tên mới xổ đề, ví dụ,
 gợi ý và khối tab hướng dẫn (`guide`). Khi in, thân thẻ luôn mở ở mọi chế độ. Bộ slide
-xuất PDF chỉ in slide một trang mỗi bài; tick *Kèm hướng dẫn* mới in thêm các trang
-hướng dẫn ngay sau slide của bài.
+xuất PDF in slide một trang mỗi bài, bài nào có `guide` thì các trang hướng dẫn (đủ mọi
+tab) in ngay sau slide của bài đó — Khải muốn xuất một bài là có trọn gợi ý đi kèm.
 
 Nút *Bốc đề 10 bài* lấy ngẫu nhiên theo tỷ lệ 2 Cơ bản · 6 Trung bình · 2 Nâng cao.
 Buổi nào không đủ bài ở một mức thì phần thiếu được bù bằng bài bất kỳ còn lại, và

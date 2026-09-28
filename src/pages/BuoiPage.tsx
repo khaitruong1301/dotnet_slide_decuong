@@ -331,8 +331,6 @@ export default function BuoiPage() {
   const [tab, setTab] = useState<'ly-thuyet' | 'bai-tap'>('ly-thuyet')
   const [level, setLevel] = useState<string>('')
   const [picked, setPicked] = useState<Set<string>>(new Set())
-  // Xuất slide có in kèm các trang hướng dẫn của bài hay không (mặc định chỉ slide, mỗi bài một trang)
-  const [kemHuongDan, setKemHuongDan] = useState(false)
 
   const levelsCo = LEVELS.filter((lv) => buoi?.exercises.some((e) => e.level === lv))
 
@@ -589,16 +587,10 @@ export default function BuoiPage() {
                 Bỏ chọn hết
               </button>
 
-              {pickedExercises.some((e) => e.guide && e.guide.length > 0) && (
-                <label className="ml-auto flex cursor-pointer items-center gap-1.5 text-[12.5px] text-ink/60" title="In thêm các trang hướng dẫn ngay sau slide của bài">
-                  <input type="checkbox" checked={kemHuongDan} onChange={(e) => setKemHuongDan(e.target.checked)} className="h-3.5 w-3.5 accent-[var(--brand-500)]" />
-                  Kèm hướng dẫn
-                </label>
-              )}
               <button
                 onClick={() => printAs('selected')}
                 disabled={picked.size === 0}
-                className={`${pickedExercises.some((e) => e.guide && e.guide.length > 0) ? '' : 'ml-auto '}inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-brand-600 to-brand-500 px-3.5 py-1.5 text-[12.5px] font-semibold text-white transition hover:brightness-110 disabled:opacity-35 disabled:hover:brightness-100`}
+                className="ml-auto inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-brand-600 to-brand-500 px-3.5 py-1.5 text-[12.5px] font-semibold text-white transition hover:brightness-110 disabled:opacity-35 disabled:hover:brightness-100"
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <path d="M12 3v12M7 10l5 5 5-5M4 21h16" />
@@ -654,7 +646,7 @@ export default function BuoiPage() {
           {pickedExercises.map((ex, i) => (
             <div key={ex.id} className="contents">
               <ExerciseSlide buoi={buoi} ex={ex} index={i + 1} />
-              {kemHuongDan && <GuideSheet ex={ex} />}
+              <GuideSheet ex={ex} />
             </div>
           ))}
         </div>
