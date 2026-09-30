@@ -1550,6 +1550,313 @@ public void DocFile(string duongDan = "don-hang.json")
   },
 ]
 
+/** Hướng dẫn bài hệ thống bán hàng — abstract class, ba lớp con, menu 5 mục. */
+const HUONG_DAN_BAN_HANG: TabItem[] = [
+  {
+    label: 'Sơ đồ lớp',
+    hint: 'SanPham (abstract) ← DienTu · ThoiTrang · ThucPham',
+    blocks: [
+      {
+        type: 'text',
+        text: 'Ba loại sản phẩm có cùng mã, tên, giá gốc nhưng cách tính giá bán khác hẳn nhau: điện tử cộng thuế bảo hành theo phần trăm, thời trang trừ giảm giá theo phần trăm, thực phẩm cộng phí vận chuyển là số tiền. Vì "sản phẩm chung chung" không có công thức giá nên SanPham là abstract: khai báo TinhGiaBan() mà không có thân, mỗi lớp con bắt buộc phải cài.',
+      },
+      {
+        type: 'visual',
+        visual: {
+          kind: 'uml',
+          caption: 'Mỗi lớp con thêm một thuộc tính riêng và cài TinhGiaBan() theo công thức của mình',
+          relation: 'inherit',
+          parent: { name: 'SanPham', stereotype: 'abstract', attrs: ['+ MaSanPham : string', '+ TenSanPham : string', '+ GiaGoc : double'], methods: ['+ TinhGiaBan() : double  (abstract)', '+ HienThiThongTin()  (virtual)'] },
+          children: [
+            { name: 'DienTu', attrs: ['+ ThueBaoHanh : double  (%)'], methods: ['+ TinhGiaBan() : GiaGoc × (1 + thuế/100)'] },
+            { name: 'ThoiTrang', attrs: ['+ GiamGia : double  (%)'], methods: ['+ TinhGiaBan() : GiaGoc × (1 − giảm/100)'] },
+            { name: 'ThucPham', attrs: ['+ PhiVanChuyen : double'], methods: ['+ TinhGiaBan() : GiaGoc + phí'] },
+          ],
+        },
+      },
+      {
+        type: 'code',
+        sample: {
+          title: 'Abstract class SanPham',
+          code: `public abstract class SanPham
+{
+    public string MaSanPham { get; set; }
+    public string TenSanPham { get; set; }
+    public double GiaGoc { get; set; }
+
+    public SanPham(string ma, string ten, double giaGoc)
+    {
+        MaSanPham = ma;
+        TenSanPham = ten;
+        GiaGoc = giaGoc;
+    }
+
+    public abstract double TinhGiaBan();        // không có thân — lớp con phải cài
+
+    public virtual void HienThiThongTin()       // có sẵn, lớp con được phép viết lại
+    {
+        Console.WriteLine($"Mã: {MaSanPham}, Tên: {TenSanPham}, Giá bán: {TinhGiaBan()} VND");
+    }
+}`,
+          note: 'HienThiThongTin() gọi TinhGiaBan() — hàm chưa có thân ở lớp này. Lúc chạy, đối tượng thật luôn là một lớp con nên luôn có công thức để gọi.',
+        },
+      },
+      {
+        type: 'code',
+        sample: {
+          title: 'Ba lớp con — mỗi lớp một thuộc tính riêng và một công thức',
+          code: `public class DienTu : SanPham
+{
+    public double ThueBaoHanh { get; set; }                       // phần trăm
+    public DienTu(string ma, string ten, double giaGoc, double thue) : base(ma, ten, giaGoc)
+    {
+        ThueBaoHanh = thue;
+    }
+    public override double TinhGiaBan() => GiaGoc + GiaGoc * ThueBaoHanh / 100;
+}
+
+public class ThoiTrang : SanPham
+{
+    public double GiamGia { get; set; }                           // phần trăm
+    public ThoiTrang(string ma, string ten, double giaGoc, double giam) : base(ma, ten, giaGoc)
+    {
+        GiamGia = giam;
+    }
+    public override double TinhGiaBan() => GiaGoc - GiaGoc * GiamGia / 100;
+}
+
+public class ThucPham : SanPham
+{
+    public double PhiVanChuyen { get; set; }                      // số tiền
+    public ThucPham(string ma, string ten, double giaGoc, double phi) : base(ma, ten, giaGoc)
+    {
+        PhiVanChuyen = phi;
+    }
+    public override double TinhGiaBan() => GiaGoc + PhiVanChuyen;
+}`,
+          note: 'Laptop 1000 thuế 8% → 1080; áo 200 giảm 3% → 194; gạo 300 phí 10 → 310. Không lớp nào override HienThiThongTin() — cả ba dùng bản của cha, chỉ khác ở TinhGiaBan().',
+        },
+      },
+      {
+        type: 'callout',
+        tone: 'warn',
+        title: 'Abstract class không new được',
+        text: 'new SanPham(...) bị báo lỗi biên dịch "Cannot create an instance of the abstract type". Chỉ new được DienTu, ThoiTrang, ThucPham — nhưng biến và List thì khai báo kiểu SanPham để chứa được cả ba.',
+      },
+    ],
+  },
+  {
+    label: 'Thêm sản phẩm',
+    hint: 'void ThemSanPham()',
+    blocks: [
+      {
+        type: 'text',
+        text: 'Hỏi loại sản phẩm trước, nhập ba thông tin chung, rồi nhập đúng một thông tin riêng của loại đó và new đúng lớp. Đây là chỗ duy nhất chương trình hỏi "loại gì".',
+      },
+      {
+        type: 'visual',
+        visual: {
+          kind: 'flow',
+          caption: 'Luồng thêm — chọn loại → nhập chung → nhập riêng → new đúng lớp',
+          steps: [
+            { kind: 'io', text: 'In "1 Điện tử · 2 Thời trang · 3 Thực phẩm", đọc lựa chọn' },
+            { kind: 'io', text: 'Nhập mã, tên, giá gốc' },
+            { kind: 'decision', text: 'loại == 1 ?', branches: [
+              { label: 'Đúng', steps: [{ kind: 'io', text: 'Nhập thuế bảo hành (%)' }, { kind: 'process', text: 'sp = new DienTu(…)' }] },
+              { label: 'Sai', steps: [
+                { kind: 'decision', text: 'loại == 2 ?', branches: [
+                  { label: 'Đúng', steps: [{ kind: 'io', text: 'Nhập giảm giá (%)' }, { kind: 'process', text: 'sp = new ThoiTrang(…)' }] },
+                  { label: 'Sai', steps: [{ kind: 'io', text: 'Nhập phí vận chuyển' }, { kind: 'process', text: 'sp = new ThucPham(…)' }] },
+                ] },
+              ] },
+            ] },
+            { kind: 'process', text: 'danhSach.Add(sp)' },
+          ],
+        },
+      },
+      {
+        type: 'code',
+        sample: {
+          title: 'ThemSanPham',
+          code: `static void ThemSanPham(List<SanPham> danhSach)
+{
+    Console.WriteLine("Chọn loại sản phẩm:\\n1. Điện tử\\n2. Thời trang\\n3. Thực phẩm");
+    Console.Write("Lựa chọn: ");
+    int loai = int.Parse(Console.ReadLine());
+
+    Console.Write("Nhập mã sản phẩm: ");   string ma = Console.ReadLine();
+    Console.Write("Nhập tên sản phẩm: ");  string ten = Console.ReadLine();
+    Console.Write("Nhập giá gốc: ");       double giaGoc = double.Parse(Console.ReadLine());
+
+    SanPham sp;                              // biến kiểu cha, chưa biết là lớp con nào
+    switch (loai)
+    {
+        case 1:
+            Console.Write("Nhập thuế bảo hành (%): ");
+            sp = new DienTu(ma, ten, giaGoc, double.Parse(Console.ReadLine()));
+            break;
+        case 2:
+            Console.Write("Nhập giảm giá (%): ");
+            sp = new ThoiTrang(ma, ten, giaGoc, double.Parse(Console.ReadLine()));
+            break;
+        default:
+            Console.Write("Nhập phí vận chuyển: ");
+            sp = new ThucPham(ma, ten, giaGoc, double.Parse(Console.ReadLine()));
+            break;
+    }
+    danhSach.Add(sp);
+}`,
+          note: 'Có thể kiểm tra trùng mã trước khi Add bằng danhSach.Any(x => x.MaSanPham == ma). Đề gốc không bắt buộc nhưng nên làm.',
+        },
+      },
+    ],
+  },
+  {
+    label: 'Hiển thị',
+    hint: 'void HienThiDanhSach()',
+    blocks: [
+      {
+        type: 'text',
+        text: 'Một vòng foreach gọi HienThiThongTin(). Bên trong nó gọi TinhGiaBan(), và bản nào chạy do đối tượng thật quyết định — ba dòng in ra bởi ba công thức khác nhau mà không có if nào.',
+      },
+      {
+        type: 'code',
+        sample: {
+          title: 'HienThiDanhSach — đa hình qua biến kiểu SanPham',
+          code: `List<SanPham> ds = new List<SanPham>();
+ds.Add(new DienTu("1", "Laptop asus", 1000, 8));
+ds.Add(new ThoiTrang("2", "áo thun trắng", 200, 3));
+ds.Add(new ThucPham("3", "gạo trắng", 300, 10));
+foreach (SanPham sp in ds)
+{
+    double gia = sp.TinhGiaBan();
+    Console.WriteLine($"Mã: {sp.MaSanPham}, Tên: {sp.TenSanPham}, Giá bán: {gia} VND");
+}`,
+          note: 'sp luôn khai báo là SanPham nhưng mỗi vòng lặp trỏ tới một lớp con khác — C# tra bảng ảo của đối tượng thật để chọn TinhGiaBan().',
+          trace: [
+            { line: 1, vars: { ds: '→ 0x100' }, refs: { ds: '0x100' }, heap: { '0x100': 'List<SanPham> [ ]' }, note: 'List khai báo kiểu abstract SanPham — hợp lệ, chỉ không new SanPham được.' },
+            { line: 2, vars: { ds: '→ 0x100' }, refs: { ds: '0x100' }, heap: { '0x100': '[→0x200]', '0x200': 'DienTu { Ma: "1", GiaGoc: 1000, Thue: 8 }' } },
+            { line: 3, vars: { ds: '→ 0x100' }, refs: { ds: '0x100' }, heap: { '0x100': '[→0x200, →0x210]', '0x200': 'DienTu { Ma: "1", GiaGoc: 1000, Thue: 8 }', '0x210': 'ThoiTrang { Ma: "2", GiaGoc: 200, Giam: 3 }' } },
+            { line: 4, vars: { ds: '→ 0x100' }, refs: { ds: '0x100' }, heap: { '0x100': '[→0x200, →0x210, →0x220]', '0x200': 'DienTu { Ma: "1", GiaGoc: 1000, Thue: 8 }', '0x210': 'ThoiTrang { Ma: "2", GiaGoc: 200, Giam: 3 }', '0x220': 'ThucPham { Ma: "3", GiaGoc: 300, Phi: 10 }' }, note: 'Ba lớp con khác nhau nằm chung một List.' },
+            { line: 5, vars: { ds: '→ 0x100', sp: '→ 0x200' }, refs: { ds: '0x100', sp: '0x200' }, heap: { '0x100': '[→0x200, →0x210, →0x220]', '0x200': 'DienTu { Ma: "1", GiaGoc: 1000, Thue: 8 }', '0x210': 'ThoiTrang { Ma: "2", GiaGoc: 200, Giam: 3 }', '0x220': 'ThucPham { Ma: "3", GiaGoc: 300, Phi: 10 }' }, focus: { '0x100': [0] } },
+            { line: 7, vars: { ds: '→ 0x100', sp: '→ 0x200', gia: '1080' }, refs: { ds: '0x100', sp: '0x200' }, heap: { '0x100': '[→0x200, →0x210, →0x220]', '0x200': 'DienTu { Ma: "1", GiaGoc: 1000, Thue: 8 }', '0x210': 'ThoiTrang { Ma: "2", GiaGoc: 200, Giam: 3 }', '0x220': 'ThucPham { Ma: "3", GiaGoc: 300, Phi: 10 }' }, focus: { '0x100': [0] }, note: 'Bản của DienTu: 1000 + 1000 × 8 / 100.' },
+            { line: 8, vars: { ds: '→ 0x100', sp: '→ 0x200', gia: '1080' }, refs: { ds: '0x100', sp: '0x200' }, heap: { '0x100': '[→0x200, →0x210, →0x220]', '0x200': 'DienTu { Ma: "1", GiaGoc: 1000, Thue: 8 }', '0x210': 'ThoiTrang { Ma: "2", GiaGoc: 200, Giam: 3 }', '0x220': 'ThucPham { Ma: "3", GiaGoc: 300, Phi: 10 }' }, output: ['Mã: 1, Tên: Laptop asus, Giá bán: 1080 VND'] },
+            { line: 7, vars: { ds: '→ 0x100', sp: '→ 0x210', gia: '194' }, refs: { ds: '0x100', sp: '0x210' }, heap: { '0x100': '[→0x200, →0x210, →0x220]', '0x200': 'DienTu { Ma: "1", GiaGoc: 1000, Thue: 8 }', '0x210': 'ThoiTrang { Ma: "2", GiaGoc: 200, Giam: 3 }', '0x220': 'ThucPham { Ma: "3", GiaGoc: 300, Phi: 10 }' }, focus: { '0x100': [1] }, output: ['Mã: 1, Tên: Laptop asus, Giá bán: 1080 VND'], note: 'Cùng biến sp, giờ trỏ tới ThoiTrang: 200 − 200 × 3 / 100.' },
+            { line: 8, vars: { ds: '→ 0x100', sp: '→ 0x210', gia: '194' }, refs: { ds: '0x100', sp: '0x210' }, heap: { '0x100': '[→0x200, →0x210, →0x220]', '0x200': 'DienTu { Ma: "1", GiaGoc: 1000, Thue: 8 }', '0x210': 'ThoiTrang { Ma: "2", GiaGoc: 200, Giam: 3 }', '0x220': 'ThucPham { Ma: "3", GiaGoc: 300, Phi: 10 }' }, output: ['Mã: 1, Tên: Laptop asus, Giá bán: 1080 VND', 'Mã: 2, Tên: áo thun trắng, Giá bán: 194 VND'] },
+            { line: 7, vars: { ds: '→ 0x100', sp: '→ 0x220', gia: '310' }, refs: { ds: '0x100', sp: '0x220' }, heap: { '0x100': '[→0x200, →0x210, →0x220]', '0x200': 'DienTu { Ma: "1", GiaGoc: 1000, Thue: 8 }', '0x210': 'ThoiTrang { Ma: "2", GiaGoc: 200, Giam: 3 }', '0x220': 'ThucPham { Ma: "3", GiaGoc: 300, Phi: 10 }' }, focus: { '0x100': [2] }, output: ['Mã: 1, Tên: Laptop asus, Giá bán: 1080 VND', 'Mã: 2, Tên: áo thun trắng, Giá bán: 194 VND'], note: 'Bản của ThucPham: 300 + 10.' },
+            { line: 8, vars: { ds: '→ 0x100', sp: '→ 0x220', gia: '310' }, refs: { ds: '0x100', sp: '0x220' }, heap: { '0x100': '[→0x200, →0x210, →0x220]', '0x200': 'DienTu { Ma: "1", GiaGoc: 1000, Thue: 8 }', '0x210': 'ThoiTrang { Ma: "2", GiaGoc: 200, Giam: 3 }', '0x220': 'ThucPham { Ma: "3", GiaGoc: 300, Phi: 10 }' }, output: ['Mã: 1, Tên: Laptop asus, Giá bán: 1080 VND', 'Mã: 2, Tên: áo thun trắng, Giá bán: 194 VND', 'Mã: 3, Tên: gạo trắng, Giá bán: 310 VND'], note: 'Ba công thức, một câu gọi.' },
+          ],
+        },
+      },
+      {
+        type: 'callout',
+        tone: 'tip',
+        title: 'Muốn dòng in khác nhau theo loại?',
+        text: 'Override HienThiThongTin() ở lớp con và gọi base.HienThiThongTin() rồi in thêm phần riêng, ví dụ DienTu in thêm "Bảo hành: 8%". Vẫn không cần if trong vòng lặp.',
+      },
+    ],
+  },
+  {
+    label: 'Tổng doanh thu',
+    hint: 'double TinhTongDoanhThu()',
+    blocks: [
+      {
+        type: 'text',
+        text: 'Doanh thu dự kiến là tổng giá bán của mọi sản phẩm trong danh sách. Lại là foreach cộng sp.TinhGiaBan() — hoặc một dòng LINQ Sum.',
+      },
+      {
+        type: 'visual',
+        visual: {
+          kind: 'strip',
+          caption: 'Cộng dồn giá bán của từng phần tử — 1080 + 194 + 310 = 1584',
+          name: 'danhSach → TinhGiaBan()',
+          items: ['DienTu → 1080', 'ThoiTrang → 194', 'ThucPham → 310'],
+        },
+      },
+      {
+        type: 'code',
+        sample: {
+          title: 'TinhTongDoanhThu — hai cách viết',
+          code: `static double TinhTongDoanhThu(List<SanPham> danhSach)
+{
+    double tong = 0;
+    foreach (SanPham sp in danhSach)
+        tong += sp.TinhGiaBan();
+    return tong;
+}
+
+// Cách ngắn bằng LINQ
+static double TinhTongDoanhThu2(List<SanPham> danhSach)
+    => danhSach.Sum(sp => sp.TinhGiaBan());`,
+          note: 'Danh sách trống thì cả hai cách đều trả về 0, không lỗi.',
+        },
+      },
+    ],
+  },
+  {
+    label: 'Xoá theo mã',
+    hint: 'bool XoaSanPham(string ma)',
+    blocks: [
+      {
+        type: 'text',
+        text: 'Tìm bằng FirstOrDefault rồi Remove; báo rõ có xoá được hay không.',
+      },
+      {
+        type: 'visual',
+        visual: {
+          kind: 'strip',
+          caption: 'Xoá mã "2" — gỡ phần tử [1], phần tử sau dồn lên',
+          name: 'danhSach (trước khi xoá)',
+          items: ['1 · Laptop asus', '2 · áo thun trắng ✕', '3 · gạo trắng'],
+          highlight: [1],
+        },
+      },
+      {
+        type: 'code',
+        sample: {
+          title: 'XoaSanPham và vòng lặp menu',
+          code: `static bool XoaSanPham(List<SanPham> danhSach, string ma)
+{
+    SanPham sp = danhSach.FirstOrDefault(x => x.MaSanPham == ma);
+    if (sp == null) return false;
+    danhSach.Remove(sp);
+    return true;
+}
+
+static void Main()
+{
+    List<SanPham> danhSach = new List<SanPham>();
+    while (true)
+    {
+        Console.WriteLine("--- Hệ thống quản lý bán hàng ---");
+        Console.WriteLine("1. Thêm sản phẩm\\n2. Hiển thị danh sách sản phẩm\\n3. Tính tổng doanh thu\\n4. Xóa sản phẩm\\n5. Thoát");
+        Console.Write("Vui lòng chọn chức năng: ");
+        string chon = Console.ReadLine();
+        if (chon == "5") break;
+        try
+        {
+            switch (chon)
+            {
+                case "1": ThemSanPham(danhSach); break;
+                case "2": foreach (SanPham sp in danhSach) sp.HienThiThongTin(); break;
+                case "3": Console.WriteLine($"Tổng doanh thu dự kiến: {TinhTongDoanhThu(danhSach)} VND"); break;
+                case "4":
+                    Console.Write("Nhập mã cần xoá: ");
+                    Console.WriteLine(XoaSanPham(danhSach, Console.ReadLine()) ? "Đã xoá" : "Không tìm thấy");
+                    break;
+                default: Console.WriteLine("Chọn 1–5"); break;
+            }
+        }
+        catch (FormatException) { Console.WriteLine("Nhập sai định dạng số"); }
+    }
+}`,
+          note: 'try/catch FormatException bắt lỗi gõ chữ vào ô số ở mọi chức năng, chương trình quay lại menu thay vì dừng.',
+        },
+      },
+    ],
+  },
+]
+
 const buoi16: Buoi = {
   id: 16,
   slug: 'on-tap-oop-cua-hang-dien-may',
@@ -1796,6 +2103,42 @@ const buoi16: Buoi = {
         relation: 'inherit',
         parent: { name: 'Nguoi', attrs: ['+ HoTen : string', '+ SoDienThoai : string', '+ NamSinh : int'], methods: ['+ Tuoi() : int'] },
         children: [{ name: 'NhanVien', attrs: ['+ MaNV : string', '+ ChucVu : string', '+ LuongThang : decimal'], methods: ['+ TienThuong() : decimal', '+ MoTa() : string'] }],
+      },
+    },
+    {
+      id: 'b16-m003', level: 'Trung bình', title: 'Hệ thống quản lý bán hàng với menu và đa hình', dense: true,
+      guide: HUONG_DAN_BAN_HANG,
+      demo: 'ban-hang',
+      requirement: 'Một cửa hàng quản lý các sản phẩm thuộc nhiều loại: điện tử, thời trang và thực phẩm. Mỗi sản phẩm có mã, tên, giá gốc; giá bán tính khác nhau theo loại: điện tử cộng thêm thuế bảo hành (%) vào giá gốc, thời trang áp dụng giảm giá theo mùa (%), thực phẩm cộng thêm phí vận chuyển (số tiền). Tạo lớp trừu tượng SanPham với abstract TinhGiaBan() và virtual HienThiThongTin(), ba lớp con kế thừa, và chương trình console có menu với các chức năng sau:',
+      tasks: [
+        'Thêm sản phẩm vào danh sách: chọn loại, nhập mã, tên, giá gốc và một thông số riêng của loại',
+        'Hiển thị danh sách sản phẩm: mã, tên, giá bán',
+        'Tính tổng doanh thu dự kiến (tổng giá bán của mọi sản phẩm)',
+        'Xoá sản phẩm khỏi danh sách theo mã',
+        'Thoát chương trình',
+      ],
+      signature: 'abstract class SanPham { string MaSanPham, TenSanPham; double GiaGoc; abstract double TinhGiaBan(); virtual void HienThiThongTin(); }\nclass DienTu : SanPham { ThueBaoHanh (%) }   class ThoiTrang : SanPham { GiamGia (%) }   class ThucPham : SanPham { PhiVanChuyen }\nList<SanPham> danhSach — ThemSanPham, HienThiDanhSach, TinhTongDoanhThu, XoaSanPham',
+      constraints: [
+        'SanPham là abstract, không new được; List khai báo kiểu SanPham để chứa cả ba loại',
+        'Mỗi lớp con thêm đúng một thuộc tính riêng và override TinhGiaBan(); hiển thị và tính doanh thu không dùng if / is theo loại',
+        'Nhập sai định dạng số phải được bắt, chương trình quay lại menu · Sau mỗi chức năng quay lại menu',
+      ],
+      examples: [
+        { input: 'Thêm điện tử mã 1 "Laptop asus" giá gốc 1000 thuế 8%; thời trang mã 2 "áo thun trắng" 200 giảm 3%; thực phẩm mã 3 "gạo trắng" 300 phí 10; chọn 2', output: 'Mã: 1, Tên: Laptop asus, Giá bán: 1080 VND\nMã: 2, Tên: áo thun trắng, Giá bán: 194 VND\nMã: 3, Tên: gạo trắng, Giá bán: 310 VND', explain: '1000 × 1,08 = 1080; 200 × 0,97 = 194; 300 + 10 = 310 — ba công thức, một câu gọi TinhGiaBan().' },
+        { input: 'Chọn 3', output: 'Tổng doanh thu dự kiến: 1584 VND', explain: '1080 + 194 + 310.' },
+        { input: 'Chọn 4, mã 2; chọn 3; chọn 4, mã 9', output: 'Đã xóa sản phẩm 2\nTổng doanh thu dự kiến: 1390 VND\nKhông tìm thấy sản phẩm' },
+      ],
+      hint: 'Cần 4 class. SanPham (abstract): 3 property MaSanPham, TenSanPham, GiaGoc; constructor 3 tham số; public abstract double TinhGiaBan(); public virtual void HienThiThongTin() in mã, tên và TinhGiaBan(). DienTu: ThueBaoHanh, TinhGiaBan() = GiaGoc + GiaGoc × ThueBaoHanh / 100. ThoiTrang: GiamGia, TinhGiaBan() = GiaGoc − GiaGoc × GiamGia / 100. ThucPham: PhiVanChuyen, TinhGiaBan() = GiaGoc + PhiVanChuyen. Mỗi lớp con constructor 4 tham số gọi base(ma, ten, giaGoc). Main: List<SanPham> danhSach, vòng while in menu; ThemSanPham hỏi loại rồi switch để new đúng lớp; hiển thị = foreach sp.HienThiThongTin(); doanh thu = danhSach.Sum(sp => sp.TinhGiaBan()); xoá = FirstOrDefault theo mã rồi Remove.',
+      visual: {
+        kind: 'uml',
+        caption: 'Lớp cha abstract giữ phần chung; ba lớp con mỗi lớp một thuộc tính riêng và một công thức giá bán',
+        relation: 'inherit',
+        parent: { name: 'SanPham', stereotype: 'abstract', attrs: ['+ MaSanPham, TenSanPham : string', '+ GiaGoc : double'], methods: ['+ TinhGiaBan() : double  abstract', '+ HienThiThongTin()  virtual'] },
+        children: [
+          { name: 'DienTu', attrs: ['+ ThueBaoHanh (%)'], methods: ['+ TinhGiaBan(): GiaGoc × (1 + thuế)'] },
+          { name: 'ThoiTrang', attrs: ['+ GiamGia (%)'], methods: ['+ TinhGiaBan(): GiaGoc × (1 − giảm)'] },
+          { name: 'ThucPham', attrs: ['+ PhiVanChuyen'], methods: ['+ TinhGiaBan(): GiaGoc + phí'] },
+        ],
       },
     },
     {
