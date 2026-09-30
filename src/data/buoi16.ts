@@ -1716,7 +1716,7 @@ const buoi16: Buoi = {
         'Load lại từ data.json — đơn giao nhanh đọc lên vẫn tính phí giao nhanh',
         'Thoát',
       ],
-      signature: 'class DonHang { static MaDonTuDong; maDonHang, tenKhach, diaChi, tienHang, soKM, loaiDon = 1; nhapThongTinDonHang(); virtual tinhPhiGiaoHang(); tongThanhToanDonHang(); virtual moTaDonHang(); }\nclass DonHangGiaoNhanh : DonHang { ctor { loaiDon = 2 }; override tinhPhiGiaoHang(); override moTaDonHang(); }\nclass AppQuanLyDonHang { lstDonHang; hienThiMenu, themDonHang, XoaDonHang, suaDiaChi, timDonHangTheoKhachHang, hienThiTatCaDonHang, tinhTongTienTatCaDDH, tinhTongPhiGiaoHang, luuDonHang, loadDonHang }',
+      signature: 'class DonHang { static MaDonTuDong; maDonHang, tenKhach, diaChi, tienHang, soKM, loaiDon = 1; nhapThongTinDonHang(); virtual tinhPhiGiaoHang(); tongThanhToanDonHang(); virtual moTaDonHang(); }\nclass DonHangGiaoNhanh : DonHang { ctor { loaiDon = 2 }; override tinhPhiGiaoHang(); override moTaDonHang(); }\nclass AppQuanLyDonHang { lstDonHang; hienThiMenu, themDonHang, XoaDonHang, suaDiaChi, timDonHangTheoKhachHang,\n                         hienThiTatCaDonHang, tinhTongTienTatCaDDH, tinhTongPhiGiaoHang, luuDonHang, loadDonHang }',
       constraints: [
         'DonHangGiaoNhanh chỉ override tinhPhiGiaoHang() (gọi base rồi cộng 60) và moTaDonHang(); tongThanhToanDonHang() và nhapThongTinDonHang() chỉ viết ở lớp cha',
         'Kiểm tra mốc 20 km trước mốc 10 km · Hiển thị và tính tổng phí không dùng if / is theo loại đơn — gọi thẳng phương thức virtual',
