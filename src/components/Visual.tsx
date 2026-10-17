@@ -1,4 +1,4 @@
-import type { FlowStep, UmlClass, Visual as V } from '../data/types'
+import type { FlowStep, SeqStep, TreeNode, UmlClass, Visual as V } from '../data/types'
 
 /* ---------------------------------------------------------------- Flow chart */
 
@@ -101,6 +101,80 @@ function Chevron() {
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M5 12h13M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------- Sơ đồ cây */
+
+function TreeBranch({ node, depth }: { node: TreeNode; depth: number }) {
+  const hasKids = !!node.children?.length
+  return (
+    <li className="relative">
+      <div
+        className={`inline-flex items-baseline gap-2 rounded-md border px-2.5 py-1 font-mono text-[0.8em] leading-snug ${
+          node.highlight ? 'border-brand-400/50 bg-brand-500/14 text-brand-300' : hasKids ? 'border-ink/15 bg-ink/5 text-ink/85' : 'border-accent-400/35 bg-accent-400/8 text-accent-400'
+        }`}
+      >
+        <span>{node.label}</span>
+        {node.note && <span className="font-sans text-[0.85em] text-ink/45">{node.note}</span>}
+      </div>
+      {hasKids && (
+        <ul className="ml-3 mt-1.5 space-y-1.5 border-l border-ink/20 pl-4">
+          {node.children!.map((c, i) => (
+            <TreeBranch key={i} node={c} depth={depth + 1} />
+          ))}
+        </ul>
+      )}
+    </li>
+  )
+}
+
+/* ------------------------------------------------------------- Sơ đồ tuần tự */
+
+function Sequence({ actors, steps }: { actors: string[]; steps: SeqStep[] }) {
+  const n = actors.length
+  const colW = 100 / n
+  return (
+    <div className="w-full">
+      <div className="grid text-center" style={{ gridTemplateColumns: `repeat(${n}, minmax(0,1fr))` }}>
+        {actors.map((a, i) => (
+          <div key={i} className="px-1">
+            <div className="mx-auto w-fit rounded-lg border border-brand-400/45 bg-brand-500/14 px-3 py-1.5 text-[0.85em] font-semibold text-brand-300">{a}</div>
+          </div>
+        ))}
+      </div>
+      <div className="relative mt-2 space-y-2.5 py-2">
+        {/* đường đời của từng actor */}
+        {actors.map((_, i) => (
+          <div key={i} className="absolute bottom-0 top-0 w-px border-l border-dashed border-ink/20" style={{ left: `calc(${colW * i + colW / 2}% )` }} aria-hidden />
+        ))}
+        {steps.map((st, k) => {
+          const a = Math.min(st.from, st.to)
+          const b = Math.max(st.from, st.to)
+          const left = colW * a + colW / 2
+          const width = colW * (b - a)
+          const rtl = st.from > st.to
+          return (
+            <div key={k} className="relative h-[2.1em]">
+              <div className="absolute top-1/2 flex items-center" style={{ left: `${left}%`, width: `${width}%` }}>
+                <div className={`h-px flex-1 ${st.dashed ? 'border-t border-dashed border-ink/45' : 'bg-ink/45'}`} />
+                <div
+                  className={`absolute top-1/2 -translate-y-1/2 border-y-4 border-y-transparent ${rtl ? 'left-0 border-r-[7px] border-r-ink/55' : 'right-0 border-l-[7px] border-l-ink/55'}`}
+                  aria-hidden
+                />
+              </div>
+              <div
+                className="absolute -top-0.5 max-w-full truncate rounded bg-page/90 px-1.5 text-[0.76em] text-ink/75"
+                style={{ left: `${left}%`, width: `${width}%`, textAlign: 'center' }}
+                title={st.text}
+              >
+                {st.text}
+              </div>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
@@ -359,6 +433,24 @@ export default function Visual({ v }: { v: V }) {
         </div>
       )
     }
+
+    case 'tree':
+      return (
+        <div className="w-full">
+          <ul className="inline-block text-left">
+            <TreeBranch node={v.root} depth={0} />
+          </ul>
+          <Caption text={v.caption} />
+        </div>
+      )
+
+    case 'seq':
+      return (
+        <div className="w-full">
+          <Sequence actors={v.actors} steps={v.steps} />
+          <Caption text={v.caption} />
+        </div>
+      )
 
     case 'compare': {
       const tone = (t?: string) =>

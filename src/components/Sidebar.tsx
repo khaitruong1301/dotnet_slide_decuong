@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom'
-import { BUOI_LIST, COURSE, TOTAL_EXERCISES } from '../data'
+import { BUOI_LIST, COURSE, MODULES, TOTAL_EXERCISES } from '../data'
 import ThemeToggle from './ThemeToggle'
 
 export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
@@ -21,10 +21,15 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         </NavLink>
       </div>
 
-      <div className="px-4 pb-1.5 pt-4 text-[11px] font-bold uppercase tracking-[0.16em] text-ink/30">Đề cương</div>
+      <div className="flex-1 pb-4">
+      {MODULES.map((m) => (
+        <div key={m.title}>
+      <div className="px-4 pb-1.5 pt-4 text-[11px] font-bold uppercase tracking-[0.16em] text-ink/30">
+        {m.title} <span className="ml-1 font-normal normal-case tracking-normal text-ink/25">buổi {m.from}–{m.to}</span>
+      </div>
 
-      <ul className="flex-1 space-y-1 px-3 pb-4">
-        {BUOI_LIST.map((b) => {
+      <ul className="space-y-1 px-3">
+        {BUOI_LIST.filter((b) => b.id >= m.from && b.id <= m.to).map((b) => {
           const active = pathname === `/buoi/${b.slug}`
           return (
             <li key={b.id}>
@@ -72,6 +77,9 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           )
         })}
       </ul>
+        </div>
+      ))}
+      </div>
 
       <div className="flex items-center gap-2.5 border-t border-ink/8 px-4 py-3">
         <img

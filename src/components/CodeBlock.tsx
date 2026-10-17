@@ -13,7 +13,7 @@ export default function CodeBlock({ sample, dense = false }: { sample: CodeSampl
         <span className="ml-1 font-mono text-xs text-white/45">{sample.title ?? `${sample.lang ?? 'csharp'}`}</span>
       </figcaption>
       <pre className={`overflow-x-auto px-4 font-mono leading-relaxed text-white/85 ${dense ? 'py-3 text-[0.8em]' : 'py-4 text-[0.9em]'}`}>
-        <code>{highlight(sample.code)}</code>
+        <code>{highlight(sample.code, sample.lang)}</code>
       </pre>
       {sample.note && (
         <div className="border-t border-white/8 bg-brand-500/8 px-4 py-2 text-[0.8em] text-brand-300">{sample.note}</div>

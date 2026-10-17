@@ -9,6 +9,25 @@ export interface FlowStep {
   branches?: { label: string; steps: FlowStep[] }[]
 }
 
+/** Một nút trong sơ đồ cây (DOM, thư mục dự án, cây component, danh mục phân cấp). */
+export interface TreeNode {
+  label: string
+  /** Chú thích ngắn in mờ bên phải nhãn. */
+  note?: string
+  /** Tô nổi nút này. */
+  highlight?: boolean
+  children?: TreeNode[]
+}
+
+/** Một bước trong sơ đồ tuần tự: mũi tên từ actor này sang actor kia kèm nội dung. */
+export interface SeqStep {
+  from: number
+  to: number
+  text: string
+  /** Nét đứt — thường dùng cho phản hồi (response). */
+  dashed?: boolean
+}
+
 /** Một lớp trong sơ đồ lớp UML. */
 export interface UmlClass {
   name: string
@@ -29,6 +48,8 @@ export type Visual =
   | { kind: 'func'; caption?: string; name: string; params: string[]; body: string; returns: string }
   | { kind: 'timeline'; caption?: string; items: { label: string; text: string }[] }
   | { kind: 'compare'; caption?: string; columns: { title: string; tone?: 'good' | 'bad' | 'plain'; items: string[] }[] }
+  | { kind: 'tree'; caption?: string; root: TreeNode }
+  | { kind: 'seq'; caption?: string; actors: string[]; steps: SeqStep[] }
   | {
       kind: 'uml'
       caption?: string
@@ -63,6 +84,7 @@ export interface TraceStep {
 }
 
 export interface CodeSample {
+  /** csharp (mặc định) · sql · html · css · razor · json · bash · yaml · text — quyết định cách tô màu. */
   lang?: string
   title?: string
   code: string

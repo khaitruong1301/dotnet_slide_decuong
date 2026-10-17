@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { BUOI_LIST, COURSE, TOTAL_EXERCISES, TOTAL_SECTIONS } from '../data'
+import { BUOI_LIST, COURSE, MODULES, TOTAL_EXERCISES, TOTAL_SECTIONS } from '../data'
 
 const STATS = [
   { label: 'Buổi học', value: String(BUOI_LIST.length) },
@@ -53,8 +53,13 @@ export default function Home() {
 
       <section>
         <h2 className="mb-4 text-lg font-bold text-ink/80">Lộ trình {BUOI_LIST.length} buổi</h2>
+        {MODULES.map((m) => (
+        <div key={m.title} className="mb-8">
+        <h3 className="mb-3 flex items-baseline gap-2 text-[13px] font-bold uppercase tracking-[0.14em] text-ink/40">
+          {m.title} <span className="font-normal normal-case tracking-normal text-ink/30">buổi {m.from}–{m.to}</span>
+        </h3>
         <div className="grid gap-3 sm:grid-cols-2">
-          {BUOI_LIST.map((b) => (
+          {BUOI_LIST.filter((b) => b.id >= m.from && b.id <= m.to).map((b) => (
             <Link
               key={b.id}
               to={`/buoi/${b.slug}`}
@@ -80,6 +85,8 @@ export default function Home() {
             </Link>
           ))}
         </div>
+        </div>
+        ))}
       </section>
 
       <section className="no-print mt-10">
