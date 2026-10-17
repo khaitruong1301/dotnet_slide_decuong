@@ -138,7 +138,7 @@ function highlightOther(code: string, lang: string) {
 }
 
 export function highlight(code: string, lang?: string) {
-  if (lang && lang !== 'csharp' && lang !== 'cs') return highlightOther(code, lang)
+  if (lang && !['csharp', 'cs', 'js', 'javascript', 'ts'].includes(lang)) return highlightOther(code, lang)
   const out: React.ReactNode[] = []
   let last = 0
   let m: RegExpExecArray | null

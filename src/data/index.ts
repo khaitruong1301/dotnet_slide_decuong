@@ -23,6 +23,24 @@ import buoi21 from './buoi21'
 import buoi22 from './buoi22'
 import buoi23 from './buoi23'
 import buoi24 from './buoi24'
+import buoi25 from './buoi25'
+import buoi26 from './buoi26'
+import buoi27 from './buoi27'
+import buoi28 from './buoi28'
+import buoi29 from './buoi29'
+import buoi30 from './buoi30'
+import buoi31 from './buoi31'
+import buoi32 from './buoi32'
+import buoi33 from './buoi33'
+import buoi34 from './buoi34'
+import buoi35 from './buoi35'
+import buoi36 from './buoi36'
+import buoi37 from './buoi37'
+import buoi38 from './buoi38'
+import buoi39 from './buoi39'
+import buoi40 from './buoi40'
+import buoi41 from './buoi41'
+import buoi42 from './buoi42'
 
 export const COURSE = {
   title: 'C# / ASP.NET Core',
@@ -44,6 +62,9 @@ export const BUOI_LIST: Buoi[] = [
   buoi07, buoi08, buoi09, buoi10, buoi11, buoi12,
   buoi13, buoi14, buoi15, buoi16, buoi17, buoi18,
   buoi19, buoi20, buoi21, buoi22, buoi23, buoi24,
+  buoi25, buoi26, buoi27, buoi28, buoi29, buoi30,
+  buoi31, buoi32, buoi33, buoi34, buoi35, buoi36,
+  buoi37, buoi38, buoi39, buoi40, buoi41, buoi42,
 ]
 
 export function findBuoi(slug?: string): Buoi | undefined {

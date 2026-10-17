@@ -1,4 +1,4 @@
-# Đề cương C# / ASP.NET Core — 15 buổi
+# Đề cương C# / ASP.NET Core — 42 buổi
 
 Trang tài liệu học tập: menu trái là đề cương 8 buổi, bấm vào một buổi để mở nội dung
 lý thuyết kèm sơ đồ minh hoạ và bài tập về nhà ngay trên web.
