@@ -180,3 +180,29 @@ export interface Buoi {
   sections: Section[]
   exercises: Exercise[]
 }
+
+/** Một câu hỏi phỏng vấn: câu hỏi hiện sẵn, đáp án xổ ra khi bấm. */
+export interface InterviewQuestion {
+  id: string
+  level: 'Cơ bản' | 'Trung bình' | 'Nâng cao'
+  question: string
+  /** Câu trả lời ngắn 1–3 câu — điều ứng viên nên nói ra đầu tiên. */
+  short: string
+  /** Giải thích chi tiết: text, list, code, visual, table, callout. */
+  answer: Block[]
+  /** Câu nhà tuyển dụng hay hỏi tiếp sau câu này. */
+  followUps?: string[]
+  /** Số buổi học liên quan để ôn lại. */
+  buoi?: number[]
+}
+
+/** Bộ câu hỏi phỏng vấn của một phần khoá học. */
+export interface InterviewSet {
+  slug: string
+  title: string
+  subtitle: string
+  /** Phần khoá học bao phủ, theo số buổi. */
+  from: number
+  to: number
+  questions: InterviewQuestion[]
+}

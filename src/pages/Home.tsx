@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom'
 import { BUOI_LIST, COURSE, MODULES, TOTAL_EXERCISES, TOTAL_SECTIONS } from '../data'
+import { INTERVIEW_SETS, TOTAL_INTERVIEW } from '../data/phongvan'
 
 const STATS = [
   { label: 'Buổi học', value: String(BUOI_LIST.length) },
   { label: 'Phần lý thuyết', value: String(TOTAL_SECTIONS) },
   { label: 'Bài tập', value: String(TOTAL_EXERCISES) },
+  { label: 'Câu phỏng vấn', value: String(TOTAL_INTERVIEW) },
   { label: 'Thời lượng', value: `${BUOI_LIST.length * 3} giờ` },
 ]
 
@@ -41,7 +43,7 @@ export default function Home() {
           Tải PDF đề cương
         </button>
 
-        <dl className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <dl className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {STATS.map((s) => (
             <div key={s.label} className="card px-4 py-3.5">
               <dd className="text-2xl font-bold text-ink">{s.value}</dd>
@@ -87,6 +89,22 @@ export default function Home() {
         </div>
         </div>
         ))}
+      </section>
+
+      <section className="mt-2">
+        <h2 className="mb-4 text-lg font-bold text-ink/80">Câu hỏi phỏng vấn tổng hợp</h2>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {INTERVIEW_SETS.map((s, i) => (
+            <Link key={s.slug} to={`/phong-van/${s.slug}`} className="card group flex flex-col p-4 transition hover:border-brand-400/40 hover:bg-ink/[0.07]">
+              <div className="mb-3 flex items-center gap-2.5">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent-400/15 text-xs font-bold text-accent-400">Q{i + 1}</span>
+                <span className="text-[11px] uppercase tracking-wider text-ink/30">buổi {s.from}–{s.to} · {s.questions.length} câu</span>
+              </div>
+              <h3 className="text-[15px] font-bold leading-snug text-ink transition group-hover:text-brand-300">{s.title.replace('Phỏng vấn: ', '')}</h3>
+              <p className="mt-1.5 text-[13px] leading-relaxed text-ink/45">{s.subtitle}</p>
+            </Link>
+          ))}
+        </div>
       </section>
 
       <section className="no-print mt-10">

@@ -5,6 +5,7 @@ import ThemeToggle from './components/ThemeToggle'
 import TokenGate from './components/TokenGate'
 import Home from './pages/Home'
 import BuoiPage from './pages/BuoiPage'
+import PhongVanPage from './pages/PhongVanPage'
 
 export default function App() {
   const [open, setOpen] = useState(false)
@@ -46,6 +47,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/buoi/:slug" element={<BuoiPage />} />
+              <Route path="/phong-van/:slug" element={<PhongVanPage />} />
               <Route path="*" element={<Home />} />
             </Routes>
           </main>

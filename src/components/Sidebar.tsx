@@ -1,6 +1,7 @@
 import { NavLink, useLocation } from 'react-router-dom'
 import { BUOI_LIST, COURSE, MODULES, TOTAL_EXERCISES } from '../data'
 import ThemeToggle from './ThemeToggle'
+import { INTERVIEW_SETS } from '../data/phongvan'
 
 export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const { pathname } = useLocation()
@@ -79,6 +80,38 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       </ul>
         </div>
       ))}
+
+      <div className="px-4 pb-1.5 pt-5 text-[11px] font-bold uppercase tracking-[0.16em] text-ink/30">Câu hỏi phỏng vấn</div>
+      <ul className="space-y-1 px-3">
+        {INTERVIEW_SETS.map((s, i) => {
+          const active = pathname === `/phong-van/${s.slug}`
+          return (
+            <li key={s.slug}>
+              <NavLink
+                to={`/phong-van/${s.slug}`}
+                onClick={onNavigate}
+                className={`group flex gap-3 rounded-xl px-2.5 py-2 transition ${active ? 'bg-brand-500/15 ring-1 ring-brand-400/30' : 'hover:bg-ink/5'}`}
+              >
+                <span
+                  className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-[11px] font-bold ${
+                    active ? 'bg-brand-500 text-white' : 'bg-accent-400/15 text-accent-400'
+                  }`}
+                >
+                  Q{i + 1}
+                </span>
+                <span className="min-w-0">
+                  <span className={`block text-[13px] font-semibold leading-snug ${active ? 'text-ink' : 'text-ink/75'}`}>
+                    {s.title.replace('Phỏng vấn: ', '')}
+                  </span>
+                  <span className="mt-0.5 block text-[11px] leading-snug text-ink/35">
+                    {s.questions.length} câu · buổi {s.from}–{s.to}
+                  </span>
+                </span>
+              </NavLink>
+            </li>
+          )
+        })}
+      </ul>
       </div>
 
       <div className="flex items-center gap-2.5 border-t border-ink/8 px-4 py-3">

@@ -93,6 +93,8 @@ html { scroll-behavior: smooth; }
 [data-panel][data-open='false'] { display: none; }
 /* Thân thẻ bài tập: gập trên màn hình, luôn mở khi in ở mọi chế độ */
 [data-ex-body][data-open='false'] { display: none; }
+/* Đáp án câu hỏi phỏng vấn: gập trên màn hình, khi in PDF có đáp án thì mở hết */
+[data-qa-body][data-open='false'] { display: none; }
 
 /* Bộ slide bài tập chỉ dùng cho bản in, không chiếm chỗ trên màn hình.
    Khi bật cờ selected thì hiện ra (cả trên màn hình) đúng bề rộng vùng in của trang
@@ -264,6 +266,8 @@ body {
   [data-ex-body][data-open='false'] { display: block; }
   [data-ex] [data-panel][data-open='false'] { display: block; }
   html[data-print='full'] [data-panel][data-open='false'] { display: block; }
+  html[data-print='qa'] [data-qa-body][data-open='false'] { display: block; }
+  html[data-print='qa'] [data-qa] { break-inside: avoid-page; margin-bottom: 10px; }
   /* Khối chia tab: mỗi tab in như một mục nhỏ, cách nhau một đường kẻ */
   [data-panel] + [data-panel] { border-top: 1px solid rgb(20 20 43 / 0.12); }
   html[data-print='tab'] .print-full-only { display: none !important; }

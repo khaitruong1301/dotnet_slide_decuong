@@ -59,7 +59,7 @@ function TabsBlock({ items }: { items: TabItem[] }) {
   )
 }
 
-function BlockView({ block }: { block: Block }) {
+export function BlockView({ block }: { block: Block }) {
   switch (block.type) {
     case 'tabs':
       return <TabsBlock items={block.items} />
